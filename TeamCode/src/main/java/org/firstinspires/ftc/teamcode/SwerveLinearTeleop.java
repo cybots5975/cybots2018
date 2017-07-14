@@ -47,12 +47,6 @@ public class SwerveLinearTeleop extends LinearOpMode {
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
 
-    //Module Zero Positions
-    public final static double D1Zero = 0.0; //Sensor Voltage for Driver Front(1) Zero
-    public final static double D2Zero = 0.0; //Sensor Voltage for Driver Back(2) Zero
-    public final static double P1Zero = 0.0; //Sensor Voltage for Passenger Front(1) Zero
-    public final static double P2Zero = 0.0; //Sensor Voltage for Passenger Back(2) Zero
-
     public DcMotor  DMotor1 = null; //Driver Motor Front (1)
     public DcMotor  DMotor2 = null; //Driver Motor Back (2)
     public DcMotor  PMotor1 = null; //Passenger Motor Front (1)
@@ -82,6 +76,12 @@ public class SwerveLinearTeleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            double leftX = gamepad1.left_stick_x;
+            double leftY = gamepad1.left_stick_y;
+            double rightX = gamepad1.right_stick_x;
+
+            SwerveDrive(leftX,leftY,rightX);
+
 
 
             // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
@@ -90,8 +90,8 @@ public class SwerveLinearTeleop extends LinearOpMode {
     }
 
     public void SwerveDrive (double x1, double y1, double x2) {
-        final double L = 14; //length between axles
-        final double W = 16; //width between axles
+        final double L = 12; //length between axles
+        final double W = 14; //width between axles
 
         double r = Math.sqrt ((L * L) + (W * W));
         y1 *= -1;
@@ -113,8 +113,8 @@ public class SwerveLinearTeleop extends LinearOpMode {
 
         DMotor1.setPower(frontLeftSpeed);   //Set speed of Driver Motor Front(1) to front left
         DMotor2.setPower(backLeftSpeed);    //Set speed of Driver Motor Back(2) to back left
-        PMotor1.setPower(frontLeftSpeed);   //Set speed of Pass Motor Front(1) to front right
-        PMotor2.setPower(backLeftSpeed);    //Set speed of Pass Motor Back(2) to back right
+        PMotor1.setPower(frontRightSpeed);   //Set speed of Pass Motor Front(1) to front right
+        PMotor2.setPower(backRightSpeed);    //Set speed of Pass Motor Back(2) to back right
 
         Double DS1 = DSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
         Double DS2 = DSensor2.getVoltage(); //Get voltage of Driver Front(1) encoder
