@@ -45,12 +45,6 @@ public class HardwareSwerveV1
     public AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
     public AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
 
-//Module Zero Positions
-    public final static double D1Zero = 0.0; //Sensor Voltage for Driver Front(1) Zero
-    public final static double D2Zero = 0.0; //Sensor Voltage for Driver Back(2) Zero
-    public final static double P1Zero = 0.0; //Sensor Voltage for Passenger Front(1) Zero
-    public final static double P2Zero = 0.0; //Sensor Voltage for Passenger Back(2) Zero
-
     /* Local OpMode members. */
     HardwareMap hwMap  = null;
     private ElapsedTime period  = new ElapsedTime();
