@@ -1,0 +1,124 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+/**
+ * This is NOT an opmode.
+ *
+ * This class can be used to define all the specific hardware for a single robot.
+ * In this case that robot is a K9 robot.
+ *
+ * This hardware class assumes the following device names have been configured on the robot:
+ * Note:  All names are lower case and some have single spaces between words.
+ *
+ * Motor channel:  Left  drive motor:        "left_drive"
+ * Motor channel:  Right drive motor:        "right_drive"
+ * Servo channel:  Servo to raise/lower arm: "arm"
+ * Servo channel:  Servo to open/close claw: "claw"
+ *
+ * Note: the configuration of the servos is such that:
+ *   As the arm servo approaches 0, the arm position moves up (away from the floor).
+ *   As the claw servo approaches 0, the claw opens up (drops the game element).
+ */
+public class HardwareSwerveV1
+{
+    /* Public OpMode members. */
+//Swerve Drivebase Motors
+    public DcMotor  DMotor1 = null; //Driver Motor Front (1)
+    public DcMotor  DMotor2 = null; //Driver Motor Back (2)
+    public DcMotor  PMotor1 = null; //Passenger Motor Front (1)
+    public DcMotor  PMotor2 = null; //Passenger Motor Back (2)
+
+//Swerve Drivebase Servos
+    public Servo    DServo1 = null; //Driver ServoFront (1)
+    public Servo    DServo2 = null; //Driver ServoFront (2)
+    public Servo    PServo1 = null; //Passenger ServoFront (1)
+    public Servo    PServo2 = null; //Passenger ServoFront (2)
+
+//Swerve Drivebase Encoders
+    public AnalogInput  DSensor1 = null; //Driver Sensor Front (1)
+    public AnalogInput  DSensor2 = null; //Driver Sensor Back (2)
+    public AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
+    public AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
+
+//Module Zero Positions
+    public final static double D1Zero = 0.0; //Sensor Voltage for Driver Front(1) Zero
+    public final static double D2Zero = 0.0; //Sensor Voltage for Driver Back(2) Zero
+    public final static double P1Zero = 0.0; //Sensor Voltage for Passenger Front(1) Zero
+    public final static double P2Zero = 0.0; //Sensor Voltage for Passenger Back(2) Zero
+
+    /* Local OpMode members. */
+    HardwareMap hwMap  = null;
+    private ElapsedTime period  = new ElapsedTime();
+
+    /* Constructor */
+    public HardwareSwerveV1() {
+    }
+
+    /* Initialize standard Hardware interfaces */
+    public void init(HardwareMap ahwMap) {
+        // save reference to HW Map
+        hwMap = ahwMap;
+
+        //Define and Initialize Motors
+        DMotor1 = hwMap.dcMotor.get("DM1"); //Driver Motor Front(1)
+        DMotor2 = hwMap.dcMotor.get("DM2"); //Driver Motor Back(2)
+        PMotor1 = hwMap.dcMotor.get("PM1"); //Passenger Motor Front(1)
+        PMotor2 = hwMap.dcMotor.get("PM2"); //Passenger Motor Back(2)
+        //PMotor1.setDirection(DcMotor.Direction.REVERSE);
+        //PMotor2.setDirection(DcMotor.Direction.REVERSE);
+
+        //Set all motors to zero power
+        DMotor1.setPower(0); //Set Drive Motor 1 to 0% power
+        DMotor2.setPower(0); //Set Drive Motor 2 to 0% power
+        PMotor1.setPower(0); //Set Pass Motor 1 to 0% power
+        PMotor2.setPower(0); //Set Pass Motor 2 to 0% power
+
+        //Set all motors to run with encoders.
+        DMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Drive Motor 1 to use encoder
+        DMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Drive Motor 2 to use encoder
+        PMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 1 to use encoder
+        PMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 2 to use encoder
+
+        //Define and initialize ALL installed servos.
+        DServo1 = hwMap.servo.get("DS1"); //Driver Servo Front(1)
+        DServo2 = hwMap.servo.get("DS2"); //Driver Servo Back(2)
+        PServo1 = hwMap.servo.get("PS1"); //Pass Servo Front(1)
+        PServo2 = hwMap.servo.get("PS2"); //Pass Servo Back(2)
+
+        DServo1.setPosition(0); //Set Driver Servo Front(1) to 0 power
+        DServo2.setPosition(0); //Set Driver Servo Back(2) to 0 power
+        PServo1.setPosition(0); //Set Pass Servo Front(1) to 0 power
+        PServo2.setPosition(0); //Set Pass Servo Back(2) to 0 power
+
+    }
+
+    /***
+     *
+     * waitForTick implements a periodic delay. However, this acts like a metronome with a regular
+     * periodic tick.  This is used to compensate for varying processing times for each cycle.
+     * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.
+     *
+     * @param periodMs  Length of wait cycle in mSec.
+     */
+    public void waitForTick(long periodMs) {
+
+        long  remaining = periodMs - (long)period.milliseconds();
+
+        // sleep for the remaining portion of the regular cycle period.
+        if (remaining > 0) {
+            try {
+                Thread.sleep(remaining);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        // Reset the cycle clock for the next pass.
+        period.reset();
+    }
+}
