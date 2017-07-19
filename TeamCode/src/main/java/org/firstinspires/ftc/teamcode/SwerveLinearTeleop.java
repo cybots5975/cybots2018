@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.HardwareSwerveV1;
 
+
 @TeleOp(name="SwerveLinearTeleop Template", group="Swerve")
 @Disabled
 public class SwerveLinearTeleop extends LinearOpMode {
@@ -76,11 +77,11 @@ public class SwerveLinearTeleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            double leftX = gamepad1.left_stick_x;
+            /*double leftX = gamepad1.left_stick_x;
             double leftY = gamepad1.left_stick_y;
             double rightX = gamepad1.right_stick_x;
 
-            SwerveDrive(leftX,leftY,rightX);
+            SwerveDrive(leftX,leftY,rightX);*/
 
 
 
@@ -89,7 +90,7 @@ public class SwerveLinearTeleop extends LinearOpMode {
         }
     }
 
-    public void SwerveDrive (double x1, double y1, double x2) {
+    /*public void SwerveDrive (double x1, double y1, double x2) {
         final double L = 12; //length between axles
         final double W = 14; //width between axles
 
@@ -155,7 +156,7 @@ public class SwerveLinearTeleop extends LinearOpMode {
             servoPower = 0;
         }
         return servoPower;
-    }
+    }*/
 
 
 }

@@ -72,6 +72,8 @@ public class HardwareSwerveV1
         // save reference to HW Map
         hwMap = ahwMap;
 
+        /*
+
         //Define and Initialize Motors
         DMotor1 = hwMap.dcMotor.get("DM1"); //Driver Motor Front(1)
         DMotor2 = hwMap.dcMotor.get("DM2"); //Driver Motor Back(2)
@@ -118,6 +120,12 @@ public class HardwareSwerveV1
         // and named "imu".
         imu = hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
+        */
+
+        DServo1 = hwMap.servo.get("DS1"); //Driver Servo Front(1)
+        DServo1.setPosition(0); //Set Driver Servo Front(1) to 0 power
+        DSensor1 = hwMap.analogInput.get("DSe1");
 
     }
 
