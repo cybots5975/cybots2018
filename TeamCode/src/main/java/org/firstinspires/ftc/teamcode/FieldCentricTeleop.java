@@ -168,7 +168,6 @@ public class FieldCentricTeleop extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-           /*
             imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ,AngleUnit.DEGREES);
 
             double gyro_degrees = imu.getPosition();
@@ -277,7 +276,6 @@ public class FieldCentricTeleop extends LinearOpMode {
 
             }
 
-*/
 
 
 
@@ -287,7 +285,7 @@ public class FieldCentricTeleop extends LinearOpMode {
             robot.waitForTick(40);
         }
     }
-/*
+
     public void SwerveDrive (double x1, double y1, double x2) {
         final double L = 12; //length between axles
         final double W = 14; //width between axles
@@ -437,7 +435,7 @@ public class FieldCentricTeleop extends LinearOpMode {
 
         }
 
-    }*/
+    }
 
 }
 
