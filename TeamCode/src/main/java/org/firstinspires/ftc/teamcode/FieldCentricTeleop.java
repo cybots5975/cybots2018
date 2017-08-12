@@ -166,11 +166,13 @@ public class FieldCentricTeleop extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        /*
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ,AngleUnit.DEGREES);
 
-            double gyro_degrees = imu.getPosition();
+            //double gyro_degrees = imu.getPosition();
 
 
 
@@ -434,6 +436,8 @@ public class FieldCentricTeleop extends LinearOpMode {
             mBackRightThrottle = -Range.clip(yStick - xStick + zStick, -1, 1);
 
         }
+
+    }*/
 
     }
 

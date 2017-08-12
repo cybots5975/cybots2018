@@ -78,14 +78,21 @@ public class TestServoPID extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            //double leftX = gamepad1.left_stick_x;
+            double leftX = gamepad1.left_stick_x;
 
-            //double dvolt = robot.DSensor1.getVoltage();
+            double dvolt = DSensor1.getVoltage();
 
-            //robot.DServo1.setPosition(SwivelMath(dvolt,leftX*180 +180,0,5));
+            //DServo1.setPosition(SwivelMath2(dvolt,leftX*180 +180,0,4.8));
+
+            if (dvolt>2.41) {
+                DServo1.setPosition(.55);
+            }else if (dvolt<2.39) {
+                DServo1.setPosition(.45);
+            }else DServo1.setPosition(.5);
+
 
             //telemetry.addData("Position",SwivelMath(dvolt,leftX*180 +180,0,5));
-            telemetry.addData("Volt",robot.DSensor1.getVoltage());
+            telemetry.addData("Volt",DSensor1.getVoltage());
             telemetry.update();
 
 
@@ -121,6 +128,37 @@ public class TestServoPID extends LinearOpMode {
         }else if (voltage>targetVolt-.5) {
             servoPower = 0;
         }
+        return servoPower;
+    }
+
+    public double SwivelMath2 (double voltage, double targetAngle, double startVolt, double maxVolt) {
+        double currentAngle = (voltage-startVolt)/(maxVolt/360);
+        double servoPower;
+
+        if (currentAngle>targetAngle+45) {
+            servoPower = 1;
+        }else if (currentAngle<targetAngle+25) {
+            servoPower = .8;
+        }else if (currentAngle<targetAngle+10) {
+            servoPower = .65;
+        }else if (currentAngle<targetAngle+5) {
+            servoPower = .55;
+        }else if (currentAngle<targetAngle+1) {
+            servoPower = .5;
+        }else if (currentAngle>targetAngle-1) {
+            servoPower = .5;
+        }else if (currentAngle>targetAngle-5) {
+            servoPower = .45;
+        }else if (currentAngle>targetAngle-10) {
+            servoPower = .35;
+        }else if (currentAngle>targetAngle-25) {
+            servoPower = .2;
+        }else if (currentAngle>targetAngle-45) {
+            servoPower = 0;
+        }else servoPower = .5;
+
+        telemetry.addData("Current Angle", currentAngle);
+
         return servoPower;
     }
 
