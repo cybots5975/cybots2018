@@ -47,21 +47,38 @@ public class SwerveLinearTeleop extends LinearOpMode {
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
 
-    public DcMotor  DMotor1 = null; //Driver Motor Front (1)
-    public DcMotor  DMotor2 = null; //Driver Motor Back (2)
-    public DcMotor  PMotor1 = null; //Passenger Motor Front (1)
-    public DcMotor  PMotor2 = null; //Passenger Motor Back (2)
+    private DcMotor  DMotor1 = null; //Driver Motor Front (1)
+    private DcMotor  DMotor2 = null; //Driver Motor Back (2)
+    private DcMotor  PMotor1 = null; //Passenger Motor Front (1)
+    private DcMotor  PMotor2 = null; //Passenger Motor Back (2)
     //Swerve Drivebase Servos
-    public Servo    DServo1 = null; //Driver ServoFront (1)
-    public Servo    DServo2 = null; //Driver ServoFront (2)
-    public Servo    PServo1 = null; //Passenger ServoFront (1)
-    public Servo    PServo2 = null; //Passenger ServoFront (2)
+    private Servo    DServo1 = null; //Driver ServoFront (1)
+    private Servo    DServo2 = null; //Driver ServoFront (2)
+    private Servo    PServo1 = null; //Passenger ServoFront (1)
+    private Servo    PServo2 = null; //Passenger ServoFront (2)
 
     //Swerve Drivebase Encoders
-    public AnalogInput DSensor1 = null; //Driver Sensor Front (1)
-    public AnalogInput  DSensor2 = null; //Driver Sensor Back (2)
-    public AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
-    public AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
+    private AnalogInput DSensor1 = null; //Driver Sensor Front (1)
+    private AnalogInput  DSensor2 = null; //Driver Sensor Back (2)
+    private AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
+    private AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
+
+    private static final double Kp = .02;
+    private static final double Ki = 0;
+    private static final double Kd = .008;
+    private int integral;
+    private int dt = 20;
+    private double u;
+    private int error;
+    private int previousError;
+    private int setPoint;
+    private double PIDpower;
+    private int targetValue = 0; //180
+    private double angle;
+    private double opAngle;
+    private boolean turnEfficiency = true;
+    private int driveDirection;
+    private double powerOut;
 
     @Override
     public void runOpMode() {
@@ -76,11 +93,13 @@ public class SwerveLinearTeleop extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            double leftX = gamepad1.left_stick_x;
-            double leftY = gamepad1.left_stick_y;
-            double rightX = gamepad1.right_stick_x;
+            gamepad1.setJoystickDeadzone(.05F); //Set joystick deadzone to a lower number
 
-            SwerveDrive(leftX,leftY,rightX);
+            double leftX = -gamepad1.left_stick_x;
+            double leftY = gamepad1.left_stick_y;
+            double rightX = -gamepad1.right_stick_x;
+
+            SwerveDriveV1(leftX,leftY,rightX);
 
 
 
@@ -89,7 +108,7 @@ public class SwerveLinearTeleop extends LinearOpMode {
         }
     }
 
-    public void SwerveDrive (double x1, double y1, double x2) {
+    public void SwerveDriveV1 (double x1, double y1, double x2) {
         final double L = 12; //length between axles
         final double W = 14; //width between axles
 
@@ -106,29 +125,31 @@ public class SwerveLinearTeleop extends LinearOpMode {
         double frontRightSpeed = Math.sqrt ((b * b) + (d * d));
         double frontLeftSpeed = Math.sqrt ((b * b) + (c * c));
 
-        double backRightAngle = Math.atan2 (a, d) / 3.1415926536 *180 +180;
-        double backLeftAngle = Math.atan2 (a, c) / 3.1415926536 *180 +180;
-        double frontRightAngle = Math.atan2 (b, d) / 3.1415926536 *180 +180;
-        double frontLeftAngle = Math.atan2 (b, c) / 3.1415926536 *180 +180;
+        //PI = 3.1415926536
+
+        double backRightAngle = Math.atan2 (a, d) / Math.PI * 180 + 180;
+        double backLeftAngle = Math.atan2 (a, c) / Math.PI * 180 + 180;
+        double frontRightAngle = Math.atan2 (b, d) / Math.PI * 180 + 180;
+        double frontLeftAngle = Math.atan2 (b, c) / Math.PI * 180 + 180;
 
         DMotor1.setPower(frontLeftSpeed);   //Set speed of Driver Motor Front(1) to front left
         DMotor2.setPower(backLeftSpeed);    //Set speed of Driver Motor Back(2) to back left
         PMotor1.setPower(frontRightSpeed);   //Set speed of Pass Motor Front(1) to front right
         PMotor2.setPower(backRightSpeed);    //Set speed of Pass Motor Back(2) to back right
 
-        Double DS1 = DSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
-        Double DS2 = DSensor2.getVoltage(); //Get voltage of Driver Front(1) encoder
-        Double PS1 = PSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
-        Double PS2 = PSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
+        Double DSe1 = DSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
+        Double DSe2 = DSensor2.getVoltage(); //Get voltage of Driver Front(1) encoder
+        Double PSe1 = PSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
+        Double PSe2 = PSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
 
-        DServo1.setPosition(SwivelMath(DS1,frontLeftAngle,0,5)); //Rotate the module to position
-        DServo2.setPosition(SwivelMath(DS2,backLeftAngle,0,5)); //Rotate the module to position
-        PServo1.setPosition(SwivelMath(PS1,frontRightAngle,0,5)); //Rotate the module to position
-        PServo2.setPosition(SwivelMath(PS2,backRightAngle,0,5)); //Rotate the module to position
+        DServo1.setPosition(SwivelMathV2(DSe1,frontLeftAngle,0,5)); //Rotate the module to position
+        DServo2.setPosition(SwivelMathV2(DSe2,backLeftAngle,0,5)); //Rotate the module to position
+        PServo1.setPosition(SwivelMathV2(PSe1,frontRightAngle,0,5)); //Rotate the module to position
+        PServo2.setPosition(SwivelMathV2(PSe2,backRightAngle,0,5)); //Rotate the module to position
 
     }
 
-    public double SwivelMath (double voltage, double targetAngle, double startVolt, double maxVolt) {
+    public double SwivelMathV1 (double voltage, double targetAngle, double startVolt, double maxVolt) {
         double voltDegree = maxVolt/360;
         double targetVolt = startVolt + (targetAngle * voltDegree);
         double servoPower = .5;
@@ -155,6 +176,60 @@ public class SwerveLinearTeleop extends LinearOpMode {
             servoPower = 0;
         }
         return servoPower;
+    }
+
+    public double SwivelMathV2 (double voltage, double targetAngle, double zeroPosVolt, double maxVolt) {
+
+        targetValue = (int) targetAngle;
+
+        angle = ((voltage-zeroPosVolt)/maxVolt)*360;
+        if (angle<0) {
+            angle = 360+angle;
+        } else {
+            //
+        }
+
+        if ((angle-180)<0) {
+            opAngle = 360+(angle-180);
+        } else {
+            opAngle = angle-180;
+        }
+
+        if (turnEfficiency=true) {
+            if ((Math.abs(targetValue-angle))<=(Math.abs(targetValue-opAngle))) {
+                setPoint = (int) angle;
+                driveDirection = 1;
+            } else {
+                setPoint = (int) opAngle;
+                driveDirection = -1;
+            }
+        } else {
+            setPoint = (int) angle;
+        }
+
+        error = targetValue - setPoint;
+
+        integral += Ki * error * dt;
+
+        if(integral > targetValue * 0.25) {
+            integral = (int) (targetValue * 0.25);
+        }
+
+        u = (Kp * error + integral + Kd * (error - previousError) / dt);
+
+        previousError = error;
+
+        PIDpower = -1*u;
+
+        if (PIDpower>0) {
+            powerOut = .5+(PIDpower/2);
+        } else if (PIDpower<0) {
+            powerOut = .5+(PIDpower/2);
+        } else {
+            powerOut = PIDpower;
+        }
+
+        return powerOut;
     }
 
 
