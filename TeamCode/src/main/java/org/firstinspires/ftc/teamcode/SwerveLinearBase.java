@@ -117,6 +117,11 @@ public class SwerveLinearBase extends LinearOpMode {
 
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
+        DMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        DMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        PMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        PMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -172,14 +177,61 @@ public class SwerveLinearBase extends LinearOpMode {
         Double PSe1 = PSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
         Double PSe2 = PSensor2.getVoltage(); //Get voltage of Driver Front(1) encoder
 
-        DServo1.setPosition(SwivelMathV2(DSe1,frontLeftAngle,0,5)); //Rotate the module to position
-        DServo2.setPosition(SwivelMathV2(DSe2,backLeftAngle,0,5)); //Rotate the module to position
-        PServo1.setPosition(SwivelMathV2(PSe1,frontRightAngle,0,5)); //Rotate the module to position
-        PServo2.setPosition(SwivelMathV2(PSe2,backRightAngle,0,5)); //Rotate the module to position
+        DServo1.setPosition(SwivelPIDV2(DSe1,frontLeftAngle,0,5)); //Rotate the module to position
+        DServo2.setPosition(SwivelPIDV2(DSe2,backLeftAngle,0,5)); //Rotate the module to position
+        PServo1.setPosition(SwivelPIDV2(PSe1,frontRightAngle,0,5)); //Rotate the module to position
+        PServo2.setPosition(SwivelPIDV2(PSe2,backRightAngle,0,5)); //Rotate the module to position
 
     }
 
-    public double SwivelMathV1 (double voltage, double targetAngle, double startVolt, double maxVolt) {
+    public void SwerveDriveRobotCentricV2 (double x1, double y1, double x2) {
+
+        //this mode is designed for module turn efficiency
+
+        final double L = 12; //length between axles
+        final double W = 14; //width between axles
+
+        double r = Math.sqrt ((L * L) + (W * W));
+        y1 *= -1;
+
+        double a = x1 - x2 * (L / r);
+        double b = x1 + x2 * (L / r);
+        double c = y1 - x2 * (W / r);
+        double d = y1 + x2 * (W / r);
+
+        double backRightSpeed = Math.sqrt ((a * a) + (d * d));
+        double backLeftSpeed = Math.sqrt ((a * a) + (c * c));
+        double frontRightSpeed = Math.sqrt ((b * b) + (d * d));
+        double frontLeftSpeed = Math.sqrt ((b * b) + (c * c));
+
+        //PI = 3.1415926536
+
+        double backRightAngle = Math.atan2 (a, d) / Math.PI * 180 - 90;
+        double backLeftAngle = Math.atan2 (a, c) / Math.PI * 180 - 90;
+        double frontRightAngle = Math.atan2 (b, d) / Math.PI * 180 - 90;
+        double frontLeftAngle = Math.atan2 (b, c) / Math.PI * 180 - 90;
+
+        Double DSe1 = DSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
+        Double DSe2 = DSensor2.getVoltage(); //Get voltage of Driver Front(1) encoder
+        Double PSe1 = PSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
+        Double PSe2 = PSensor2.getVoltage(); //Get voltage of Driver Front(1) encoder
+
+        DServo1.setPosition(SwivelPIDV2(DSe1,frontLeftAngle,0,5)); //Rotate the module to position
+        DMotor1.setPower(driveDirection*frontLeftSpeed);   //Set speed of Driver Motor Front(1) to front left
+
+        DServo2.setPosition(SwivelPIDV2(DSe2,backLeftAngle,0,5)); //Rotate the module to position
+        DMotor2.setPower(driveDirection*backLeftSpeed);    //Set speed of Driver Motor Back(2) to back left
+
+        PServo1.setPosition(SwivelPIDV2(PSe1,frontRightAngle,0,5)); //Rotate the module to position
+        PMotor1.setPower(driveDirection*frontRightSpeed);   //Set speed of Pass Motor Front(1) to front right
+
+        PServo2.setPosition(SwivelPIDV2(PSe2,backRightAngle,0,5)); //Rotate the module to position
+        PMotor2.setPower(driveDirection*backRightSpeed);    //Set speed of Pass Motor Back(2) to back right
+
+
+    }
+
+    public double SwivelPIDV1 (double voltage, double targetAngle, double startVolt, double maxVolt) {
         double voltDegree = maxVolt/360;
         double targetVolt = startVolt + (targetAngle * voltDegree);
         double servoPower = .5;
@@ -208,7 +260,7 @@ public class SwerveLinearBase extends LinearOpMode {
         return servoPower;
     }
 
-    public double SwivelMathV2 (double voltage, double targetAngle, double zeroPosVolt, double maxVolt) {
+    public double SwivelPIDV2 (double voltage, double targetAngle, double zeroPosVolt, double maxVolt) {
 
         targetValue = (int) targetAngle;
 
