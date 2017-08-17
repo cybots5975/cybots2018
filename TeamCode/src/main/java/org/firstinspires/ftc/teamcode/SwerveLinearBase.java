@@ -38,11 +38,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.HardwareSwerveV1;
 
-@TeleOp(name="SwerveLinearTeleop Template", group="Swerve")
+@TeleOp(name="SwerveLinearBase", group="Swerve")
 //@Disabled
-public class SwerveLinearTeleop extends LinearOpMode {
+public class SwerveLinearBase extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file

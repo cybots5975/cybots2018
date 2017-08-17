@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="SwerveLinearTeleop Template", group="Swerve")
 //@Disabled
-public abstract class ExtendSwerve extends SwerveLinearTeleop {
+public class ExtendSwerve extends SwerveLinearBase {
 
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
