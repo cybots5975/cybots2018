@@ -41,44 +41,44 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.HardwareSwerveV1;
 
 @TeleOp(name="SwerveLinearTeleop Template", group="Swerve")
-@Disabled
+//@Disabled
 public class SwerveLinearTeleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
 
-    private DcMotor  DMotor1 = null; //Driver Motor Front (1)
-    private DcMotor  DMotor2 = null; //Driver Motor Back (2)
-    private DcMotor  PMotor1 = null; //Passenger Motor Front (1)
-    private DcMotor  PMotor2 = null; //Passenger Motor Back (2)
+    public DcMotor  DMotor1 = null; //Driver Motor Front (1)
+    public DcMotor  DMotor2 = null; //Driver Motor Back (2)
+    public DcMotor  PMotor1 = null; //Passenger Motor Front (1)
+    public DcMotor  PMotor2 = null; //Passenger Motor Back (2)
     //Swerve Drivebase Servos
-    private Servo    DServo1 = null; //Driver ServoFront (1)
-    private Servo    DServo2 = null; //Driver ServoFront (2)
-    private Servo    PServo1 = null; //Passenger ServoFront (1)
-    private Servo    PServo2 = null; //Passenger ServoFront (2)
+    public Servo    DServo1 = null; //Driver ServoFront (1)
+    public Servo    DServo2 = null; //Driver ServoFront (2)
+    public Servo    PServo1 = null; //Passenger ServoFront (1)
+    public Servo    PServo2 = null; //Passenger ServoFront (2)
 
     //Swerve Drivebase Encoders
-    private AnalogInput DSensor1 = null; //Driver Sensor Front (1)
-    private AnalogInput  DSensor2 = null; //Driver Sensor Back (2)
-    private AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
-    private AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
+    public AnalogInput DSensor1 = null; //Driver Sensor Front (1)
+    public AnalogInput  DSensor2 = null; //Driver Sensor Back (2)
+    public AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
+    public AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
 
-    private static final double Kp = .02;
-    private static final double Ki = 0;
-    private static final double Kd = .008;
-    private int integral;
-    private int dt = 20;
-    private double u;
-    private int error;
-    private int previousError;
-    private int setPoint;
-    private double PIDpower;
-    private int targetValue = 0; //180
-    private double angle;
-    private double opAngle;
-    private boolean turnEfficiency = true;
-    private int driveDirection;
-    private double powerOut;
+    public static final double Kp = .02;
+    public static final double Ki = 0;
+    public static final double Kd = .008;
+    public int integral;
+    public int dt = 20;
+    public double u;
+    public int error;
+    public int previousError;
+    public int setPoint;
+    public double PIDpower;
+    public int targetValue = 0; //180
+    public double angle;
+    public double opAngle;
+    public boolean turnEfficiency = true;
+    public int driveDirection;
+    public double powerOut;
 
     @Override
     public void runOpMode() {
@@ -140,7 +140,7 @@ public class SwerveLinearTeleop extends LinearOpMode {
         Double DSe1 = DSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
         Double DSe2 = DSensor2.getVoltage(); //Get voltage of Driver Front(1) encoder
         Double PSe1 = PSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
-        Double PSe2 = PSensor1.getVoltage(); //Get voltage of Driver Front(1) encoder
+        Double PSe2 = PSensor2.getVoltage(); //Get voltage of Driver Front(1) encoder
 
         DServo1.setPosition(SwivelMathV2(DSe1,frontLeftAngle,0,5)); //Rotate the module to position
         DServo2.setPosition(SwivelMathV2(DSe2,backLeftAngle,0,5)); //Rotate the module to position
