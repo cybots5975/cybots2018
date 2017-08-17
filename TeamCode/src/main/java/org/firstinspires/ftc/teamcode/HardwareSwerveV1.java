@@ -102,7 +102,7 @@ public class HardwareSwerveV1
         DServo2.setPosition(0); //Set Driver Servo Back(2) to 0 power
         PServo1.setPosition(0); //Set Pass Servo Front(1) to 0 power
         PServo2.setPosition(0); //Set Pass Servo Back(2) to 0 power*/
-/*
+
 
 //IMU initialization
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -117,7 +117,7 @@ public class HardwareSwerveV1
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
         imu = hwMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);*/
+        imu.initialize(parameters);
 
     }
 

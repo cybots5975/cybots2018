@@ -32,12 +32,34 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import android.hardware.Sensor;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+import java.util.Locale;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
+//import java.util.Locale;
+
+
 
 @TeleOp(name="SwerveLinearBase", group="Swerve")
 //@Disabled
@@ -46,21 +68,25 @@ public class SwerveLinearBase extends LinearOpMode {
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
 
-    public DcMotor  DMotor1 = null; //Driver Motor Front (1)
-    public DcMotor  DMotor2 = null; //Driver Motor Back (2)
-    public DcMotor  PMotor1 = null; //Passenger Motor Front (1)
-    public DcMotor  PMotor2 = null; //Passenger Motor Back (2)
+    public DcMotor  DMotor1; //Driver Motor Front (1)
+    public DcMotor  DMotor2; //Driver Motor Back (2)
+    public DcMotor  PMotor1; //Passenger Motor Front (1)
+    public DcMotor  PMotor2; //Passenger Motor Back (2)
     //Swerve Drivebase Servos
-    public Servo    DServo1 = null; //Driver ServoFront (1)
-    public Servo    DServo2 = null; //Driver ServoFront (2)
-    public Servo    PServo1 = null; //Passenger ServoFront (1)
-    public Servo    PServo2 = null; //Passenger ServoFront (2)
+    public Servo    DServo1; //Driver ServoFront (1)
+    public Servo    DServo2; //Driver ServoFront (2)
+    public Servo    PServo1; //Passenger ServoFront (1)
+    public Servo    PServo2; //Passenger ServoFront (2)
 
     //Swerve Drivebase Encoders
-    public AnalogInput DSensor1 = null; //Driver Sensor Front (1)
-    public AnalogInput  DSensor2 = null; //Driver Sensor Back (2)
-    public AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
-    public AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
+    public AnalogInput DSensor1; //Driver Sensor Front (1)
+    public AnalogInput  DSensor2; //Driver Sensor Back (2)
+    public AnalogInput  PSensor1; //Passenger Sensor Front (1)
+    public AnalogInput  PSensor2; //Passenger Sensor Back (2)
+
+    public BNO055IMU imu;
+    Orientation angles;
+    Acceleration gravity;
 
     public static final double Kp = .02;
     public static final double Ki = 0;
@@ -75,7 +101,7 @@ public class SwerveLinearBase extends LinearOpMode {
     public int targetValue = 0; //180
     public double angle;
     public double opAngle;
-    public boolean turnEfficiency = true;
+    public boolean turnEfficiency = false;
     public int driveDirection;
     public double powerOut;
 
@@ -89,6 +115,8 @@ public class SwerveLinearBase extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -98,7 +126,10 @@ public class SwerveLinearBase extends LinearOpMode {
             double leftY = gamepad1.left_stick_y;
             double rightX = -gamepad1.right_stick_x;
 
-            SwerveDriveV1(leftX,leftY,rightX);
+            SwerveDriveRobotCentricV1(leftX,leftY,rightX);
+
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            gravity  = imu.getGravity();
 
 
 
@@ -107,7 +138,7 @@ public class SwerveLinearBase extends LinearOpMode {
         }
     }
 
-    public void SwerveDriveV1 (double x1, double y1, double x2) {
+    public void SwerveDriveRobotCentricV1 (double x1, double y1, double x2) {
         final double L = 12; //length between axles
         final double W = 14; //width between axles
 
@@ -204,6 +235,7 @@ public class SwerveLinearBase extends LinearOpMode {
             }
         } else {
             setPoint = (int) angle;
+            driveDirection = 1;
         }
 
         error = targetValue - setPoint;
@@ -231,5 +263,30 @@ public class SwerveLinearBase extends LinearOpMode {
         return powerOut;
     }
 
+    public void SwerveDriveFieldCentricV1 (double x1, double y1, double x2) {
+
+        double rcw = x2;
+        double forwrd = y1 * -1; /* Invert stick Y axis */
+        double strafe = x1;
+
+        double pi = 3.1415926;
+
+/* Adjust Joystick X/Y inputs by navX MXP yaw angle */
+
+
+        double gyro_degrees = angles.firstAngle;
+        double gyro_radians = gyro_degrees * pi/180;
+        double temp = forwrd * cos(gyro_radians) +
+                strafe * sin(gyro_radians);
+        strafe = -forwrd * sin(gyro_radians) +
+                strafe * cos(gyro_radians);
+        forwrd = temp;
+
+//At this point, Joystick X/Y (strafe/forwrd) vectors have been
+//rotated by the gyro angle, and can be sent to drive system//
+
+        SwerveDriveRobotCentricV1(forwrd,strafe,rcw);
+
+    }
 
 }

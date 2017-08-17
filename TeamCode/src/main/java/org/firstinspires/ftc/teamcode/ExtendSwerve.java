@@ -64,7 +64,17 @@ public class ExtendSwerve extends SwerveLinearBase {
             double leftY = gamepad1.left_stick_y;
             double rightX = -gamepad1.right_stick_x;
 
-            SwerveDriveV1(leftX,leftY,rightX);
+            SwerveDriveRobotCentricV1(leftX,leftY,rightX);
+
+            telemetry.addData("Front Driver Power", DMotor1.getPower());
+            telemetry.addData("Back Driver Power", DMotor2.getPower());
+            telemetry.addData("Front Pass Power", PMotor1.getPower());
+            telemetry.addData("Back Pass Power", PMotor2.getPower());
+
+            telemetry.addData("Front Driver Angle", ((DSensor1.getVoltage())/5)*360);
+            telemetry.addData("Back Driver Angle", ((DSensor2.getVoltage())/5)*360);
+            telemetry.addData("Front Pass Angle", ((PSensor1.getVoltage())/5)*360);
+            telemetry.addData("Back Pass Angle", ((PSensor2.getVoltage())/5)*360);
 
 
 
