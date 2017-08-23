@@ -1,3 +1,6 @@
+Converting from this library
+https://github.com/adafruit/Adafruit_ADS1X15
+
 /*
 Copyright (c) 2016 Robert Atkinson
 
