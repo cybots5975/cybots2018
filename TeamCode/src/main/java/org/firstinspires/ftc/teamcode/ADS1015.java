@@ -49,60 +49,10 @@ public class ADS1015 {
         device.setI2cAddress(i2cAddr);
         device.setReadWindow(new I2cDeviceSynch.ReadWindow(0x00, 1, I2cDeviceSynch.ReadMode.REPEAT));
         device.engage();
-
-        DisableArray();
     }
 
-    public void ReadAnalog1()
-    {
-        device.write8(0x07, (byte)0x00, I2cWaitControl.ATOMIC);
-        device.write8(0x03, (byte)0x00, I2cWaitControl.ATOMIC);
-    }
 
-    public void DisableArray()
-    {
-        device.write8(0x07, (byte)0xFF, I2cWaitControl.ATOMIC);
-        device.write8(0x03, (byte)0xFF, I2cWaitControl.ATOMIC);
-    }
-
-    public int ReadArray()
-    {
-        int temp = device.read8(0x00);
-        temp  = temp & 0xFF;
-
-        int result = ((temp & 0x01) != 0 ? 0x20 : 0);
-        result +=    ((temp & 0x02) != 0 ? 0x10 : 0);
-        result +=    ((temp & 0x04) != 0 ? 0x80 : 0);
-        result +=    ((temp & 0x08) != 0 ? 0x40 : 0);
-        result +=    ((temp & 0x10) != 0 ? 0x04 : 0);
-        result +=    ((temp & 0x20) != 0 ? 0x08 : 0);
-        result +=    ((temp & 0x40) != 0 ? 0x02 : 0);
-        result +=    ((temp & 0x80) != 0 ? 0x01 : 0);
-
-        return result;
-    }
-
-    public double ReadPosition(int array)
-    {
-        double result = 0;
-        int count = 0;
-        if (array == 0) return -1;
-
-        int fl = array;
-        for(int i = 1; i <= 8; i++) {
-            if((fl& 1) != 0) {
-                result += i;
-                count++;
-            }
-
-            fl = fl >> 1;
-        }
-
-        result = result / (8.0 * count);
-        return result;
-    }
-
-    public double readI2Canalog (int channel) {
+    public double readI2cAnalog (int channel) {
 
         if (channel > 3)
         {
@@ -110,12 +60,13 @@ public class ADS1015 {
         }
 
         // Start with default values
-        byte config =   ADS1015_REG_CONFIG_CQUE_NONE    | // Disable the comparator (default val)
+        byte config = (byte)
+                (ADS1015_REG_CONFIG_CQUE_NONE   | // Disable the comparator (default val)
                 ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
                 ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                 ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
                 ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
-                ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
+                ADS1015_REG_CONFIG_MODE_SINGLE);   // Single-shot mode (default)
 
         // Set PGA/voltage range
         config |= m_gain;
@@ -149,8 +100,6 @@ public class ADS1015 {
         // Read the conversion results
         // Shift 12-bit results right 4 bits for the ADS1015
         return readRegister(m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
-
-        return 0;
     }
 
     public void writeRegister(int i2cAddress, int reg, int value) {
@@ -158,10 +107,10 @@ public class ADS1015 {
         device.write8((byte)reg, (byte)((value & 0xFF)), I2cWaitControl.ATOMIC);
     }
 
-    public void readRegister(int i2cAddress, int reg) {
+    public int readRegister(int i2cAddress, int reg) {
         device.write8((byte)reg, (byte)(ADS1015_REG_POINTER_CONVERT), I2cWaitControl.ATOMIC);
         byte read = device.read8((byte)reg);
-        return (read << 8) | read);
+        return (read << 8) | read;
     }
 
     byte ADS1015_REG_CONFIG_MUX_SINGLE_0 = (byte)(0x4000);  // Single-ended AIN0
@@ -180,18 +129,36 @@ public class ADS1015 {
     byte ADS1015_REG_CONFIG_MODE_CONTIN = (byte)(0x0000);  // Continuous conversion mode
 
     byte ADS1015_REG_CONFIG_OS_SINGLE = (byte)(0x8000);  // Write: Set to start a single-conversion
-    byte ADS1015_REG_POINTER_CONFIG = (byte)(0x01);
+    int ADS1015_REG_POINTER_CONFIG = (0x01);
 
-    byte m_i2cAddress;
+   int m_i2cAddress = (0x90);
 
     byte m_conversionDelay;
 
     byte ADS1015_REG_POINTER_CONVERT = (0x00);
 
-    byte m_bitShift;
+    int m_bitShift = 4;
 
-    byte m_gain;
+    int m_gain = (byte)(0x0000); //GAIN_TWOTHRIDS
 
+    //set gain
+    int GAIN_TWOTHIRDS    = (0x0000);  // +/-6.144V range = Gain 2/3
+    int GAIN_ONE          = (0x0200);  // +/-4.096V range = Gain 1
+    int GAIN_TWO          = (0x0400);  // +/-2.048V range = Gain 2 (default)
+    int GAIN_FOUR         = (0x0600);  // +/-1.024V range = Gain 4
+    int GAIN_EIGHT        = (0x0800);  // +/-0.512V range = Gain 8
+    int GAIN_SIXTEEN      = (0x0A00);  // +/-0.256V range = Gain 16
+    // ads.setGain(GAIN_TWOTHIRDS);  // 2/3x gain +/- 6.144V  1 bit = 3mV      0.1875mV (default)
+    // ads.setGain(GAIN_ONE);        // 1x gain   +/- 4.096V  1 bit = 2mV      0.125mV
+    // ads.setGain(GAIN_TWO);        // 2x gain   +/- 2.048V  1 bit = 1mV      0.0625mV
+    // ads.setGain(GAIN_FOUR);       // 4x gain   +/- 1.024V  1 bit = 0.5mV    0.03125mV
+    // ads.setGain(GAIN_EIGHT);      // 8x gain   +/- 0.512V  1 bit = 0.25mV   0.015625mV
+    // ads.setGain(GAIN_SIXTEEN);    // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
+
+    //example i2c address
     //public static final I2cAddr IR_SEEKER_V3_ORIGINAL_ADDRESS = I2cAddr.create8bit(0x38);
+
+    //example for writing
+    //device.write8(0x07, (byte)0xFF, I2cWaitControl.ATOMIC);
 }
 
