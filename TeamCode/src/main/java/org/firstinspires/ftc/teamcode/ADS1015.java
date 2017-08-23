@@ -1,5 +1,4 @@
-Converting from this library
-https://github.com/adafruit/Adafruit_ADS1X15
+//Arduino library https://github.com/adafruit/Adafruit_ADS1X15
 
 /*
 Copyright (c) 2016 Robert Atkinson
@@ -64,12 +63,12 @@ public class ADS1015 {
 
         // Start with default values
         byte config = (byte)
-                (ADS1015_REG_CONFIG_CQUE_NONE   | // Disable the comparator (default val)
-                ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
-                ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
-                ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
-                ADS1015_REG_CONFIG_MODE_SINGLE);   // Single-shot mode (default)
+                        (ADS1015_REG_CONFIG_CQUE_NONE   | // Disable the comparator (default val)
+                        ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
+                        ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
+                        ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
+                        ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                        ADS1015_REG_CONFIG_MODE_SINGLE);   // Single-shot mode (default)
 
         // Set PGA/voltage range
         config |= m_gain;
@@ -134,7 +133,7 @@ public class ADS1015 {
     byte ADS1015_REG_CONFIG_OS_SINGLE = (byte)(0x8000);  // Write: Set to start a single-conversion
     int ADS1015_REG_POINTER_CONFIG = (0x01);
 
-   int m_i2cAddress = (0x90);
+    int m_i2cAddress = (0x90);
 
     byte m_conversionDelay;
 
