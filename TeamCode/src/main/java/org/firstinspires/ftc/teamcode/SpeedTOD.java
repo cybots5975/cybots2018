@@ -30,58 +30,67 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name="Swerve Teleop V1", group="Swerve")
+@TeleOp(name="Speed Tod", group="Demo")
 //@Disabled
-public class ExtendSwerve extends SwerveLinearBase {
-
-    /* Declare OpMode members. */
-    HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
+public class SpeedTOD extends LinearOpMode {
+    DcMotor leftSide;
+    DcMotor rightSide;
+    Servo leg;
+    double legPosition = .5;
 
     @Override
-    public void runOpMode() {
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-        robot.init(hardwareMap);
+    public void runOpMode() throws InterruptedException {
+        //leftSide = hardwareMap.dcMotor.get("lw");
+        //rightSide = hardwareMap.dcMotor.get("rw");
+        //rightSide.setDirection(DcMotor.Direction.REVERSE);
 
-        // Wait for the game to start (driver presses PLAY)
+        //leftSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSide = hardwareMap.dcMotor.get("left");
+        rightSide = hardwareMap.dcMotor.get("right");
+        leg = hardwareMap.servo.get("leg");
+        leftSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
         waitForStart();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-
-            gamepad1.setJoystickDeadzone(.05F); //Set joystick deadzone to a lower number
-
-            double leftX = -gamepad1.left_stick_x;
-            double leftY = gamepad1.left_stick_y;
-            double rightX = -gamepad1.right_stick_x;
-
-            SwerveDriveRobotCentricV1(leftX,leftY,rightX,true);
-
-            telemetry.addData("Front Driver Power", DMotor1.getPower());
-            telemetry.addData("Back Driver Power", DMotor2.getPower());
-            telemetry.addData("Front Pass Power", PMotor1.getPower());
-            telemetry.addData("Back Pass Power", PMotor2.getPower());
-
-            telemetry.addData("Front Driver Angle", ((DSensor1.getVoltage())/5)*360);
-            telemetry.addData("Back Driver Angle", ((DSensor2.getVoltage())/5)*360);
-            telemetry.addData("Front Pass Angle", ((PSensor1.getVoltage())/5)*360);
-            telemetry.addData("Back Pass Angle", ((PSensor2.getVoltage())/5)*360);
 
 
 
-            // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-            robot.waitForTick(40);
+        while(opModeIsActive()) {
+
+            double left = gamepad1.left_stick_y;
+            double right = gamepad1.right_stick_y;
+
+
+            leftSide.setPower(left);
+            rightSide.setPower(right);
+
+            if (gamepad1.a){
+                legPosition = 0;
+            } if (gamepad1.b) {
+                legPosition = 1;
+            }
+            leg.setPosition(legPosition);
+
+            telemetry.addData("left",left);
+            telemetry.addData("right",right);
+            telemetry.update();
+
+
+
+
         }
     }
-
-
 }

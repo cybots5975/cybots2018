@@ -32,15 +32,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="SwerveLinearTeleop Template", group="Swerve")
-//@Disabled
-public class ExtendSwerve extends SwerveLinearBase {
+
+
+@TeleOp(name="", group="Swerve")
+@Disabled
+public class TestExtraThread extends SwerveLinearBase {
 
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
@@ -51,6 +51,10 @@ public class ExtendSwerve extends SwerveLinearBase {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+
+        final boolean thread_run=true; /*Set to false to stop the thread i.e. when your opmode is ending */
+        final double rpm_gate_time=250; /*How long to wait (mS) between encoder samples - trade off between update rate and precision*/
+        //double LRPM,RRPM; /*Left motor RPM, Right motor RPM*/
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -64,7 +68,7 @@ public class ExtendSwerve extends SwerveLinearBase {
             double leftY = gamepad1.left_stick_y;
             double rightX = -gamepad1.right_stick_x;
 
-            SwerveDriveRobotCentricV1(leftX,leftY,rightX);
+            SwerveDriveRobotCentricV2(leftX,leftY,rightX,false);
 
             telemetry.addData("Front Driver Power", DMotor1.getPower());
             telemetry.addData("Back Driver Power", DMotor2.getPower());
@@ -77,11 +81,84 @@ public class ExtendSwerve extends SwerveLinearBase {
             telemetry.addData("Back Pass Angle", ((PSensor2.getVoltage())/5)*360);
 
 
+            //double LRPM,RRPM; /*Left motor RPM, Right motor RPM*/
 
-            // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-            robot.waitForTick(40);
-        }
-    }
+            final ElapsedTime tm = new ElapsedTime();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    double sms;
+                    double LRPM, RRPM; /*Left motor RPM, Right motor RPM*/
+                    while (thread_run) {
+                /*left and right are dcMotor instances*/
+                        int last_left_encoder = DMotor1.getCurrentPosition(); /*Get first sample*/
+                        int last_right_encoder = PMotor1.getCurrentPosition();
+                        sms = tm.milliseconds();
+                        while (tm.milliseconds() - sms < rpm_gate_time) {
+                        } /*Wait rpm_gate_time mS*/
+                        int delta_l = DMotor1.getCurrentPosition() - last_left_encoder; /*Get second sample, subtract first sample to get change*/
+                        int delta_r = PMotor1.getCurrentPosition() - last_right_encoder;
+                        double factor = ((1000 / rpm_gate_time) * 60) / 1120; /*Compute factor to convert encoder ticks per gate window to RPM (assumes 1120 ticks/rev)*/
+                        double RPM = delta_l * factor; /*Calculate the RPM for the left motor*/
+                        if (Math.abs(RPM) < 400) {
+                    /*If we get an absurdly high RPM, the it may be encoder jitter or the encoder was reset mid reading; keep the last reading instead*/
+                            LRPM = -RPM; /*Store the calculated RPM in the LRPM variable*/
+                        }
+                        RPM = delta_r * factor; /*^ Ditto for the right motor*/
+                        if (Math.abs(RPM) < 400) {
+                            RRPM = -RPM;
+                        }
+                    }
+                }
+            }).start();
 
 
-}
+                        //telemetry.addData("Motor RPM: ", "%.f, %.f", LRPM, RRPM); //The last measured/computed RPM value will always be available in the LRPM and RRPM global variables
+                        telemetry.update();
+
+                        // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
+                        robot.waitForTick(40);
+                    }
+                }
+
+                //boolean thread_run=true; /*Set to false to stop the thread i.e. when your opmode is ending */
+                //double rpm_gate_time=250; /*How long to wait (mS) between encoder samples - trade off between update rate and precision*/
+                //double LRPM,RRPM; /*Left motor RPM, Right motor RPM*/
+                //public void init(){
+    /* ..... */
+        /*final ElapsedTime tm = new ElapsedTime();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                double sms;
+                while (thread_run) {
+                *//*left and right are dcMotor instances*//*
+                    int last_left_encoder = DMotor1.getCurrentPosition(); *//*Get first sample*//*
+                    int last_right_encoder = PMotor1.getCurrentPosition();
+                    sms = tm.milliseconds();
+                    while(tm.milliseconds()-sms < rpm_gate_time){} *//*Wait rpm_gate_time mS*//*
+                    int delta_l = DMotor1.getCurrentPosition() - last_left_encoder; *//*Get second sample, subtract first sample to get change*//*
+                    int delta_r = PMotor1.getCurrentPosition() - last_right_encoder;
+                    double factor = ((1000/rpm_gate_time)*60)/1120; *//*Compute factor to convert encoder ticks per gate window to RPM (assumes 1120 ticks/rev)*//*
+                    double RPM = delta_l * factor; *//*Calculate the RPM for the left motor*//*
+                    if(Math.abs(RPM) < 400){
+                    *//*If we get an absurdly high RPM, the it may be encoder jitter or the encoder was reset mid reading; keep the last reading instead*//*
+                        LRPM = -RPM; *//*Store the calculated RPM in the LRPM variable*//*
+                    }
+                    RPM = delta_r * factor; *//*^ Ditto for the right motor*//*
+                    if(Math.abs(RPM) < 400){
+                        RRPM = -RPM;
+                    }
+                }
+            }
+        }).start();
+    *//* ..... *//*
+    }*/
+   /* public void loop(){
+    *//* ..... *//*
+        telemetry.addData("Motor RPM: ", "%.f, %.f", LRPM, RRPM); //The last measured/computed RPM value will always be available in the LRPM and RRPM global variables
+        telemetry.update();
+    *//* ..... *//*
+    }*/
+
+            }
