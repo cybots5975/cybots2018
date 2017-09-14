@@ -48,7 +48,7 @@ public class HardwareSwerveV1
     public Servo    PServo2 = null; //Passenger ServoFront (2)
 
 //Swerve Drivebase Encoders
-    //public AnalogInput  DSensor1 = null; //Driver Sensor Front (1)
+    public AnalogInput  DSensor1 = null; //Driver Sensor Front (1)
     public AnalogInput  DSensor2 = null; //Driver Sensor Back (2)
     public AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
     public AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
@@ -71,7 +71,7 @@ public class HardwareSwerveV1
     public void init(HardwareMap ahwMap) {
         // save reference to HW Map
         hwMap = ahwMap;
-/*
+
         //Define and Initialize Motors
         DMotor1 = hwMap.dcMotor.get("DM1"); //Driver Motor Front(1)
         DMotor2 = hwMap.dcMotor.get("DM2"); //Driver Motor Back(2)
@@ -86,22 +86,33 @@ public class HardwareSwerveV1
         PMotor1.setPower(0); //Set Pass Motor 1 to 0% power
         PMotor2.setPower(0); //Set Pass Motor 2 to 0% power
 
+        /*
         //Set all motors to run with encoders.
         DMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Drive Motor 1 to use encoder
         DMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Drive Motor 2 to use encoder
         PMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 1 to use encoder
         PMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 2 to use encoder*/
 
+        DMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        PMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        PMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         //Define and initialize ALL installed servos.
         DServo1 = hwMap.servo.get("DS1"); //Driver Servo Front(1)
-        /*DServo2 = hwMap.servo.get("DS2"); //Driver Servo Back(2)
+        DServo2 = hwMap.servo.get("DS2"); //Driver Servo Back(2)
         PServo1 = hwMap.servo.get("PS1"); //Pass Servo Front(1)
         PServo2 = hwMap.servo.get("PS2"); //Pass Servo Back(2)*/
 
-        /*DServo1.setPosition(0); //Set Driver Servo Front(1) to 0 power
+        DServo1.setPosition(0); //Set Driver Servo Front(1) to 0 power
         DServo2.setPosition(0); //Set Driver Servo Back(2) to 0 power
         PServo1.setPosition(0); //Set Pass Servo Front(1) to 0 power
         PServo2.setPosition(0); //Set Pass Servo Back(2) to 0 power*/
+
+        DSensor1 = hwMap.analogInput.get("DSe1");
+        DSensor2 = hwMap.analogInput.get("DSe2");
+        PSensor1 = hwMap.analogInput.get("PSe1");
+        PSensor2 = hwMap.analogInput.get("PSe2");
 
 
 //IMU initialization

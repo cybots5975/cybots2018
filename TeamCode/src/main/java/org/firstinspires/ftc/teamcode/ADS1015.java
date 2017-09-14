@@ -46,13 +46,14 @@ public class ADS1015 {
 
     public ADS1015(I2cDeviceSynch device, int addr) {
         this.device = device;
-        this.i2cAddr = I2cAddr.create8bit(addr);
+        this.i2cAddr = I2cAddr.create7bit(addr);
 
         device.setI2cAddress(i2cAddr);
         device.setReadWindow(new I2cDeviceSynch.ReadWindow(0x00, 1, I2cDeviceSynch.ReadMode.REPEAT));
         device.engage();
     }
 
+    public byte config;
 
     public double readI2cAnalog (int channel) {
 
@@ -62,7 +63,7 @@ public class ADS1015 {
         }
 
         // Start with default values
-        byte config = (byte)
+        config = (byte)
                         (ADS1015_REG_CONFIG_CQUE_NONE   | // Disable the comparator (default val)
                         ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
                         ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
@@ -105,8 +106,13 @@ public class ADS1015 {
     }
 
     public void writeRegister(int i2cAddress, int reg, int value) {
-        device.write8((byte)reg, (byte)((value>>8)), I2cWaitControl.ATOMIC);
+        device.write8((byte)reg, (byte)((value/*>>8*/)), I2cWaitControl.ATOMIC);
         device.write8((byte)reg, (byte)((value & 0xFF)), I2cWaitControl.ATOMIC);
+    }
+
+    public int read() {
+        int regValue = device.read8((byte)(0x00));
+        return regValue;
     }
 
     public int readRegister(int i2cAddress, int reg) {
@@ -115,14 +121,14 @@ public class ADS1015 {
         return (read << 8) | read;
     }
 
-    byte ADS1015_REG_CONFIG_MUX_SINGLE_0 = (byte)(0x4000);  // Single-ended AIN0
-    byte ADS1015_REG_CONFIG_MUX_SINGLE_1 = (byte)(0x5000);  // Single-ended AIN1
-    byte ADS1015_REG_CONFIG_MUX_SINGLE_2 = (byte)(0x6000);  // Single-ended AIN2
-    byte ADS1015_REG_CONFIG_MUX_SINGLE_3 = (byte)(0x7000);  // Single-ended AIN3
-    byte ADS1015_REG_CONFIG_CQUE_NONE = (byte)(0x0003);  // Disable the comparator and put ALERT/RDY in high state (default)
-    byte ADS1015_REG_CONFIG_CLAT_NONLAT = (byte)(0x0000);  // Non-latching comparator (default)
-    byte ADS1015_REG_CONFIG_CPOL_ACTVLOW = (byte)(0x0000);  // ALERT/RDY pin is low when active (default)
-    byte ADS1015_REG_CONFIG_CMODE_TRAD = (byte)(0x0000);  // Traditional comparator with hysteresis (default)
+    int ADS1015_REG_CONFIG_MUX_SINGLE_0 = (0x4000);  // Single-ended AIN0
+    int ADS1015_REG_CONFIG_MUX_SINGLE_1 = (0x5000);  // Single-ended AIN1
+    int ADS1015_REG_CONFIG_MUX_SINGLE_2 = (0x6000);  // Single-ended AIN2
+    int ADS1015_REG_CONFIG_MUX_SINGLE_3 = (0x7000);  // Single-ended AIN3
+    int ADS1015_REG_CONFIG_CQUE_NONE = (0x0003);  // Disable the comparator and put ALERT/RDY in high state (default)
+    int ADS1015_REG_CONFIG_CLAT_NONLAT = (0x0000);  // Non-latching comparator (default)
+    int ADS1015_REG_CONFIG_CPOL_ACTVLOW = (0x0000);  // ALERT/RDY pin is low when active (default)
+    int ADS1015_REG_CONFIG_CMODE_TRAD = (0x0000);  // Traditional comparator with hysteresis (default)
 
     byte ADS1015_REG_CONFIG_DR_128SPS = (byte)(0x0000);  // 128 samples per second
     byte ADS1015_REG_CONFIG_DR_1600SPS = (byte)(0x0080);  // 1600 samples per second (default)

@@ -33,12 +33,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name="Speed Tod", group="Demo")
-//@Disabled
+@TeleOp(name="Speed Tod POD", group="Demo")
+@Disabled
 public class SpeedTODPOV extends LinearOpMode {
     DcMotor leftSide;
     DcMotor rightSide;

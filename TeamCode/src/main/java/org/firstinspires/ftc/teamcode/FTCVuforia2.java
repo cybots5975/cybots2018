@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-public class FTCVuforia {
+public class FTCVuforia2 {
 
     // Variables to be used for later
     private VuforiaLocalizer vuforiaLocalizer;
@@ -195,22 +195,22 @@ public class FTCVuforia {
         // Setup the target to be tracked
         target = visionTargets.get(0); // 0 corresponds to the wheels target
         target.setName("Wheels Target");
-        target.setLocation(createMatrix(0, 500, 0, 90, 0, 90));
+        target.setLocation(createMatrix(0, 0, 0, 90, 0, 90));
 
-        target1 = visionTargets.get(1); // 1 corresponds to the tools target
-        target1.setName("Tools Target");
-        target1.setLocation(createMatrix(0, 500, 0, 90, 0, 90));
+        target = visionTargets.get(1); // 1 corresponds to the tools target
+        target.setName("Tools Target");
+        target.setLocation(createMatrix(0, 100, 0, 90, 0, 90));
 
-        target2 = visionTargets.get(2); // 2 corresponds to the legos target
-        target2.setName("Legos Target");
-        target2.setLocation(createMatrix(0, 500, 0, 90, 0, 90));
+        target = visionTargets.get(2); // 2 corresponds to the legos target
+        target.setName("Legos Target");
+        target.setLocation(createMatrix(0, 200, 0, 90, 0, 90));
 
-        target3 = visionTargets.get(3); // 3 corresponds to the gears target
-        target3.setName("Gears Target");
-        target3.setLocation(createMatrix(0, 500, 0, 90, 0, 90));
+        target = visionTargets.get(3); // 3 corresponds to the gears target
+        target.setName("Gears Target");
+        target.setLocation(createMatrix(0, 300, 0, 90, 0, 90));
 
         // Set phone location on robot
-        phoneLocation = createMatrix(0, 225, 0, 90, 0, 0);
+        phoneLocation = createMatrix(0, 0, 0, 90, 0, 0);
 
         // Setup listener and inform it of phone information
 
@@ -329,15 +329,6 @@ public class FTCVuforia {
         robotAngle = Orientation.getOrientation(lastKnownLocation3, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
     }
 
-
-//testing using variable in variable in class thing idk
-public class GetItem {
-        public double getAngle;
-        GetItem(double item) {
-            getAngle = 8;
-        }
-
-    }
 
 
     */

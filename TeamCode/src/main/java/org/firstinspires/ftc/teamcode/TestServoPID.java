@@ -39,15 +39,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.MotorConfiguration;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="PID Test 2", group="Drive")
-@Disabled
+//@Disabled
 public class TestServoPID extends LinearOpMode {
     //DcMotor leftSide;
     //DcMotor rightSide;
     Servo    DServo1 = null; //Driver ServoFront (1)
     AnalogInput DSensor1 = null; //Driver Sensor Front (1)
+    DcMotor   DMotor1;
 
     public static final double Kp = .02;
 
@@ -69,7 +71,7 @@ public class TestServoPID extends LinearOpMode {
 
     public double rightPower;
 
-    public int targetValue = 0; //180
+    public int targetValue = 0; //180 was int
 
     public double maxVolt = 5;
 
@@ -81,7 +83,10 @@ public class TestServoPID extends LinearOpMode {
 
     public int driveDirection;
 
-    public double zeroPosVolt = 4;
+    public double zeroPosVolt = 0;
+
+    boolean closeTo5;
+    boolean closeTo0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -92,8 +97,11 @@ public class TestServoPID extends LinearOpMode {
         //leftSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //rightSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        DSensor1 = hardwareMap.analogInput.get("DSe1");
-        DServo1 = hardwareMap.servo.get("DS1");
+        DSensor1 = hardwareMap.analogInput.get("PSe1");
+        DServo1 = hardwareMap.servo.get("PS1");
+        DMotor1 = hardwareMap.dcMotor.get("PM1");
+
+        DServo1.setPosition(.5);
 
         waitForStart();
 
@@ -103,7 +111,7 @@ public class TestServoPID extends LinearOpMode {
 
             gamepad1.setJoystickDeadzone(.1F);
 
-            double leftY = -gamepad1.left_stick_y;
+            double leftY = 1; //-gamepad1.left_stick_y;
             double leftX = gamepad1.left_stick_x;
 
 
@@ -111,7 +119,9 @@ public class TestServoPID extends LinearOpMode {
             double speed = Math.sqrt((leftX*leftX)+(leftY*leftY));
             Range.clip(speed,0,1);
 
-            targetValue = (int) (Math.toDegrees(Math.atan2(leftX,leftY)));
+            //targetValue = (int) (Math.toDegrees(Math.atan2(leftX,leftY)));
+            targetValue = 0;
+
 
            if (leftX>0) {
                 //no change
@@ -120,6 +130,8 @@ public class TestServoPID extends LinearOpMode {
             }/* else {
                 targetValue = 0;
             }*/
+
+
 
             telemetry.addData("Target Angle",targetValue);
 
@@ -131,7 +143,21 @@ public class TestServoPID extends LinearOpMode {
 
 
 
+            if ((5-DSensor1.getVoltage())>(Math.abs(0-DSensor1.getVoltage()))) {
+                closeTo0 = true;
+            } else {
+                closeTo0 = false;
+            }
 
+            if (closeTo5!=closeTo0) {
+
+            }
+
+            if ((5-DSensor1.getVoltage())<(Math.abs(0-DSensor1.getVoltage()))) {
+                closeTo5 = true;
+            } else {
+                closeTo5 = false;
+            }
 
 
 
@@ -170,9 +196,10 @@ public class TestServoPID extends LinearOpMode {
 
             integral += Ki * error * dt;
 
+/*
             if(integral > targetValue * 0.25) {
                 integral = (int) (targetValue * 0.25);
-            }
+            }*/
 
             u = (Kp * error + integral + Kd * (error - previousError) / dt);
 
@@ -188,7 +215,7 @@ public class TestServoPID extends LinearOpMode {
                 DServo1.setPosition(rightPower);
             }
 
-            //rightSide.setPower(rightPower);
+    //DMotor1.setPower(speed);
 
             telemetry.addData("Gamepad X", leftX);
             telemetry.addData("Gamepad Y", leftY);

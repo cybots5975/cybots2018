@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.ADS1015;
 
-@TeleOp(name="Test I2c Analog", group="Testing")
+@TeleOp(name="NEW Test I2c Analog", group="Testing")
 //@Disabled
 public class TestADS1015 extends LinearOpMode {
 
@@ -61,14 +61,17 @@ public class TestADS1015 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        analogRead = new ADS1015(hardwareMap.i2cDeviceSynch.get("ADS"),(0x90));
+        analogRead = new ADS1015(hardwareMap.i2cDeviceSynch.get("ADS"),(0x49));
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            double volt = analogRead.readI2cAnalog(0);
+            double volt = analogRead.readI2cAnalog(1);
 
             telemetry.addData("Volt",volt);
+            telemetry.addData("Read",analogRead.read());
+            telemetry.addData("Config",analogRead.config);
+            telemetry.addData("Config int",(int)analogRead.config);
             telemetry.update();
 
             // Pause for metronome tick.  40 mS each cycle = update 25 times a second.

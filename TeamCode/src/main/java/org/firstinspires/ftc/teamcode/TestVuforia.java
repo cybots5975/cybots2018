@@ -35,6 +35,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.FTCVuforia;
+import org.firstinspires.ftc.teamcode.FTCVuforia2;
 
 @TeleOp(name="Test Vuforia", group="Testing")
 //@Disabled
@@ -42,6 +43,8 @@ public class TestVuforia extends LinearOpMode {
 
     /* Declare OpMode members. */
     //TestingHardware robot           = new TestingHardware();   // Use the SwerveV1 hardware file
+    //FTCVuforia vuforia;
+    FTCVuforia2 vuforia2;
     FTCVuforia vuforia;
 
     @Override
@@ -52,23 +55,24 @@ public class TestVuforia extends LinearOpMode {
          */
         //robot.init(hardwareMap);
 
+        //vuforia = new FTCVuforia();
+        vuforia2 = new FTCVuforia2();
         vuforia = new FTCVuforia();
 
-        vuforia.preOp();
+        vuforia2.preOp();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        vuforia.activate();
+        vuforia2.activate();
 
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-
-            telemetry.addData("Vuforia X 0", vuforia.getX(0));
-            telemetry.addData("Vuforia Y 0", vuforia.getY(0));
-            telemetry.addData("Vuforia Angle 0", vuforia.getAngle(0));
+            telemetry.addData("Vuforia X 0", vuforia2.getX(0));
+            telemetry.addData("Vuforia Y 0", vuforia2.getY(0));
+            telemetry.addData("Vuforia Angle 0", vuforia2.getAngle(0));
             telemetry.update();
 
             // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
@@ -76,3 +80,4 @@ public class TestVuforia extends LinearOpMode {
         }
     }
 }
+
