@@ -1,3 +1,5 @@
+//don't USE, line disable below
+
 package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
@@ -5,7 +7,9 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
+//import org.firstinspires.ftc.robotcore.internal.opmode.OpModeManagerImpl;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
 /**
  * Created by KNO3 Robotics
@@ -52,7 +56,7 @@ public class AutoTransitioner extends Thread {
         synchronized (this) { //Synchronized to prevent wierd conditions
             this.onStop = onStop;
             this.transitionTo = transitionTo;
-            this.opModeManager = (OpModeManagerImpl) onStop.internalOpModeServices; //Store OpModeManagerImpl
+            //this.opModeManager = (OpModeManagerImpl) onStop.internalOpModeServices; //Store OpModeManagerImpl
         }
     }
 

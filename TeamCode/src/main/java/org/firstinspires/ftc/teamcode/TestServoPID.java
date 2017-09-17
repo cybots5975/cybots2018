@@ -83,7 +83,9 @@ public class TestServoPID extends LinearOpMode {
 
     public int driveDirection;
 
-    public double zeroPosVolt = 0;
+    public double zeroPosVolt = 2.53;
+
+    public int angleError;
 
     boolean closeTo5;
     boolean closeTo0;
@@ -97,9 +99,9 @@ public class TestServoPID extends LinearOpMode {
         //leftSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //rightSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        DSensor1 = hardwareMap.analogInput.get("PSe1");
-        DServo1 = hardwareMap.servo.get("PS1");
-        DMotor1 = hardwareMap.dcMotor.get("PM1");
+        DSensor1 = hardwareMap.analogInput.get("DSe2");
+        DServo1 = hardwareMap.servo.get("DS2");
+        DMotor1 = hardwareMap.dcMotor.get("DM2");
 
         DServo1.setPosition(.5);
 
@@ -111,76 +113,42 @@ public class TestServoPID extends LinearOpMode {
 
             gamepad1.setJoystickDeadzone(.1F);
 
-            double leftY = 1; //-gamepad1.left_stick_y;
+            double leftY = -gamepad1.left_stick_y;
             double leftX = gamepad1.left_stick_x;
-
-
 
             double speed = Math.sqrt((leftX*leftX)+(leftY*leftY));
             Range.clip(speed,0,1);
 
             //targetValue = (int) (Math.toDegrees(Math.atan2(leftX,leftY)));
-            targetValue = 0;
+
 
 
            if (leftX>0) {
                 //no change
             } else if (leftX<0) {
                 targetValue = 360+targetValue;
-            }/* else {
-                targetValue = 0;
-            }*/
-
-
+            }
 
             telemetry.addData("Target Angle",targetValue);
 
 
-
-            //targetValue = (int) (Math.toDegrees(Math.atan2(leftY,leftX)));
-
-            //gamepad1.setJoystickDeadzone(1);
-
-
-
-            if ((5-DSensor1.getVoltage())>(Math.abs(0-DSensor1.getVoltage()))) {
-                closeTo0 = true;
-            } else {
-                closeTo0 = false;
-            }
-
-            if (closeTo5!=closeTo0) {
-
-            }
-
-            if ((5-DSensor1.getVoltage())<(Math.abs(0-DSensor1.getVoltage()))) {
-                closeTo5 = true;
-            } else {
-                closeTo5 = false;
-            }
-
-
-
+            targetValue = 0; //setting the angle of the module here
 
 
 //START PID MODULE CODE
 
-            //setPoint = rightSide.getCurrentPosition();
 
-            angle = ((DSensor1.getVoltage()-zeroPosVolt)/maxVolt)*360;
-            if (angle<0) {
-                angle = 360+angle;
-            } else {
-                //
-            }
 
+            angle = ((DSensor1.getVoltage()-zeroPosVolt)/maxVolt)*360; //getting the angle from the encoder by dividing voltage by 360
+
+            //calculate the angle with 180 degrees difference to see if it's faster than turning all the way around
             if ((angle-180)<0) {
                 opAngle = 360+(angle-180);
             } else {
                 opAngle = angle-180;
             }
 
-            if (turnEfficiency=true) {
+            if (turnEfficiency==true) {
                 if ((Math.abs(targetValue-angle))<=(Math.abs(targetValue-opAngle))) {
                     setPoint = (int) angle;
                     driveDirection = 1;
@@ -192,7 +160,16 @@ public class TestServoPID extends LinearOpMode {
                 setPoint = (int) angle;
             }
 
-            error = targetValue - setPoint;
+
+            //angle_error = target_angle - measured_angle
+
+            angleError = targetValue - setPoint;
+
+            angleError -= 360*floor(0.5+angleError/360);
+
+            error = angleError;
+
+            //error = targetValue - setPoint;
 
             integral += Ki * error * dt;
 
@@ -215,7 +192,7 @@ public class TestServoPID extends LinearOpMode {
                 DServo1.setPosition(rightPower);
             }
 
-    //DMotor1.setPower(speed);
+    DMotor1.setPower(speed);
 
             telemetry.addData("Gamepad X", leftX);
             telemetry.addData("Gamepad Y", leftY);
@@ -228,6 +205,10 @@ public class TestServoPID extends LinearOpMode {
             telemetry.addData("previousError", previousError);
             telemetry.update();
         }
+    }
+
+    public double floor(double n) {
+        return (n - (n % 1));
     }
 }
 
