@@ -33,13 +33,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.configuration.MotorConfiguration;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="PID Test 2", group="Drive")
@@ -77,15 +75,19 @@ public class TestServoPID extends LinearOpMode {
 
     public double angle;
 
-    public double opAngle;
+    public int opTarget;
 
     public boolean turnEfficiency = true;
 
     public int driveDirection;
 
-    public double zeroPosVolt = 2.53;
+    public double zeroPosVolt = 0;
 
     public int angleError;
+
+    public int angleErrorOp;
+
+    public int measuredAngle;
 
     boolean closeTo5;
     boolean closeTo0;
@@ -99,9 +101,9 @@ public class TestServoPID extends LinearOpMode {
         //leftSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //rightSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        DSensor1 = hardwareMap.analogInput.get("DSe2");
-        DServo1 = hardwareMap.servo.get("DS2");
-        DMotor1 = hardwareMap.dcMotor.get("DM2");
+        DSensor1 = hardwareMap.analogInput.get("PSe2");
+        DServo1 = hardwareMap.servo.get("PS2");
+        DMotor1 = hardwareMap.dcMotor.get("PM2");
 
         DServo1.setPosition(.5);
 
@@ -123,7 +125,7 @@ public class TestServoPID extends LinearOpMode {
 
 
 
-           if (leftX>0) {
+           if (leftX>=0) {
                 //no change
             } else if (leftX<0) {
                 targetValue = 360+targetValue;
@@ -140,36 +142,57 @@ public class TestServoPID extends LinearOpMode {
 
 
             angle = ((DSensor1.getVoltage()-zeroPosVolt)/maxVolt)*360; //getting the angle from the encoder by dividing voltage by 360
-
             //calculate the angle with 180 degrees difference to see if it's faster than turning all the way around
-            if ((angle-180)<0) {
-                opAngle = 360+(angle-180);
-            } else {
-                opAngle = angle-180;
-            }
+            measuredAngle = (int)angle;
 
-            if (turnEfficiency==true) {
-                if ((Math.abs(targetValue-angle))<=(Math.abs(targetValue-opAngle))) {
-                    setPoint = (int) angle;
+            if ((targetValue-180)<0) {
+                opTarget = 360+(targetValue-180);
+            } else {
+                opTarget = targetValue-180;
+            }
+            //angle_error = target_angle - measured_angle
+
+            /*if (turnEfficiency) {
+                if ((Math.abs(targetValue-angle))<=(Math.abs(opTarget-angle))) {
                     driveDirection = 1;
                 } else {
-                    setPoint = (int) opAngle;
+                    targetValue = opTarget;
+                    driveDirection = -1;
+                }
+            }*/
+
+            angleError = (targetValue - measuredAngle);
+            angleError -= (360*Math.floor(0.5+((angleError+0d)/360.0)));
+
+            angleErrorOp = (opTarget - measuredAngle);
+            angleErrorOp -= (360*Math.floor(0.5+((angleErrorOp+0d)/360.0)));
+
+            if (turnEfficiency) {
+                if (Math.abs(angleError)>Math.abs(angleErrorOp)) {
+                    targetValue=opTarget;
+                    angleError = (targetValue - measuredAngle);
+                    angleError -= (360*Math.floor(0.5+((angleError+0d)/360.0)));
+                } else {
+                }
+            }
+
+            /*if (turnEfficiency==true) {
+                if ((Math.abs(angleError))<=(Math.abs(angleErrorOp))) {
+                    error = angleError;
+                    driveDirection = 1;
+                } else {
+                    error = angleErrorOp;
                     driveDirection = -1;
                 }
             } else {
-                setPoint = (int) angle;
-            }
+                error = angleError;
+            }*/
 
+            //setPoint = angleError;
 
-            //angle_error = target_angle - measured_angle
-
-            angleError = targetValue - setPoint;
-
-            angleError -= 360*floor(0.5+angleError/360);
+            //error = angleError;//targetValue - setPoint;
 
             error = angleError;
-
-            //error = targetValue - setPoint;
 
             integral += Ki * error * dt;
 
@@ -201,8 +224,10 @@ public class TestServoPID extends LinearOpMode {
             telemetry.addData("Volt",DSensor1.getVoltage());
             telemetry.addData("Power", DServo1.getPosition());
             telemetry.addData("DriveDirection", driveDirection);
-            telemetry.addData("Error", error);
             telemetry.addData("previousError", previousError);
+            telemetry.addData("Error", error);
+            telemetry.addData("targetValue",targetValue);
+            telemetry.addData("measured angle", measuredAngle);
             telemetry.update();
         }
     }
