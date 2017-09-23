@@ -6,9 +6,10 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
 
 public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2 {
-    public FrameGrabber(CameraBridgeViewBase c) {
-        c.setVisibility(SurfaceView.VISIBLE);
-        c.setCvCameraViewListener(this);
+    public FrameGrabber(CameraBridgeViewBase cameraBridgeViewBase) {
+
+        cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
+        cameraBridgeViewBase.setCvCameraViewListener(this);
     }
 
     @Override
@@ -23,8 +24,6 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2 
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        //return null;
         return inputFrame.rgba();
     }
 }
-

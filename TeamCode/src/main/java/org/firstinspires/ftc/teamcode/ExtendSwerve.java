@@ -101,7 +101,7 @@ public class ExtendSwerve extends SwerveLinearBase {
             gamepad1.setJoystickDeadzone(.05F); //Set joystick deadzone to a lower number
 
             double leftX = -gamepad1.left_stick_x;
-            double leftY = .5;//gamepad1.left_stick_y;
+            double leftY = 1;//gamepad1.left_stick_y;
             double rightX = -gamepad1.right_stick_x;
 
             SwerveDriveRobotCentricV2(leftX,leftY,rightX,false);
