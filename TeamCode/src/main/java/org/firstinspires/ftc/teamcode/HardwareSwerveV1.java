@@ -2,15 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorKLNavxMicro;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -72,6 +69,17 @@ public class HardwareSwerveV1
         // save reference to HW Map
         hwMap = ahwMap;
 
+        //Define and initialize ALL installed servos.
+        DServo1 = hwMap.servo.get("DS1"); //Driver Servo Front(1)
+        DServo2 = hwMap.servo.get("DS2"); //Driver Servo Back(2)
+        PServo1 = hwMap.servo.get("PS1"); //Pass Servo Front(1)
+        PServo2 = hwMap.servo.get("PS2"); //Pass Servo Back(2)*/
+
+        DServo1.setPosition(.5); //Set Driver Servo Front(1) to 0 power
+        DServo2.setPosition(.5); //Set Driver Servo Back(2) to 0 power
+        PServo1.setPosition(.5); //Set Pass Servo Front(1) to 0 power
+        PServo2.setPosition(.5); //Set Pass Servo Back(2) to 0 power*/
+
         //Define and Initialize Motors
         DMotor1 = hwMap.dcMotor.get("DM1"); //Driver Motor Front(1)
         DMotor2 = hwMap.dcMotor.get("DM2"); //Driver Motor Back(2)
@@ -98,16 +106,6 @@ public class HardwareSwerveV1
         PMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         PMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        //Define and initialize ALL installed servos.
-        DServo1 = hwMap.servo.get("DS1"); //Driver Servo Front(1)
-        DServo2 = hwMap.servo.get("DS2"); //Driver Servo Back(2)
-        PServo1 = hwMap.servo.get("PS1"); //Pass Servo Front(1)
-        PServo2 = hwMap.servo.get("PS2"); //Pass Servo Back(2)*/
-
-        DServo1.setPosition(0); //Set Driver Servo Front(1) to 0 power
-        DServo2.setPosition(0); //Set Driver Servo Back(2) to 0 power
-        PServo1.setPosition(0); //Set Pass Servo Front(1) to 0 power
-        PServo2.setPosition(0); //Set Pass Servo Back(2) to 0 power*/
 
         DSensor1 = hwMap.analogInput.get("DSe1");
         DSensor2 = hwMap.analogInput.get("DSe2");

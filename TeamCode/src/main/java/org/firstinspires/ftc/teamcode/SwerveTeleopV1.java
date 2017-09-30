@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="Swerve Teleop V1", group="Swerve")
 //@Disabled
-public class ExtendSwerve extends SwerveLinearBase {
+public class SwerveTeleopV1 extends SwerveLinearBase {
 
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
@@ -49,6 +49,17 @@ public class ExtendSwerve extends SwerveLinearBase {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+
+        //Define and initialize ALL installed servos.
+        DServo1 = hardwareMap.servo.get("DS1"); //Driver Servo Front(1)
+        DServo2 = hardwareMap.servo.get("DS2"); //Driver Servo Back(2)
+        PServo1 = hardwareMap.servo.get("PS1"); //Pass Servo Front(1)
+        PServo2 = hardwareMap.servo.get("PS2"); //Pass Servo Back(2)*/
+
+        DServo1.setPosition(.5); //Set Driver Servo Front(1) to 0 power
+        DServo2.setPosition(.5); //Set Driver Servo Back(2) to 0 power
+        PServo1.setPosition(.5); //Set Pass Servo Front(1) to 0 power
+        PServo2.setPosition(.5); //Set Pass Servo Back(2) to 0 power*/
 
         DMotor1 = hardwareMap.dcMotor.get("DM1"); //Driver Motor Front(1)
         DMotor2 = hardwareMap.dcMotor.get("DM2"); //Driver Motor Back(2)
@@ -64,28 +75,21 @@ public class ExtendSwerve extends SwerveLinearBase {
         PMotor1.setPower(0); //Set Pass Motor 1 to 0% power
         PMotor2.setPower(0); //Set Pass Motor 2 to 0% power*/
 
-        /*
+
         //Set all motors to run with encoders.
         DMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Drive Motor 1 to use encoder
         DMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Drive Motor 2 to use encoder
         PMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 1 to use encoder
-        PMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 2 to use encoder*/
+        PMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 2 to use encoder
         //Set all motors to run with encoders.
+        /*
         DMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //Set Drive Motor 1 to use encoder
         DMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //Set Drive Motor 2 to use encoder
         PMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //Set Pass Motor 1 to use encoder
         PMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //Set Pass Motor 2 to use encoder
+        */
 
-        //Define and initialize ALL installed servos.
-        DServo1 = hardwareMap.servo.get("DS1"); //Driver Servo Front(1)
-        DServo2 = hardwareMap.servo.get("DS2"); //Driver Servo Back(2)
-        PServo1 = hardwareMap.servo.get("PS1"); //Pass Servo Front(1)
-        PServo2 = hardwareMap.servo.get("PS2"); //Pass Servo Back(2)*/
 
-        DServo1.setPosition(.5); //Set Driver Servo Front(1) to 0 power
-        DServo2.setPosition(.5); //Set Driver Servo Back(2) to 0 power
-        PServo1.setPosition(.5); //Set Pass Servo Front(1) to 0 power
-        PServo2.setPosition(.5); //Set Pass Servo Back(2) to 0 power*/
 
         DSensor1 = hardwareMap.analogInput.get("DSe1");
         DSensor2 = hardwareMap.analogInput.get("DSe2");
@@ -98,13 +102,13 @@ public class ExtendSwerve extends SwerveLinearBase {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            gamepad1.setJoystickDeadzone(.05F); //Set joystick deadzone to a lower number
+            gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
 
+            double leftY = -gamepad1.left_stick_y;
             double leftX = -gamepad1.left_stick_x;
-            double leftY = 1;//gamepad1.left_stick_y;
             double rightX = -gamepad1.right_stick_x;
 
-            SwerveDriveRobotCentricV2(leftX,leftY,rightX,false);
+            SwerveDriveRobotCentricV2(leftX,leftY,rightX,true);
 
             telemetry.addData("Front Driver Power", DMotor1.getPower());
             telemetry.addData("Back Driver Power", DMotor2.getPower());
