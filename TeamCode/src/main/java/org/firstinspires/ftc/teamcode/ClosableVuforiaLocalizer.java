@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.robotcore.internal.VuforiaLocalizerImpl;
+import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 
 /**
  * <p>
