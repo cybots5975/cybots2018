@@ -42,6 +42,7 @@ public class SwerveTeleopV1 extends SwerveLinearBase {
 
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
+    SwerveDrive drive;
 
     @Override
     public void runOpMode() {
@@ -104,11 +105,14 @@ public class SwerveTeleopV1 extends SwerveLinearBase {
 
             gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
 
+
             double leftY = -gamepad1.left_stick_y;
             double leftX = -gamepad1.left_stick_x;
             double rightX = -gamepad1.right_stick_x;
 
-            SwerveDriveRobotCentricV2(leftX,leftY,rightX,true);
+            drive.RobotCentric(leftX,leftY,rightX);
+
+            //SwerveDriveRobotCentricV2(leftX,leftY,rightX,true);
 
             telemetry.addData("Front Driver Power", DMotor1.getPower());
             telemetry.addData("Back Driver Power", DMotor2.getPower());
