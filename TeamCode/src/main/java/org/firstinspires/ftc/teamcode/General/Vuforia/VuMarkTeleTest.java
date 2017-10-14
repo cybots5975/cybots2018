@@ -30,57 +30,62 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.General.Vuforia;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Voltage Calibrate actual", group="Swerve")
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.teamcode.EmptyHardware;
+
+@TeleOp(name="Test VuMark Teleop", group="Testing")
 //@Disabled
-public class VoltageCalibrate extends SwerveLinearBase {
+public class VuMarkTeleTest extends LinearOpMode {
+    public static final String TAG = "Vuforia VuMark Sample";
+    OpenGLMatrix lastLocation = null;
+    VuforiaLocalizer vuforia;
+    String vuforiaKey = "AWXa2Uv/////AAAAGfurKeRqY0A1kSnac5nkp2JqA4O6hIqfI5aTjOVuQjPZo5eceByKm3Xz+vTurmsPQ7W9lS7qB1/CAPf04NarSGqMSvs+YE2Zf5xuqRcEvvTQe2RG8hk7J3jUnWs1ujcnTCezIboYM8OVMAb7rb7Xq1vid7DsKNlgX1ubpcE/DJ+0waUR3vTfU/tPuoeANaEld54egOAq8pLEpZ1MsYNWKhqiihzwqnbftT94r9dSMnoevFIzxtX7T02EQekUFO8Hu+RJgLkvpUE87tvygVUVcKH5Dtn1Or9lpYXtAbJ21oPoElpvWyabwOrUwjQXq9tJ+HII1uyBxJ8eefdXW8dgJ3efwG4Ydj2bXERZ4ri55nFe";
 
-    /* Declare OpMode members. */
-    HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
+    EmptyHardware robot           = new EmptyHardware();   // Use the SwerveV1 hardware file
+
+    VuMarkID vuMark;
+    //VuMarkID vuMark1;
+
+    public ElapsedTime time = new ElapsedTime();
 
     @Override
     public void runOpMode() {
+
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
 
-        //Define and initialize ALL installed servos.
-        DServo1 = hardwareMap.servo.get("DS1"); //Driver Servo Front(1)
-        DServo2 = hardwareMap.servo.get("DS2"); //Driver Servo Back(2)
-        PServo1 = hardwareMap.servo.get("PS1"); //Pass Servo Front(1)
-        PServo2 = hardwareMap.servo.get("PS2"); //Pass Servo Back(2)*/
+        vuMark = new VuMarkID(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
 
-        DServo1.setPosition(.5); //Set Driver Servo Front(1) to 0 power
-        DServo2.setPosition(.5); //Set Driver Servo Back(2) to 0 power
-        PServo1.setPosition(.5); //Set Pass Servo Front(1) to 0 power
-        PServo2.setPosition(.5); //Set Pass Servo Back(2) to 0 power
-
-        DSensor1 = hardwareMap.analogInput.get("DSe1");
-        DSensor2 = hardwareMap.analogInput.get("DSe2");
-        PSensor1 = hardwareMap.analogInput.get("PSe1");
-        PSensor2 = hardwareMap.analogInput.get("PSe2");
+        time = new ElapsedTime();
+        //vuMark.init(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
+        //vuMark1.init(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("DS1",DSensor1.getVoltage());
-            telemetry.addData("DS2",DSensor2.getVoltage());
-            telemetry.addData("PS1",PSensor1.getVoltage());
-            telemetry.addData("PS2",PSensor2.getVoltage());
+
+            telemetry.addData("Position",vuMark.getColumn());
             telemetry.update();
 
-
-
             // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-            robot.waitForTick(40);
+            //robot.waitForTick(40);
         }
     }
 
-
+    public void test(){
+        time.milliseconds();
+    }
 }
+

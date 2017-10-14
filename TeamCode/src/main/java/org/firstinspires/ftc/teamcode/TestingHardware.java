@@ -1,17 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.I2cAddr;
-import org.firstinspires.ftc.teamcode.ADS1015;
-
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * This is NOT an opmode.
@@ -34,7 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class TestingHardware
 {
     /* Public OpMode members. */
-    ADS1015 analogRead;
+    //ADS1015 analogRead;
 
     /* Local OpMode members. */
     HardwareMap hwMap  = null;
@@ -49,7 +39,7 @@ public class TestingHardware
         // save reference to HW Map
         hwMap = ahwMap;
 
-        analogRead = new ADS1015(hwMap.i2cDeviceSynch.get("ADS"),(0x90));
+        //analogRead = new ADS1015(hwMap.i2cDeviceSynch.get("ADS"),(0x90));
 
     }
 

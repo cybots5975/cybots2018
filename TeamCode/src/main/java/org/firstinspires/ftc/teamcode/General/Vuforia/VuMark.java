@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.General.Vuforia;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

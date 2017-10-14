@@ -30,52 +30,67 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode;
 
+package org.firstinspires.ftc.teamcode.Old_Robots;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name="Test Vuforia", group="Testing")
+@TeleOp(name="Speed Tod", group="Demo")
 //@Disabled
-public class TestVuforia extends LinearOpMode {
-
-    /* Declare OpMode members. */
-    EmptyHardware robot           = new EmptyHardware();   // Use the SwerveV1 hardware file
-    //FTCVuforia vuforia;
-    FTCVuforia2 vuforia2;
-    FTCVuforia vuforia;
+public class SpeedTOD extends LinearOpMode {
+    DcMotor leftSide;
+    DcMotor rightSide;
+    Servo leg;
+    double legPosition = .5;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
+        //leftSide = hardwareMap.dcMotor.get("lw");
+        //rightSide = hardwareMap.dcMotor.get("rw");
+        //rightSide.setDirection(DcMotor.Direction.REVERSE);
 
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-        robot.init(hardwareMap);
+        //leftSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSide = hardwareMap.dcMotor.get("left");
+        rightSide = hardwareMap.dcMotor.get("right");
+        leg = hardwareMap.servo.get("leg");
+        leftSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        //vuforia = new FTCVuforia();
-        vuforia2 = new FTCVuforia2();
-        vuforia = new FTCVuforia();
 
-        vuforia2.preOp();
-
-        // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        vuforia2.activate();
 
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
 
-            telemetry.addData("Vuforia X 0", vuforia2.getX(0));
-            telemetry.addData("Vuforia Y 0", vuforia2.getY(0));
-            telemetry.addData("Vuforia Angle 0", vuforia2.getAngle(0));
+        while(opModeIsActive()) {
+
+            double left = gamepad1.left_stick_y;
+            double right = gamepad1.right_stick_y;
+
+
+            leftSide.setPower(left);
+            rightSide.setPower(right);
+
+            if (gamepad1.a){
+                legPosition = 0;
+            } if (gamepad1.b) {
+                legPosition = 1;
+            }
+            leg.setPosition(legPosition);
+
+            telemetry.addData("left",left);
+            telemetry.addData("right",right);
             telemetry.update();
 
-            // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-            //robot.waitForTick(40);
+
+
+
         }
     }
 }
-

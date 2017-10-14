@@ -30,61 +30,38 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-
-@TeleOp(name="Test VuMark Teleop", group="Testing")
+@TeleOp(name="REV COLOR", group="Test")
 //@Disabled
-public class VuMarkTeleTest extends LinearOpMode {
-    public static final String TAG = "Vuforia VuMark Sample";
-    OpenGLMatrix lastLocation = null;
-    VuforiaLocalizer vuforia;
-    String vuforiaKey = "AWXa2Uv/////AAAAGfurKeRqY0A1kSnac5nkp2JqA4O6hIqfI5aTjOVuQjPZo5eceByKm3Xz+vTurmsPQ7W9lS7qB1/CAPf04NarSGqMSvs+YE2Zf5xuqRcEvvTQe2RG8hk7J3jUnWs1ujcnTCezIboYM8OVMAb7rb7Xq1vid7DsKNlgX1ubpcE/DJ+0waUR3vTfU/tPuoeANaEld54egOAq8pLEpZ1MsYNWKhqiihzwqnbftT94r9dSMnoevFIzxtX7T02EQekUFO8Hu+RJgLkvpUE87tvygVUVcKH5Dtn1Or9lpYXtAbJ21oPoElpvWyabwOrUwjQXq9tJ+HII1uyBxJ8eefdXW8dgJ3efwG4Ydj2bXERZ4ri55nFe";
+public class TestRevColor extends LinearOpMode {
 
-    EmptyHardware robot           = new EmptyHardware();   // Use the SwerveV1 hardware file
+    /* Declare OpMode members. */
+    ColorSensor sensorColor;
+    DistanceSensor sensorDistance;
 
-    VuMarkID vuMark;
-    //VuMarkID vuMark1;
-
-    public ElapsedTime time = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
 
-        vuMark = new VuMarkID(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
-
-        time = new ElapsedTime();
-        //vuMark.init(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
-        //vuMark1.init(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            telemetry.addData("Position",vuMark.getColumn());
             telemetry.update();
-
-            // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-            //robot.waitForTick(40);
         }
     }
 
-    public void test(){
-        time.milliseconds();
-    }
-}
 
+}

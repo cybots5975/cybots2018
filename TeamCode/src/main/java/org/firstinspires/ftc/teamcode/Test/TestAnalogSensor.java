@@ -30,67 +30,50 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+package org.firstinspires.ftc.teamcode.Test;
 
-package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name="Speed Tod", group="Demo")
+import org.firstinspires.ftc.teamcode.HardwareSwerveV1;
+
+@TeleOp(name="Test Analog Sensor", group="Swerve")
 //@Disabled
-public class SpeedTOD extends LinearOpMode {
-    DcMotor leftSide;
-    DcMotor rightSide;
-    Servo leg;
-    double legPosition = .5;
+public class TestAnalogSensor extends LinearOpMode {
+
+    /* Declare OpMode members. */
+    HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
+
+    //Swerve Drivebase Servos
+    public Servo    DServo1 = null; //Driver ServoFront (1)
+
+    //Swerve Drivebase Encoders
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        //leftSide = hardwareMap.dcMotor.get("lw");
-        //rightSide = hardwareMap.dcMotor.get("rw");
-        //rightSide.setDirection(DcMotor.Direction.REVERSE);
+    public void runOpMode() {
+        /* Initialize the hardware variables.
+         * The init() method of the hardware class does all the work here
+         */
+        robot.init(hardwareMap);
 
-        //leftSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //rightSide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftSide = hardwareMap.dcMotor.get("left");
-        rightSide = hardwareMap.dcMotor.get("right");
-        leg = hardwareMap.servo.get("leg");
-        leftSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightSide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        AnalogInput DSensor1;
+        DSensor1 = hardwareMap.analogInput.get("DSe1");
 
-
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
 
-
-
-        while(opModeIsActive()) {
-
-            double left = gamepad1.left_stick_y;
-            double right = gamepad1.right_stick_y;
-
-
-            leftSide.setPower(left);
-            rightSide.setPower(right);
-
-            if (gamepad1.a){
-                legPosition = 0;
-            } if (gamepad1.b) {
-                legPosition = 1;
-            }
-            leg.setPosition(legPosition);
-
-            telemetry.addData("left",left);
-            telemetry.addData("right",right);
+            telemetry.addData("Volt",DSensor1.getVoltage());
             telemetry.update();
 
 
 
-
+            // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
+            robot.waitForTick(40);
         }
     }
 }
