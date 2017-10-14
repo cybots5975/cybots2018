@@ -34,7 +34,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="Voltage Calibrate", group="Swerve")
+@TeleOp(name="Voltage Calibrate actual", group="Swerve")
 //@Disabled
 public class VoltageCalibrate extends SwerveLinearBase {
 

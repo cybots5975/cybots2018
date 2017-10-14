@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp(name="Swerve Teleop V1", group="Swerve")
 //@Disabled
 public class SwerveTeleopV1 extends SwerveLinearBase {
+    //extends SwerveBase
 
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
@@ -97,22 +98,25 @@ public class SwerveTeleopV1 extends SwerveLinearBase {
         PSensor1 = hardwareMap.analogInput.get("PSe1");
         PSensor2 = hardwareMap.analogInput.get("PSe2");
 
+        gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
+        //drive = new SwerveDrive();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
+            gamepad1.setJoystickDeadzone(.1F); //Set joystick deadzone to a lower number
 
 
-            double leftY = -gamepad1.left_stick_y;
-            double leftX = -gamepad1.left_stick_x;
-            double rightX = -gamepad1.right_stick_x;
+            double leftY = gamepad1.left_stick_y/2;
+            double leftX = gamepad1.left_stick_x/2;
+            double rightX = gamepad1.right_stick_x/2;
 
-            drive.RobotCentric(leftX,leftY,rightX);
-
-            //SwerveDriveRobotCentricV2(leftX,leftY,rightX,true);
+            //drive.RobotCentric(leftX,leftY,rightX);
+            //RobotCentric(leftX,leftY,rightX);
+            SwerveDriveRobotCentricV2(leftX,leftY,rightX,true);
 
             telemetry.addData("Front Driver Power", DMotor1.getPower());
             telemetry.addData("Back Driver Power", DMotor2.getPower());

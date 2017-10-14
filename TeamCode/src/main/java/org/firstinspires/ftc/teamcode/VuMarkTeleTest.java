@@ -34,16 +34,25 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Test Vuforia", group="Testing")
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+
+@TeleOp(name="Test VuMark Teleop", group="Testing")
 //@Disabled
-public class TestVuforia extends LinearOpMode {
+public class VuMarkTeleTest extends LinearOpMode {
+    public static final String TAG = "Vuforia VuMark Sample";
+    OpenGLMatrix lastLocation = null;
+    VuforiaLocalizer vuforia;
+    String vuforiaKey = "AWXa2Uv/////AAAAGfurKeRqY0A1kSnac5nkp2JqA4O6hIqfI5aTjOVuQjPZo5eceByKm3Xz+vTurmsPQ7W9lS7qB1/CAPf04NarSGqMSvs+YE2Zf5xuqRcEvvTQe2RG8hk7J3jUnWs1ujcnTCezIboYM8OVMAb7rb7Xq1vid7DsKNlgX1ubpcE/DJ+0waUR3vTfU/tPuoeANaEld54egOAq8pLEpZ1MsYNWKhqiihzwqnbftT94r9dSMnoevFIzxtX7T02EQekUFO8Hu+RJgLkvpUE87tvygVUVcKH5Dtn1Or9lpYXtAbJ21oPoElpvWyabwOrUwjQXq9tJ+HII1uyBxJ8eefdXW8dgJ3efwG4Ydj2bXERZ4ri55nFe";
 
-    /* Declare OpMode members. */
     EmptyHardware robot           = new EmptyHardware();   // Use the SwerveV1 hardware file
-    //FTCVuforia vuforia;
-    FTCVuforia2 vuforia2;
-    FTCVuforia vuforia;
+
+    VuMarkID vuMark;
+    //VuMarkID vuMark1;
+
+    public ElapsedTime time = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -53,29 +62,29 @@ public class TestVuforia extends LinearOpMode {
          */
         robot.init(hardwareMap);
 
-        //vuforia = new FTCVuforia();
-        vuforia2 = new FTCVuforia2();
-        vuforia = new FTCVuforia();
+        vuMark = new VuMarkID(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
 
-        vuforia2.preOp();
+        time = new ElapsedTime();
+        //vuMark.init(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
+        //vuMark1.init(hardwareMap, VuforiaLocalizer.CameraDirection.FRONT, true);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-        vuforia2.activate();
 
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            telemetry.addData("Vuforia X 0", vuforia2.getX(0));
-            telemetry.addData("Vuforia Y 0", vuforia2.getY(0));
-            telemetry.addData("Vuforia Angle 0", vuforia2.getAngle(0));
+            telemetry.addData("Position",vuMark.getColumn());
             telemetry.update();
 
             // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
             //robot.waitForTick(40);
         }
+    }
+
+    public void test(){
+        time.milliseconds();
     }
 }
 

@@ -33,22 +33,22 @@ public class HardwareSwerveV1
 {
     /* Public OpMode members. */
 //Swerve Drivebase Motors
-    public DcMotor  DMotor1 = null; //Driver Motor Front (1)
-    public DcMotor  DMotor2 = null; //Driver Motor Back (2)
-    public DcMotor  PMotor1 = null; //Passenger Motor Front (1)
-    public DcMotor  PMotor2 = null; //Passenger Motor Back (2)
+    public DcMotor  DMotor1; //Driver Motor Front (1)
+    public DcMotor  DMotor2; //Driver Motor Back (2)
+    public DcMotor  PMotor1; //Passenger Motor Front (1)
+    public DcMotor  PMotor2; //Passenger Motor Back (2)
 
 //Swerve Drivebase Servos
-    public Servo    DServo1 = null; //Driver ServoFront (1)
-    public Servo    DServo2 = null; //Driver ServoFront (2)
-    public Servo    PServo1 = null; //Passenger ServoFront (1)
-    public Servo    PServo2 = null; //Passenger ServoFront (2)
+    public Servo    DServo1; //Driver ServoFront (1)
+    public Servo    DServo2; //Driver ServoFront (2)
+    public Servo    PServo1; //Passenger ServoFront (1)
+    public Servo    PServo2; //Passenger ServoFront (2)
 
 //Swerve Drivebase Encoders
-    public AnalogInput  DSensor1 = null; //Driver Sensor Front (1)
-    public AnalogInput  DSensor2 = null; //Driver Sensor Back (2)
-    public AnalogInput  PSensor1 = null; //Passenger Sensor Front (1)
-    public AnalogInput  PSensor2 = null; //Passenger Sensor Back (2)
+    public AnalogInput  DSensor1; //Driver Sensor Front (1)
+    public AnalogInput  DSensor2; //Driver Sensor Back (2)
+    public AnalogInput  PSensor1; //Passenger Sensor Front (1)
+    public AnalogInput  PSensor2; //Passenger Sensor Back (2)
 
     public BNO055IMU imu;
 
