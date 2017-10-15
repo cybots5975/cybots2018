@@ -34,8 +34,8 @@ package org.firstinspires.ftc.teamcode.drivebase;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.HardwareSwerveV1;
-import org.firstinspires.ftc.teamcode.SwerveLinearBase;
+import org.firstinspires.ftc.teamcode.Old_Swerve.HardwareSwerveV1;
+import org.firstinspires.ftc.teamcode.Old_Swerve.SwerveLinearBase;
 
 @TeleOp(name="Voltage Calibrate actual", group="Swerve")
 //@Disabled

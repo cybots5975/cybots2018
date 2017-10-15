@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.EmptyHardware;
 
-@TeleOp(name="Test Vuforia", group="Testing")
+@TeleOp(name="Test Vuforia actual", group="Testing")
 //@Disabled
 public class TestVuforia extends LinearOpMode {
 
