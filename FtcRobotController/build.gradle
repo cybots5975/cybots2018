@@ -20,8 +20,8 @@ android {
 
 //>>>>>>> 9f1e829930e7e5e9c74d26aada5e19742dcd1e82
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 repositories {
