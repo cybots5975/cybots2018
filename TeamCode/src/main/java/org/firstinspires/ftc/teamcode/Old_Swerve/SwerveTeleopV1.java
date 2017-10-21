@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Old_Swerve;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="Swerve Teleop V1", group="Swerve")
 //@Disabled
@@ -36,8 +35,8 @@ public class SwerveTeleopV1 extends SwerveLinearBase {
         PMotor1 = hardwareMap.dcMotor.get("PM1"); //Passenger Motor Front(1)
         PMotor2 = hardwareMap.dcMotor.get("PM2"); //Passenger Motor Back(2)
 
-        DMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
-        DMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        DMotor1.setDirection(DcMotor.Direction.REVERSE);
+        DMotor2.setDirection(DcMotor.Direction.REVERSE);
 
         //Set all motors to zero power
         /*DMotor1.setPower(0); //Set Drive Motor 1 to 0% power
@@ -78,7 +77,7 @@ public class SwerveTeleopV1 extends SwerveLinearBase {
             gamepad1.setJoystickDeadzone(.1F); //Set joystick deadzone to a lower number
 
 
-            double leftY = .15;//-gamepad1.left_stick_y/2;
+            double leftY = -gamepad1.left_stick_y/2;
             double leftX = -gamepad1.left_stick_x/2;
             double rightX = -gamepad1.right_stick_x/2;
 

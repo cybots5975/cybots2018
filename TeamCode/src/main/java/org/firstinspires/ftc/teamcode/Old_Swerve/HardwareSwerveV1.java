@@ -85,8 +85,9 @@ public class HardwareSwerveV1
         DMotor2 = hwMap.dcMotor.get("DM2"); //Driver Motor Back(2)
         PMotor1 = hwMap.dcMotor.get("PM1"); //Passenger Motor Front(1)
         PMotor2 = hwMap.dcMotor.get("PM2"); //Passenger Motor Back(2)
-        //PMotor1.setDirection(DcMotor.Direction.REVERSE);
-        //PMotor2.setDirection(DcMotor.Direction.REVERSE);
+
+        PMotor1.setDirection(DcMotor.Direction.REVERSE);
+        PMotor2.setDirection(DcMotor.Direction.REVERSE);
 
         //Set all motors to zero power
         DMotor1.setPower(0); //Set Drive Motor 1 to 0% power

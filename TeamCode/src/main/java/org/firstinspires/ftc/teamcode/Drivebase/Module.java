@@ -15,27 +15,52 @@ public class Module {
     int error;
     int previousError = 0;
     double PIDpower;
+    int targetValue;
 
     //general variables
     public double powerOut;
     public double maxVolt = 2.06;
     public int reverse;
 
-    public void set(double angle, double speed, DcMotor motor, Servo servo, AnalogInput encoder, double zeroPosition) {
-        setAngle(servo,angle,zeroPosition,encoder);
-        double direction = reverse;
-        setVelocity(motor,direction*speed);
+    DcMotor motor;
+    Servo servo;
+    AnalogInput encoder;
+    double zeroPosition;
+
+    double direction;// = reverse;
+
+    public Module(DcMotor motor1, Servo servo1, AnalogInput encoder1, double zeroPosition1) {
+        motor = motor1;
+        servo = servo1;
+        encoder = encoder1;
+        zeroPosition = zeroPosition1;
     }
 
-    public void setAngle(Servo servo, double targetAngle, double zeroPosition, AnalogInput encoder) {
-        servo.setPosition(swivelPID(angle(encoder,zeroPosition),((int)targetAngle)));
+    public void set(int angle, double speed) {
+        setAngle(angle);
+        direction = reverse;
+        /*if (Math.abs(((angle()-(angle+180))%360))<Math.abs(((angle()-(angle))%360))) {
+            direction = -1;
+        } else {
+            direction = 1;
+        }*/
+        setVelocity(direction*speed);
     }
 
-    public void setVelocity(DcMotor motor, double speed) {
+    public double direction() {
+        return direction;
+    }
+
+    public void setAngle(int targetAngle) {
+        double servoPosition = swivelPID(angle(),(targetAngle));
+        servo.setPosition(servoPosition);
+    }
+
+    public void setVelocity(double speed) {
         motor.setPower(speed);
     }
 
-    public int angle(AnalogInput encoder, double zeroPosition) {
+    public int angle() {
         double angle = ((encoder.getVoltage()-zeroPosition)/maxVolt)*360;
         if (angle<0) {
             angle = 360+angle;
@@ -44,20 +69,31 @@ public class Module {
         return (int)angle;
     }
 
-    public int reverse180(int target, int position) {
-        int target180 = (target+180)%360;
-        int error;
+    public int reverse180(int targetAngle, int position) {
+        int angleError;
+        int angleErrorOp;
+        int target = (int)targetAngle;
+        int targetOp = (target+180)%360;
+        int measuredAngle = position;
 
-        double angError = (target-position)-(360*Math.floor(0.5+(((target-position)+0d)/360.0)));
-        double angError180 = (target180-position)-(360*Math.floor(0.5+(((target180-position)+0d)/360.0)));
+        angleError = (target - measuredAngle);
+        angleError -= (360*Math.floor(0.5+((angleError+0d)/360.0)));
 
-        if (Math.abs(angError)>Math.abs(angError180)) {
-            error = (int)angError;
-            reverse = 1;
-        } else {
-            error = (int)angError180;
-            reverse = -1;
-        }
+        angleErrorOp = (targetOp - measuredAngle);
+        angleErrorOp -= (360*Math.floor(0.5+((angleErrorOp+0d)/360.0)));
+
+            if (Math.abs(angleError)>Math.abs(angleErrorOp)) {
+                targetValue=targetOp;
+                reverse=-1;
+            } else {
+                targetValue=target;
+                reverse=1;
+            }
+
+        angleError = (targetValue - measuredAngle);
+        angleError -= (360*Math.floor(0.5+((angleError+0d)/360.0)));
+
+        error = angleError;
 
         return error;
     }
@@ -76,7 +112,7 @@ public class Module {
 
         previousError = error;
 
-        PIDpower = -1*u;
+        PIDpower = -1 * u;
 
         //convert to power for the servo (from 0-1)
         if (PIDpower>0) {
