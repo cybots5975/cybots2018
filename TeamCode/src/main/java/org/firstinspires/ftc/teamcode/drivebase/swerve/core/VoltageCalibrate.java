@@ -30,14 +30,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode.drivebase;
+package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Old_Swerve.HardwareSwerveV1;
 import org.firstinspires.ftc.teamcode.Old_Swerve.SwerveLinearBase;
 
-@TeleOp(name="Voltage Calibrate actual", group="Swerve")
+@TeleOp(name="Voltage Calibrate", group="Swerve")
 //@Disabled
 public class VoltageCalibrate extends SwerveLinearBase {
 
@@ -84,6 +84,5 @@ public class VoltageCalibrate extends SwerveLinearBase {
             robot.waitForTick(40);
         }
     }
-
 
 }

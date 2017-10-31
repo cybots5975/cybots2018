@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Old_Swerve;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Sensors.IMU;
 
 /**
  * This is NOT an opmode.
@@ -50,7 +50,8 @@ public class HardwareSwerveV1
     public AnalogInput  PSensor1; //Passenger Sensor Front (1)
     public AnalogInput  PSensor2; //Passenger Sensor Back (2)
 
-    public BNO055IMU imu;
+    public BNO055IMU imuDS, imuPS;
+    public IMU imu, imu2;
 
     // State used for updating telemetry
     Orientation angles;
@@ -95,39 +96,27 @@ public class HardwareSwerveV1
         PMotor1.setPower(0); //Set Pass Motor 1 to 0% power
         PMotor2.setPower(0); //Set Pass Motor 2 to 0% power
 
-        /*
         //Set all motors to run with encoders.
         DMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Drive Motor 1 to use encoder
         DMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Drive Motor 2 to use encoder
         PMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 1 to use encoder
-        PMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 2 to use encoder*/
+        PMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //Set Pass Motor 2 to use encoder
 
-        DMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        PMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        PMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        DMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        DMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         DSensor1 = hwMap.analogInput.get("DSe1");
         DSensor2 = hwMap.analogInput.get("DSe2");
         PSensor1 = hwMap.analogInput.get("PSe1");
         PSensor2 = hwMap.analogInput.get("PSe2");
+/*
+        imu = new IMU(imuDS);
+        imu2 = new IMU(imuPS);
 
-
-//IMU initialization
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hwMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        imu.initIMU(hwMap,"imu");
+        imu2.initIMU(hwMap,"imu2");*/
 
     }
 

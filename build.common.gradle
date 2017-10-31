@@ -38,9 +38,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 19
 
-        jackOptions {
-            enabled true
-        }
+        android.compileOptions.sourceCompatibility 1.8
+        android.compileOptions.targetCompatibility 1.8
 
         /**
          * We keep the versionCode and versionName of robot controller applications in sync with
