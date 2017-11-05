@@ -92,6 +92,8 @@ public class SwerveDrive {
         imu.initialize(parameters);
     }
 
+    //RobotCentric is one method of driving the swerve drive robot
+    //This is the primary function for doing all the math for the module speeds and angles as well
     public void RobotCentric (double strafe, double forward, double theta, boolean zeroReset) {
         final double length = 13.25; //length between axles
         final double width = 15.5; //width between axles
@@ -143,6 +145,7 @@ public class SwerveDrive {
         P2.zeroReset(zeroReset);
     }
 
+    //used to set the efficiency mode to the modules
     public void setEfficiency(boolean efficiency) {
         D1.setEfficiency(efficiency);
         D2.setEfficiency(efficiency);
@@ -150,6 +153,8 @@ public class SwerveDrive {
         P2.setEfficiency(efficiency);
     }
 
+    //fieldCentric is one type of common driving method for swerve drive
+    //It uses the orientation of the robot to offset the joystick values. This often makes the robot easier to drive because you can pull the joystick towards you and the robot will always come towards you, even if facing another direction
     public void FieldCentric(double x1, double y1, double x2, boolean zeroReset) {
         double forwrd = y1 * -1;
         double strafe = x1;
@@ -164,6 +169,7 @@ public class SwerveDrive {
         RobotCentric(forwrd,strafe, x2,zeroReset);
     }
 
+    //moveEnvoder finds the average encoder positions of all 4 wheel modules and drives until the target value is reached
     public void moveEncoder (double ySpeed, double xSpeed, int encoder) {
         double avgEncoder = (FLMotor.getCurrentPosition()+BLMotor.getCurrentPosition()+
                             FRMotor.getCurrentPosition()+BRMotor.getCurrentPosition())/4;
@@ -178,6 +184,7 @@ public class SwerveDrive {
         BRMotor.setPower(0);
     }
 
+    //gyroMove uses the value of the current robot heading from the orientation sensor to keep the robot going straight
     public void gyroMove(double ySpeed, double xSpeed, double heading) {
         double offset = PID(.0007,0,.12,20,(int)heading,(int)getAvgHeading());
         RobotCentric(xSpeed,ySpeed,offset/40,false);
@@ -193,10 +200,6 @@ public class SwerveDrive {
 
         int error = angleError;
 
-/*        if (Math.abs(angleError)<2) {
-            angleError = 0;
-        }*/
-
         integral += kI * error * dt;
 
         double u = (kP * error + integral + kD * (error - previousError) / dt);
@@ -206,19 +209,10 @@ public class SwerveDrive {
         return u;
     }
 
-/*    private double getHeading1() {
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        return (angles.firstAngle+360+90)%360;
-    }
-
-    private double getHeading2() {
-        Orientation angles = imu2.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        return (angles.firstAngle+360+90)%360;
-    }*/
-
+    //Calculate the average heading of the 2 absolute orientation sensors on the robot
     private double getAvgHeading() {
         double angle = ((imu.getHeading(90)+imu2.getHeading(90))/2)%360;
-        return angle;//(Math.abs(360-angle));
+        return angle;
     }
 
 }

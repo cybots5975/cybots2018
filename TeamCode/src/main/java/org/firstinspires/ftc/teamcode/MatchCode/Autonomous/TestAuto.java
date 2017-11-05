@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Old_Swerve.HardwareSwerveV1;
+import org.firstinspires.ftc.teamcode.Sensors.MA3Encoder;
 import org.firstinspires.ftc.teamcode.drivebase.swerve.core.SwerveDrive;
 
 /**
@@ -30,6 +31,8 @@ public class TestAuto extends LinearOpMode{
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
+
+        MA3Encoder DSEncoder = new MA3Encoder(hardwareMap,"EncoderTest");
 
         drive = new SwerveDrive(hardwareMap, imu, imu2,
                 DMotor1,DServo1,DSensor1,

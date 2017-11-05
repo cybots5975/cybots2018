@@ -5,4 +5,6 @@ package org.firstinspires.ftc.teamcode.Sensors;
  */
 
 public interface AbsoluteEncoder {
+    double getAngle();
+    void close();
 }

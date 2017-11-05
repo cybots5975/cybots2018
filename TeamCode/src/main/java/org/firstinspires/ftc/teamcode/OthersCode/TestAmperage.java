@@ -3,7 +3,10 @@ package org.firstinspires.ftc.teamcode.OthersCode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 /**
  * Created by kskrueger on 10/29/17.
@@ -18,6 +21,8 @@ public class TestAmperage extends LinearOpMode{
             Servo servo = hardwareMap.servo.get("testS");
             LynxDcMotorController2 controller = (LynxDcMotorController2)motor.getController();
 
+            DcMotorEx testEx = (DcMotorEx) hardwareMap.dcMotor.get("Test");
+
             telemetry.addData("Status", "Initialized");
             telemetry.update();
 
@@ -27,8 +32,10 @@ public class TestAmperage extends LinearOpMode{
             //run until the end (operator presses STOP)
             while (opModeIsActive()) {
 
-                motor.setPower(gamepad1.left_stick_y);
+                //motor.setPower(gamepad1.left_stick_y);
                 servo.setPosition(.5);
+
+                testEx.setVelocity(50, AngleUnit.DEGREES);
 
                 double current = controller.getBatteryCurrent();
                 telemetry.addLine("Current: " + current);

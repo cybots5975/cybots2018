@@ -31,21 +31,24 @@ public class Module {
         this.zeroPosition = zeroPosition;
     }
 
-    //sets the angle and speed
+    //sets the angle and speed to the module
     void set(double angle, double speed) {
         setAngle((int)angle);
         setVelocity(reverse*speed);
     }
 
+    //set the angle to the module (ex: 90° is sideways and 0° is forward)
     private void setAngle(int targetAngle) {
         double servoPosition = swivelPID(angle(),(targetAngle));
         servo.setPosition(servoPosition);
     }
 
+    //set the velocity to the drive motor for the wheel
     private void setVelocity(double speed) {
         motor.setPower(speed);
     }
 
+    //find the current angle of the encoder
     private int angle() {
         double maxVolt = 2.06;
         double angle = ((encoder.getVoltage()-zeroPosition)/ maxVolt)*360;
@@ -55,14 +58,17 @@ public class Module {
         return (int)angle;
     }
 
+    //convert the angle of the module to radians
     private double angleRadians() {
         return Math.toRadians(angle());
     }
 
+    //zeroReset is used to force the modules to rotate back to the zero starting position
     void zeroReset(boolean zeroReset){
         this.zeroReset = zeroReset;
     }
 
+    //setEfficiency is used to set the efficiency variable of the program
     void setEfficiency(boolean efficiency){
         this.efficiency = efficiency;
     }
@@ -130,54 +136,4 @@ public class Module {
         }
         return powerOut;
     }
-
-    //FROM BACK TO THE DRAWING BOARD'S CODE STARTING HERE
-    int targetAngle = 0;
-
-
-
-    public double getDelta(){
-        Vector targetVector = new Vector(Math.cos(targetAngle), Math.sin(targetAngle));
-        Vector currentVector = new Vector(Math.cos(angleRadians()), Math.sin(angleRadians()));
-        //angleBetween is the angle from currentPosition to target position in radians
-        //it has a range of -pi to pi, with negative values being clockwise and positive counterclockwise of the current angle
-        double angleBetween = Math.atan2(currentVector.x * targetVector.y - currentVector.y * targetVector.x,
-                currentVector.x * targetVector.x + currentVector.y * targetVector.y);
-        return angleBetween;
-    }
-
-    private double wrapAngle(double angle) {
-        angle %= 2 * Math.PI;
-        if (angle < 0) angle += 2 * Math.PI;
-
-
-        return angle;
-    }
-
-    public void update() {
-        Vector targetVector = new Vector(Math.cos(targetAngle), Math.sin(targetAngle));
-        Vector currentVector = new Vector(Math.cos(angleRadians()), Math.sin(angleRadians()));
-
-        //angleBetween is the angle from currentPosition to target position in radians
-        //it has a range of -pi to pi, with negative values being clockwise and positive counterclockwise of the current angle
-        double angleBetween = Math.atan2(currentVector.x * targetVector.y - currentVector.y * targetVector.x, currentVector.x * targetVector.x + currentVector.y * targetVector.y);
-
-        //give the servo a piecewise scaling function: full speed until about 5 degrees away, then linearly slower
-        if (angleBetween > Math.toRadians(50)){
-            servo.setPosition(0);
-        } else if (angleBetween < -Math.toRadians(50)) {
-            servo.setPosition(1);
-        }else{
-            double scaleFactor = Math.abs(angleBetween) / Math.toRadians(50);
-            if(angleBetween>0){
-                servo.setPosition(.5 - .5 * Math.abs(scaleFactor));
-            }else if(angleBetween<0){
-                servo.setPosition(.5 + .5 * Math.abs(scaleFactor));
-
-            }
-        }
-        //set power if close enough
-    }
-
-
 }
