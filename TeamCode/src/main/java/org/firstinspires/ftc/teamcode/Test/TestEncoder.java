@@ -22,10 +22,13 @@ public class TestEncoder extends LinearOpMode{
     @Override
     public void runOpMode() {
         MA3Encoder DSEncoder = new MA3Encoder(hardwareMap,"EncoderTest");
-        DSEncoder.reset();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        //Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+        //robot.init(hardwareMap);
+
 
         waitForStart();
 
@@ -33,9 +36,10 @@ public class TestEncoder extends LinearOpMode{
             while (opModeIsActive() ) {
 
 
-                telemetry.addData("CurrentBelow0",DSEncoder.currentBelow0);
+                telemetry.addData("Time1",DSEncoder.time1);
+                telemetry.addData("Time2",DSEncoder.time2);
 
-                telemetry.addData("PreviousBelow0",DSEncoder.previousBelow0);
+                telemetry.addData("Velocity",DSEncoder.getVelocity());
 
                 telemetry.addData("Absolute",DSEncoder.getAbsolute());
 

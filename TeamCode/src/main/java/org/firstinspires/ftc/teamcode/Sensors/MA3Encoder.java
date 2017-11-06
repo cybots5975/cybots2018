@@ -26,9 +26,19 @@ public class MA3Encoder{
         return encoder.getVoltage();
     }
 
+    public double pos1, pos2, time1, time2, velocity, diff;
     public double getVelocity(){
+        pos1 = getIncremental();
+        time1 = System.currentTimeMillis();
+        diff = (time1-time2);
+        if (diff<50) {
+            //nothing
+        } else {
+            velocity = (pos1-pos2)/(diff/1000);
+        }
+        pos2 = pos1;
+        time2 = time1;
 
-        double velocity = 0;
         return velocity;
     }
 
@@ -41,36 +51,18 @@ public class MA3Encoder{
         return (int)angle%360;
     }
 
-    public double currentReading, lastReading = 0, incremental = 0, difference;
-    public double getIncremental(){
-
-        if ((getAbsolute()<(360-getAbsolute()))&&getAbsolute()<45) {
-            currentBelow0 = true;
-        } else if ((getAbsolute()>(360-getAbsolute()))&&(360-getAbsolute())<45) {
-            currentBelow0 = false;
+    private double prev = 0, incremental;
+    public double getIncremental() {
+        double curr = getAbsolute();
+        if ((360 - prev) < 10 && curr < 10) {
+            incremental += (360 - prev) + curr;
+        } else if ((360 - curr) < 10 && prev < 10) {
+            incremental -= (360 - curr) + prev;
+        } else {
+            incremental += curr - prev;
         }
-
-        if (!currentBelow0&&previousBelow0) {
-            rotations -= 1;
-        }
-
-        if (currentBelow0&&!previousBelow0) {
-            rotations += 1;
-        }
-
-        if ((getAbsolute()<(360-getAbsolute()))&&getAbsolute()<45) {
-            previousBelow0 = true;
-        } else if ((getAbsolute()>(360-getAbsolute()))&&(360-getAbsolute())<45) {
-            previousBelow0 = false;
-        }
-
-        incremental = rotations;
-
+        prev = curr;
         return incremental;
-    }
-
-    public void reset() {
-        lastReading = getAbsolute();
     }
 
 }

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,52 +16,23 @@ import static java.lang.Math.sin;
 
 public class SwerveDrive {
     private Module D1, D2, P1, P2;
-    public DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
+    private DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
     private IMU imu, imu2;
 
-    public SwerveDrive(HardwareMap hwMap, BNO055IMU imuDS, BNO055IMU imuPS,
+    public SwerveDrive(HardwareMap hwMap, IMU imuDS, IMU imuPS,
                        DcMotor FLMotor, Servo FLServo, AnalogInput FLSensor,
                        DcMotor BLMotor, Servo BLServo, AnalogInput BLSensor,
                        DcMotor FRMotor, Servo FRServo, AnalogInput FRSensor,
                        DcMotor BRMotor, Servo BRServo, AnalogInput BRSensor){
 
-        //Define and initialize drive DC Motors
-        FLMotor = hwMap.dcMotor.get("DM1"); //Driver Motor Front(1)
-        BLMotor = hwMap.dcMotor.get("DM2"); //Driver Motor Back(2)
-        FRMotor = hwMap.dcMotor.get("PM1"); //Passenger Motor Front(1)
-        BRMotor = hwMap.dcMotor.get("PM2"); //Passenger Motor Back(2)
-
-        //Define and initialize Servos motors
-        FLServo = hwMap.servo.get("DS1"); //Driver Servo Front(1)
-        BLServo = hwMap.servo.get("DS2"); //Driver Servo Back(2)
-        FRServo = hwMap.servo.get("PS1"); //Pass Servo Front(1)
-        BRServo = hwMap.servo.get("PS2"); //Pass Servo Back(2)
-
-        //Define and initialize
-        FLSensor = hwMap.analogInput.get("DSe1");
-        BLSensor = hwMap.analogInput.get("DSe2");
-        FRSensor = hwMap.analogInput.get("PSe1");
-        BRSensor = hwMap.analogInput.get("PSe2");
-
-        FLServo.setPosition(.5); //Set Driver Servo Front(1) to 0 power
-        BLServo.setPosition(.5); //Set Driver Servo Back(2) to 0 power
-        FRServo.setPosition(.5); //Set Pass Servo Front(1) to 0 power
-        BRServo.setPosition(.5); //Set Pass Servo Back(2) to 0 power
-
-        //reverse the motors directions on the passenger side
-        FRMotor.setDirection(DcMotor.Direction.REVERSE);
-        BRMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        //set motors to run using encoders for positioning and speed control
-        FLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BLMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        FRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BRMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         this.FLMotor = FLMotor;
         this.BLMotor = BLMotor;
         this.FRMotor = FRMotor;
         this.BRMotor = BRMotor;
+
+        this.imu = imuDS;
+        this.imu2 = imuPS;
 
         //define the 4 swerve drive modules with motor,servo,encoder sensor,and starting voltage
         D1 = new Module(FLMotor,FLServo,FLSensor,Constants.FL_OFFSET); //driver side module 1
@@ -71,25 +40,7 @@ public class SwerveDrive {
         P1 = new Module(FRMotor,FRServo,FRSensor,Constants.FR_OFFSET); //passenger side module 1
         P2 = new Module(BRMotor,BRServo,BRSensor,Constants.BR_OFFSET); //passenger side module 2
 
-        imu = new IMU(imuDS);
-        imu2 = new IMU(imuPS);
-
-        imu.initIMU(hwMap,"imu");
-        imu2.initIMU(hwMap,"imu2");
         previousError = 0;
-    }
-
-    private void initIMU(HardwareMap hwMap, BNO055IMU imu, String name){
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        imu = hwMap.get(BNO055IMU.class, name);
-        imu.initialize(parameters);
     }
 
     //RobotCentric is one method of driving the swerve drive robot
@@ -216,3 +167,16 @@ public class SwerveDrive {
     }
 
 }
+
+/*    private void initIMU(HardwareMap hwMap, BNO055IMU imu, String name){
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        imu = hwMap.get(BNO055IMU.class, name);
+        imu.initialize(parameters);
+    }*/

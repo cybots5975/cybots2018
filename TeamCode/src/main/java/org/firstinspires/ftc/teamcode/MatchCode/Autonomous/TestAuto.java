@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.MatchCode.Autonomous;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -9,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Old_Swerve.HardwareSwerveV1;
+import org.firstinspires.ftc.teamcode.Sensors.IMU;
 import org.firstinspires.ftc.teamcode.Sensors.MA3Encoder;
 import org.firstinspires.ftc.teamcode.drivebase.swerve.core.SwerveDrive;
 
@@ -23,7 +23,7 @@ public class TestAuto extends LinearOpMode{
     public DcMotor DMotor1, DMotor2, PMotor1, PMotor2;
     public Servo DServo1, DServo2, PServo1, PServo2;
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
-    public BNO055IMU imu, imu2;
+    public IMU imu, imu2;
 
     HardwareSwerveV1 robot = new HardwareSwerveV1(); //use the SwerveV1 hardware file to configure
     SwerveDrive drive;
