@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.General.Constants;
 import org.firstinspires.ftc.teamcode.Sensors.IMU;
 
 import static java.lang.Math.cos;
@@ -19,7 +19,7 @@ public class SwerveDrive {
     private DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
     private IMU imu, imu2;
 
-    public SwerveDrive(HardwareMap hwMap, IMU imuDS, IMU imuPS,
+    public SwerveDrive(IMU imuDS, IMU imuPS,
                        DcMotor FLMotor, Servo FLServo, AnalogInput FLSensor,
                        DcMotor BLMotor, Servo BLServo, AnalogInput BLSensor,
                        DcMotor FRMotor, Servo FRServo, AnalogInput FRSensor,
@@ -35,10 +35,10 @@ public class SwerveDrive {
         this.imu2 = imuPS;
 
         //define the 4 swerve drive modules with motor,servo,encoder sensor,and starting voltage
-        D1 = new Module(FLMotor,FLServo,FLSensor,Constants.FL_OFFSET); //driver side module 1
+        D1 = new Module(FLMotor,FLServo,FLSensor, Constants.FL_OFFSET); //driver side module 1  ----Constants.FL_OFFSET
         D2 = new Module(BLMotor,BLServo,BLSensor,Constants.BL_OFFSET); //driver side module 2
         P1 = new Module(FRMotor,FRServo,FRSensor,Constants.FR_OFFSET); //passenger side module 1
-        P2 = new Module(BRMotor,BRServo,BRSensor,Constants.BR_OFFSET); //passenger side module 2
+        P2 = new Module(BRMotor,BRServo,BRSensor, Constants.BR_OFFSET); //passenger side module 2
 
         previousError = 0;
     }

@@ -16,23 +16,12 @@ public class TestNewSwerve extends  LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-/*    public DcMotor DMotor1, DMotor2, PMotor1, PMotor2;
-    public Servo DServo1, DServo2, PServo1, PServo2;
-    public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
-    public IMU imu, imu2;*/
-
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
     //SwerveDrive drive;
 
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-
-        /*drive = new SwerveDrive(hardwareMap, imu, imu2,
-                            DMotor1,DServo1,DSensor1,
-                            DMotor2,DServo2,DSensor2,
-                            PMotor1,PServo1,PSensor1,
-                            PMotor2,PServo2,PSensor2);*/
 
         gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
 
@@ -53,6 +42,7 @@ public class TestNewSwerve extends  LinearOpMode {
 
             robot.drive.setEfficiency(true);
             robot.drive.RobotCentric(leftX,leftY,rightX,gamepad1.a);
+            robot.intake.setAngle(3);
 
             telemetry.addData("Swerve Running","");
             telemetry.update();
