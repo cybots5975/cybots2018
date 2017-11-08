@@ -24,6 +24,9 @@ public class Module {
     private Servo servo;
     private AnalogInput encoder;
 
+    //target angle of the module
+    private int targetAngle;
+
     Module(DcMotor motor, Servo servo, AnalogInput encoder, double zeroPosition) {
         this.motor = motor;
         this.servo = servo;
@@ -41,6 +44,7 @@ public class Module {
     private void setAngle(int targetAngle) {
         double servoPosition = swivelPID(angle(),(targetAngle));
         servo.setPosition(servoPosition);
+        this.targetAngle = targetAngle;
     }
 
     //set the velocity to the drive motor for the wheel
@@ -80,6 +84,7 @@ public class Module {
         int angleErrorOp;
         int targetOp = (targetAngle +180)%360;
 
+        this.targetAngle = targetAngle;
         angleError = (targetAngle - position);
         angleError -= (360*Math.floor(0.5+((angleError+0d)/360.0)));
 
@@ -135,5 +140,10 @@ public class Module {
             powerOut = PIDpower;
         }
         return powerOut;
+    }
+
+    // Get the target angle for unit testing
+    public int getTargeAngle() {
+        return targetAngle;
     }
 }
