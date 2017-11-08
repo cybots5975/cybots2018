@@ -15,9 +15,9 @@ import static java.lang.Math.sin;
  */
 
 public class SwerveDrive {
-    private Module D1, D2, P1, P2;
-    private DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
-    private IMU imu, imu2;
+    protected Module D1, D2, P1, P2;
+    protected DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
+    protected IMU imu, imu2;
 
     public SwerveDrive(IMU imuDS, IMU imuPS,
                        DcMotor FLMotor, Servo FLServo, AnalogInput FLSensor,
