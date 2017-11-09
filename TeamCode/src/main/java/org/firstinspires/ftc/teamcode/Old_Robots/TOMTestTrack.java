@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="TOM: TEST", group="TOM Teleop")
+@TeleOp(name="TOM: TEST", group="TOM")
 //@Disabled
 public class TOMTestTrack extends LinearOpMode {
 

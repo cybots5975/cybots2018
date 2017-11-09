@@ -50,14 +50,14 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="TOM: TeleopV2", group="TOM")
+@TeleOp(name="TOM: Demo", group="TOM")
 //@Disabled
-public class TOMTeleopV2 extends LinearOpMode {
+public class TOMDemo extends LinearOpMode {
 
-//Declare OpMode members.
+    //Declare OpMode members.
     HardwareTOM robot = new HardwareTOM(); // Use TOM hardware file
 
-//assorted variables
+    //assorted variables
     double  ballLiftCycle = 0; //keeps track of position of ball feed
     double  ballReverseCycle = 0; //start the reverse cycle count at 0
     double  reverseCycleCount = 8; //number of times to loop for ball lift reverse function
@@ -69,14 +69,14 @@ public class TOMTeleopV2 extends LinearOpMode {
     double detectTime = 0;
     double  shooterBoost = 0;
 
-//speed variables
+    //speed variables
     double  pos1 = 0;
     double  pos2 = 0;
     double  speed = 0;
     double  count = 0;
     double  power = 1;
 
-//shifter variables
+    //shifter variables
     double          rearInitial = .5; //this is the servo position for the rear shifter at the start of the match (sweep)
 
     double          rearShifted = 0; //this is the servo position for the rear shifter when shifted (lift)
@@ -84,15 +84,15 @@ public class TOMTeleopV2 extends LinearOpMode {
     double          middleInitial = .5; //this is the servo position for the middle shifter at the start of the match (4 motor drive)
     double          middleShifted = 0; //this is the servo position for the middle shifter when shifted (lift)
 
-//pixy track variables
+    //pixy track variables
     double          pixyCenter = 1.7; //this is the starting center value of our pixy (we can adjust this during the match if needed
     double          deadband = .02; //this variable adjusts how much the pixy can float back and forth for accuracy
     double          pixyMin = 0.22; //this is the minimum value that the pixy can return for range
     double          pixyMax = 3.8;  //this it the maximum value that the pixy can return for range
     int             xPosition; //this is the current commanded position of the turret to match pixy
 
-//turret varibles
-    int turretOffset = 1100; //starting offset of the turret position from center (autonomous ends at 1100
+    //turret varibles
+    int turretOffset = 0;//1100; //starting offset of the turret position from center (autonomous ends at 1100
     int turretLow = -3000-turretOffset; //this limits the turrets rotation in the counter-clockwise direction
     //-600
     int turretHigh = 2100-turretOffset; //this limits the turrets rotation in the clockwise direction
@@ -100,13 +100,13 @@ public class TOMTeleopV2 extends LinearOpMode {
     int turretPosition = 0-turretOffset; //this is the original value of the turret offset
     int turretInitPosition = 0; //has turret position been initialized
 
-//initial servo values
+    //initial servo values
     double pixyDown = .95; //pixy servo value for the down position to fit in 18 at start of match
     double pixyUp   = .5; //pixy servo value for the up position to be pointed at the goal
     double sensorAngle = 34.2; //was 25 previously; actually is 28.6
     double capBallPosition = .5; //position of cap ball servo
 
-//shooter distance variables
+    //shooter distance variables
     double velocity; //velocity of the shooting wheels
     double goalHypDistance; //hypotenuse distance to center goal (used for calculating trajectory)
     double angle; //angle of chute
@@ -120,7 +120,7 @@ public class TOMTeleopV2 extends LinearOpMode {
     //double chuteMin = .3; //minimum position of the chute
     //double chuteMax = .85; //maximum position of the chute
 
-//servo rack starting positions
+    //servo rack starting positions
     public double dsRack1_Min = 129;
     public double dsRack1_Max = 22; //y goes out
     public double dsRack2_Min = 174;
@@ -130,7 +130,7 @@ public class TOMTeleopV2 extends LinearOpMode {
     public double psRack2_Min = 157;
     public double psRack2_Max = 233; //a goes out
 
-//define sensors
+    //define sensors
     ModernRoboticsI2cGyro gyro = null; //gyro sensor used for turning
     ModernRoboticsI2cColorSensor lineColor = null; //bottom facing color sensor to detect lines
     ModernRoboticsI2cColorSensor lineColor2 = null; //used to detect ball color TODO: 3/12/17 update name to match function
@@ -140,23 +140,23 @@ public class TOMTeleopV2 extends LinearOpMode {
     ModernRoboticsI2cRangeSensor psRange1 = null;
     ModernRoboticsAnalogOpticalDistanceSensor dsODS1 = null; //mounted on bottom to detect line // TODO: 3/12/17 update name
 
-//time and loop variables
+    //time and loop variables
     double loopCount; //counts number of loops of program for lift switch
     private ElapsedTime runtime = new ElapsedTime(); //time
 
     @Override //init code
     public void runOpMode() {
-    //joystick varibles
+        //joystick varibles
         double left; //used for joystick to control driver side wheels
         double right; //used for joystick to control passenger side wheels
         double turn; //used for joystick to control robot turn
         double lift; //used for joystick to control lift
 
-    //Initialize the hardware variables.
-    //The init() method of the hardware class does all the work here
+        //Initialize the hardware variables.
+        //The init() method of the hardware class does all the work here
         robot.init(hardwareMap);
 
-    //Define Sensors
+        //Define Sensors
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
         lineColor = (ModernRoboticsI2cColorSensor)hardwareMap.colorSensor.get("lineColor");
@@ -184,7 +184,7 @@ public class TOMTeleopV2 extends LinearOpMode {
         AnalogInput ballLoad;
         ballLoad = hardwareMap.analogInput.get("ballLoad");
 
-    //Send telemetry message to signify robot waiting;
+        //Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
         telemetry.update();
 
@@ -210,7 +210,7 @@ public class TOMTeleopV2 extends LinearOpMode {
         telemetry.addData("-","Motor modes initialized");
         telemetry.update();
 
-    //Initialize options
+        //Initialize options
         int turretZeroed = 0;
         while (!isStopRequested() && turretZeroed==0) {
             if (gamepad1.left_stick_x > .5 || gamepad2.left_stick_x > .5) {
@@ -233,7 +233,7 @@ public class TOMTeleopV2 extends LinearOpMode {
             robot.turretMotor1.setPower(1);
             telemetry.addData("Turret Position",turretInitPosition);
 
-            if (gamepad1.left_stick_button || gamepad2.left_stick_button) {
+            if (true/*gamepad1.left_stick_button || gamepad2.left_stick_button*/) {
 
                 telemetry.addData("-","Turret initialized");
                 telemetry.update();
@@ -270,7 +270,7 @@ public class TOMTeleopV2 extends LinearOpMode {
 
         //if driver pressed a during the earlier loop, then initialize the robot during init period, otherwise, wait until teleop
         //initConfirm==1
-        while (!isStopRequested() && allianceColor==0) {
+/*        while (!isStopRequested() && allianceColor==0) {
             if (gamepad1.x||gamepad2.x) {
                 allianceColor = 2; //set alliance color to blue value
 
@@ -281,7 +281,9 @@ public class TOMTeleopV2 extends LinearOpMode {
                 allianceColor = 3; //set alliance color to none value
 
             }
-        }
+        }*/
+        allianceColor = 3;
+
         telemetry.addData("Alliance Side", allianceColor);
 
         if (!isStopRequested()) {
@@ -334,117 +336,33 @@ public class TOMTeleopV2 extends LinearOpMode {
 
                 initializedLoop = 1; //set loop to 1 after completeling initialization process once, so it doesn't repeat
             }
+            currentTime = runtime.seconds();
 
-        //set variables from joystick values
-            left = (ScaleInputDrive(gamepad1.left_stick_y)); //scale the left joystick value to the left variable for drive power
-            right = (ScaleInputDrive(gamepad1.right_stick_y)); //scale the right joystick value to the right variable for drive power
-            turn = (gamepad1.left_stick_x+gamepad1.right_stick_x)/2; //(experimental) turn robot if press joysticks sideways (average)
+            robot.dSweep.setPosition(1);
+            robot.pSweep.setPosition(0);
 
-            //if gamepad 2 hold a button combination for 10 loops (down later), then gamepad 2 controls the shifted motors for the lift
-            if (loopCount >= 2 ) {
-                lift = gamepad2.right_stick_y;
-                lift = Range.clip(lift, -1, 1);   //clip right driver power input to maximum of 1 and minimum of -1
-
-                robot.sweepMotor1.setPower(-lift);
-                robot.driveMotor2.setPower(-lift);
-                robot.passMotor2.setPower(-lift);
-                robot.passMotor1.setPower(left);
-                robot.driveMotor1.setPower(right);
-
-                if (gamepad2.dpad_up) {
-                    robot.capBall.setPosition(0); //pull cap ball in
-                } else if (gamepad2.dpad_down) {
-                    robot.capBall.setPosition(1); //push cap ball out
-                } else {
-                    robot.capBall.setPosition(.5); //push cap ball out
+            if (allianceColor==1) { //red alliance
+                if (robot.lineColor.blue()>blueBallValue) {
+                    detectTime = currentTime;
                 }
-
-            } else {
-                left = Range.clip(left, -1, 1); //clip left driver power input to maximum of 1 and minimum of -1
-                right = Range.clip(right, -1, 1); //clip right driver power input to maximum of 1 and minimum of -1
-                turn = Range.clip(turn, -1, 1);
-
-                if (gamepad1.right_stick_button) {
-                    left = .3;
-                    right = .4;
-                    moveRack(2,3.5);
+            } else if (allianceColor==2){
+                if (robot.lineColor.red() > redBallValue) {
+                    detectTime = currentTime;
                 }
-                if (gamepad1.left_stick_button) {
-                    left = -.3;
-                    right = -.4;
-                    moveRack(1,4.4);
-                }
-                currentTime = runtime.seconds();
+            }
 
-                robot.dSweep.setPosition(1);
-                robot.pSweep.setPosition(0);
-
-                if (allianceColor==1) { //red alliance
-                    if (robot.lineColor.blue()>blueBallValue) {
-                        detectTime = currentTime;
-                    }
-                } else if (allianceColor==2){
-                    if (robot.lineColor.red() > redBallValue) {
-                        detectTime = currentTime;
-                    }
-                }
-
-                if (gamepad2.left_trigger > .25) { //run this if the trigger is pulled
-                    if (currentTime<detectTime+ballRejectTime&&currentTime>2) {
-                        robot.sweepMotor1.setPower(-1);
-                    } else {
-                        robot.sweepMotor1.setPower(gamepad2.left_trigger);
-                    }
-                } else if (gamepad2.dpad_left && !gamepad2.left_stick_button && !gamepad2.right_stick_button) {
+            if (true) { //run this if the trigger is pulled
+                if (currentTime<detectTime+ballRejectTime&&currentTime>2) {
                     robot.sweepMotor1.setPower(-1);
                 } else {
-                    robot.sweepMotor1.setPower(0);
+                    robot.sweepMotor1.setPower(gamepad2.left_trigger);
                 }
-
-                if ((left>.85 || left<-.85) && (right>.85 || right <-.85)) {
-                    robot.driveMotor1.setPower(-left);
-                    robot.driveMotor2.setPower(-left);
-                    robot.passMotor1.setPower(-right);
-                    robot.passMotor2.setPower(-right);
-                } else if (gamepad1.left_trigger>.25) {
-                    robot.driveMotor1.setPower(-left);
-                    robot.driveMotor2.setPower(-left);
-                    robot.passMotor1.setPower(-right);
-                    robot.passMotor2.setPower(-right);
-                } else {
-                    robot.driveMotor1.setPower(-left*3/4);
-                    robot.driveMotor2.setPower(-left*3/4);
-                    robot.passMotor1.setPower(-right*3/4);
-                    robot.passMotor2.setPower(-right*3/4);
-                }
-            }
-
-            if (gamepad1.dpad_left) {
-
-            }
-            if (gamepad1.dpad_right) {
-
-            }
-
-            if (gamepad1.right_trigger>.25) {
-                moveRack(1, 4.4);
-                moveRack(2, 3.5);
+            } else if (gamepad2.dpad_left && !gamepad2.left_stick_button && !gamepad2.right_stick_button) {
+                robot.sweepMotor1.setPower(-1);
             } else {
-                if (gamepad1.left_bumper) {
-                    moveRack(1, 17);
-                    moveRack(3, 17);
-                } else {
-                    moveRack(1, 0);
-                    moveRack(3, 0);
-                }
-                if (gamepad1.right_bumper) {
-                    moveRack(2, 17);
-                    moveRack(4, 17);
-                } else {
-                    moveRack(2, 0);
-                    moveRack(4, 0);
-                }
+                robot.sweepMotor1.setPower(0);
             }
+
 
             if (gamepad2.dpad_right && !gamepad2.left_stick_button && !gamepad2.right_stick_button) {
                 robot.ballLift.setPosition(.5);
@@ -543,7 +461,7 @@ public class TOMTeleopV2 extends LinearOpMode {
 
             if (gamepad2.x||gamepad1.x) {
                 xPosition = -1000-turretOffset; //set turret to left position while x is pressed
-            } else if (gamepad2.y||gamepad1.y) {
+            } else if (true/*gamepad2.y||gamepad1.y*/) {
                 xPosition = 0-turretOffset; //set turret to front position while y is pressed
             } else if (gamepad2.b||gamepad1.b) {
                 xPosition = 1000-turretOffset; //set turret to right position while b is pressed
