@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -27,7 +27,7 @@ public class ExampleBlueVisionDemo extends OpMode {
 
     @Override
     public void loop() {
-        blueVision.setShowBlue(gamepad1.x);
+        blueVision.setShowBlue(true);
     }
 
     public void stop() {

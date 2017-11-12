@@ -88,6 +88,21 @@ public class SwerveDrive {
         D1.set(wa[3],ws[3]);
     }
 
+    public void setModuleAngle(int angle) {
+        double power = 0;
+        D1.set(angle,0);
+        D2.set(angle,0);
+        P1.set(angle,0);
+        P2.set(angle,0);
+    }
+
+    public void resetEncoders() {
+        FLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
     //used to zero all the modules when reset is needed
     private void zeroReset(boolean zeroReset){
         D1.zeroReset(zeroReset);

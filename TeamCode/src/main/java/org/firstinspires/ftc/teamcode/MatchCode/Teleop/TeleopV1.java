@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.General.Robot;
  * Created by kskrueger on 10/18/17.
  */
 
-@TeleOp(name="Test New Swerve", group="Swerve")
+@TeleOp(name="Teleop V1", group="1Swerve")
 //@Disabled
-public class TestNewSwerve extends  LinearOpMode {
+public class TeleopV1 extends  LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -21,6 +21,7 @@ public class TestNewSwerve extends  LinearOpMode {
 
     @Override
     public void runOpMode() {
+        robot.Vuforia = false;
         robot.init(hardwareMap);
 
         gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
@@ -42,7 +43,11 @@ public class TestNewSwerve extends  LinearOpMode {
 
             robot.drive.setEfficiency(true);
             robot.drive.RobotCentric(leftX,leftY,rightX,gamepad1.a);
-            //robot.intake.setAngle(3);
+            if (gamepad1.right_trigger>.1) {
+                robot.intake.setSpeed(gamepad1.right_trigger);
+            } else {
+                robot.intake.setSpeed(-gamepad1.left_trigger);
+            }
 
             telemetry.addData("Swerve Running","");
             telemetry.update();
