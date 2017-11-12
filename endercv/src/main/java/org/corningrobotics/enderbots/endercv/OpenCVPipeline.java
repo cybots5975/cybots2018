@@ -116,20 +116,20 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
     }
 
     /**
-     * The method that calls {@link #processFrame(Mat, Mat)}; there's little reason to override this, if ever.
+     //* The method that calls {@link #processFrame(Mat, Mat)}; there's little reason to override this, if ever.
      * @param inputFrame the input frame given by the internal JavaCameraView
-     * @return the result of {@link #processFrame(Mat, Mat)}
+     //* @return the result of {@link #processFrame(Mat, Mat)}
      */
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        return processFrame(inputFrame.rgba(), inputFrame.gray());
+        return processFrame(inputFrame.rgba());
     }
 
     /**
      * Override this with the main image processing logic. This is run every time the camera recieves a frame.
-     * @param rgba a {@link Mat} that is in RGBA format
-     * @param gray a {@link Mat} that is already grayscale
+     //* @param rgba a {@link Mat} that is in RGBA format
+     //* @param gray a {@link Mat} that is already grayscale
      * @return the Mat that should be displayed to the screen; in most cases one would probably just want to return rgba
      */
-    public abstract Mat processFrame(Mat rgba, Mat gray);
+    public abstract Mat processFrame(Mat frame);
 }
