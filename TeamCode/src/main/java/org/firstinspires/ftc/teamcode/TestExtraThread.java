@@ -36,8 +36,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Old_Swerve.HardwareSwerveV1;
-import org.firstinspires.ftc.teamcode.Old_Swerve.SwerveLinearBase;
+import org.firstinspires.ftc.teamcode.oldSwerve.HardwareSwerveV1;
+import org.firstinspires.ftc.teamcode.oldSwerve.SwerveLinearBase;
 
 
 @TeleOp(name="", group="Swerve")

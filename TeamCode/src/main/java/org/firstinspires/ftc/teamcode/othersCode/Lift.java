@@ -30,59 +30,78 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
+package org.firstinspires.ftc.teamcode.othersCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.oldSwerve.HardwareSwerveV1;
-import org.firstinspires.ftc.teamcode.oldSwerve.SwerveLinearBase;
-
-@TeleOp(name="Voltage Calibrate", group="Swerve")
+@TeleOp(name="Test Jack Lift", group="Jack")
 //@Disabled
-public class VoltageCalibrate extends SwerveLinearBase {
+public class Lift extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
+    public DcMotor lift1;
+    public DcMotor lift2;
+
+    public int liftPosition = 0;
+    public double liftPower = 0;
 
     @Override
     public void runOpMode() {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+        //robot.init(hardwareMap);
 
-        //Define and initialize ALL installed servos.
-        DServo1 = hardwareMap.servo.get("DS1"); //Driver Servo Front(1)
-        DServo2 = hardwareMap.servo.get("DS2"); //Driver Servo Back(2)
-        PServo1 = hardwareMap.servo.get("PS1"); //Pass Servo Front(1)
-        PServo2 = hardwareMap.servo.get("PS2"); //Pass Servo Back(2)*/
+        lift1 = hardwareMap.dcMotor.get("lift1");
+        lift2 = hardwareMap.dcMotor.get("lift2");
 
-        DServo1.setPosition(.5); //Set Driver Servo Front(1) to 0 power
-        DServo2.setPosition(.5); //Set Driver Servo Back(2) to 0 power
-        PServo1.setPosition(.5); //Set Pass Servo Front(1) to 0 power
-        PServo2.setPosition(.5); //Set Pass Servo Back(2) to 0 power
+        //set mode to run using position
+        lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        DSensor1 = hardwareMap.analogInput.get("DSe1");
-        DSensor2 = hardwareMap.analogInput.get("DSe2");
-        PSensor1 = hardwareMap.analogInput.get("PSe1");
-        PSensor2 = hardwareMap.analogInput.get("PSe2");
+        //reset encoders to 0 during init
+        lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("DS1",DSensor1.getVoltage());
-            telemetry.addData("DS2",DSensor2.getVoltage());
-            telemetry.addData("PS1",PSensor1.getVoltage());
-            telemetry.addData("PS2",PSensor2.getVoltage());
-            telemetry.update();
 
+            if (gamepad1.left_trigger > 0.1) {
+                //increment the liftPosition variable
+                liftPosition += 10; //adjust this number based on if you want it to increment faster or slower (requires physical testing)
+                liftPower=1; //set lift power variable
+
+            } else if (gamepad1.left_bumper) {
+                //increment the liftPosition variable
+                liftPosition -= 10; //adjust this number based on if you want it to increment faster or slower (requires physical testing)
+                liftPower = -.35;
+
+            } else if (gamepad1.dpad_up) {
+                liftPosition = 0; //run to position 0
+                liftPower = 1; //set lift power for run to position 0
+
+            } else {
+                liftPosition = (lift1.getCurrentPosition()+lift2.getCurrentPosition())/2;
+            }
+
+            //set position to liftPosition variable
+            lift1.setTargetPosition(liftPosition);
+            lift2.setTargetPosition(liftPosition);
+
+            //set motors to power for lifting
+            lift1.setPower(liftPower);
+            lift2.setPower(liftPower);
 
 
             // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-            robot.waitForTick(40);
+            //robot.waitForTick(40);
         }
     }
+
 
 }

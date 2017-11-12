@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.General.Constants;
-import org.firstinspires.ftc.teamcode.Sensors.IMU;
+import org.firstinspires.ftc.teamcode.general.Constants;
+import org.firstinspires.ftc.teamcode.sensors.IMU;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;

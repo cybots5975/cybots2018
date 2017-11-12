@@ -30,19 +30,26 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
+package org.firstinspires.ftc.teamcode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.oldSwerve.HardwareSwerveV1;
-import org.firstinspires.ftc.teamcode.oldSwerve.SwerveLinearBase;
 
-@TeleOp(name="Voltage Calibrate", group="Swerve")
+@TeleOp(name="Test Analog Sensor", group="Swerve")
 //@Disabled
-public class VoltageCalibrate extends SwerveLinearBase {
+public class TestAnalogSensor extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
+
+    //Swerve Drivebase Servos
+    public Servo    DServo1 = null; //Driver ServoFront (1)
+
+    //Swerve Drivebase Encoders
 
     @Override
     public void runOpMode() {
@@ -51,31 +58,16 @@ public class VoltageCalibrate extends SwerveLinearBase {
          */
         robot.init(hardwareMap);
 
-        //Define and initialize ALL installed servos.
-        DServo1 = hardwareMap.servo.get("DS1"); //Driver Servo Front(1)
-        DServo2 = hardwareMap.servo.get("DS2"); //Driver Servo Back(2)
-        PServo1 = hardwareMap.servo.get("PS1"); //Pass Servo Front(1)
-        PServo2 = hardwareMap.servo.get("PS2"); //Pass Servo Back(2)*/
-
-        DServo1.setPosition(.5); //Set Driver Servo Front(1) to 0 power
-        DServo2.setPosition(.5); //Set Driver Servo Back(2) to 0 power
-        PServo1.setPosition(.5); //Set Pass Servo Front(1) to 0 power
-        PServo2.setPosition(.5); //Set Pass Servo Back(2) to 0 power
-
+        AnalogInput DSensor1;
         DSensor1 = hardwareMap.analogInput.get("DSe1");
-        DSensor2 = hardwareMap.analogInput.get("DSe2");
-        PSensor1 = hardwareMap.analogInput.get("PSe1");
-        PSensor2 = hardwareMap.analogInput.get("PSe2");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("DS1",DSensor1.getVoltage());
-            telemetry.addData("DS2",DSensor2.getVoltage());
-            telemetry.addData("PS1",PSensor1.getVoltage());
-            telemetry.addData("PS2",PSensor2.getVoltage());
+
+            telemetry.addData("Volt",DSensor1.getVoltage());
             telemetry.update();
 
 
@@ -84,5 +76,4 @@ public class VoltageCalibrate extends SwerveLinearBase {
             robot.waitForTick(40);
         }
     }
-
 }
