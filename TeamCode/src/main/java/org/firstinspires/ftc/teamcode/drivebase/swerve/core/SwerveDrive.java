@@ -7,6 +7,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.general.Constants;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
 
+import org.firstinspires.ftc.teamcode.logging.ArrayLogging;
+
+import java.io.IOException;
+
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -18,6 +22,10 @@ public class SwerveDrive {
     private Module D1, D2, P1, P2;
     private DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
     private IMU imu, imu2;
+    private ArrayLogging log = new ArrayLogging(32,10000);
+    public int count;
+    public boolean done = false;
+    boolean doa = false;
 
     public SwerveDrive(IMU imuDS, IMU imuPS,
                        DcMotor FLMotor, Servo FLServo, AnalogInput FLSensor,
@@ -41,6 +49,45 @@ public class SwerveDrive {
         P2 = new Module(BRMotor,BRServo,BRSensor, Constants.BR_OFFSET); //passenger side module 2
 
         previousError = 0;
+
+        log.storeValue(0,0,"Count #");
+        log.storeValue(1,0,"Y JoyStick");
+        log.storeValue(2,0,"X JoyStick");
+        log.storeValue(3,0,"Turn JoyStick");
+
+        log.storeValue(4,0,"D1 Math Speed");
+        log.storeValue(5,0,"D2 Math Speed");
+        log.storeValue(6,0,"P1 Math Speed");
+        log.storeValue(7,0,"P2 Math Speed");
+
+        log.storeValue(8,0,"D1 Math Angle");
+        log.storeValue(9,0,"D2 Math Angle");
+        log.storeValue(10,0,"P1 Math Angle");
+        log.storeValue(11,0,"P2 Math Angle");
+
+        log.storeValue(12,0,"D1 Angle");
+        log.storeValue(13,0,"D1 Reverse");
+        log.storeValue(14,0,"D1 angleError");
+        log.storeValue(15,0,"D1 angleErrorOp");
+        log.storeValue(16,0,"D1 targetOp");
+
+        log.storeValue(17,0,"D2 Angle");
+        log.storeValue(18,0,"D2 Reverse");
+        log.storeValue(19,0,"D2 angleError");
+        log.storeValue(20,0,"D2 angleErrorOp");
+        log.storeValue(21,0,"D2 targetOp");
+
+        log.storeValue(22,0,"P1 Angle");
+        log.storeValue(23,0,"P1 Reverse");
+        log.storeValue(24,0,"P1 angleError");
+        log.storeValue(25,0,"P1 angleErrorOp");
+        log.storeValue(26,0,"P1 targetOp");
+
+        log.storeValue(27,0,"P2 Angle");
+        log.storeValue(28,0,"P2 Reverse");
+        log.storeValue(29,0,"P2 angleError");
+        log.storeValue(30,0,"P2 angleErrorOp");
+        log.storeValue(31,0,"P2 targetOp");
     }
 
     //RobotCentric is one method of driving the swerve drive robot
@@ -162,7 +209,7 @@ public class SwerveDrive {
 
     double PID (double kP, double kI, double kD, int dt, int targetValue, int position) {
         int angleError = (targetValue - position);
-        angleError -= (360*Math.floor(0.5+((angleError +0d)/360.0)));
+        angleError -= (360*Math.floor(0.5+(((double)angleError)/360.0)));
 
         int error = angleError;
 
@@ -179,6 +226,99 @@ public class SwerveDrive {
     private double getAvgHeading() {
         double angle = ((imu.getHeading(90)+imu2.getHeading(90))/2)%360;
         return angle;
+    }
+
+    public void RobotCentricLOG (double strafe, double forward, double theta, boolean zeroReset) throws IOException {
+        final double length = 13.25; //length between axles
+        final double width = 15.5; //width between axles
+
+        double radius = Math.hypot(length,width); //find the radius between of the drivebase
+
+        //calculate the 4 variables to be used for calculating the module wheel speeds and angles
+        double a = strafe - theta * (length / radius);
+        double b = strafe + theta * (length / radius);
+        double c = forward - theta * (width / radius);
+        double d = forward + theta * (width / radius);
+
+        //store wheel speeds to an array for each speed
+        double[] ws = new double[4];
+        ws[0] = Math.hypot(a, d);
+        ws[1] = Math.hypot(a, c);
+        ws[2] = Math.hypot(b, d);
+        ws[3] = Math.hypot(b, c);
+
+        //store wheel module angles to an array for each angle
+        double[] wa = new double[4];
+        wa[0] = Math.atan2(a, d) / Math.PI * 180 - 180;
+        wa[1] = Math.atan2(a, c) / Math.PI * 180 - 180;
+        wa[2] = Math.atan2(b, d) / Math.PI * 180 + 180;
+        wa[3] = Math.atan2(b, c) / Math.PI * 180 + 180;
+
+        //find the maximum speed value over 1 and scale all the other speeds down to to be under 1
+        final double maxWheelSpeed = Math.max(Math.max(ws[0], ws[1]), Math.max(ws[2], ws[3]));
+        if (maxWheelSpeed > 1.0) {
+            for (int i = 0; i < 4; i++) {
+                ws[i] /= maxWheelSpeed;
+            }
+        }
+
+        zeroReset(zeroReset); //used to override the wheel angles to 0 when needed to reset
+
+        //set the angle and speed to all 4 modules
+        P2.set(wa[0],ws[0]);
+        D2.set(wa[1],ws[1]);
+        P1.set(wa[2],ws[2]);
+        D1.set(wa[3],ws[3]);
+
+        count += 1;
+
+        log.storeValueInt(0,count,count);
+        log.storeValueInt(1,count,forward);
+        log.storeValueInt(2,count,strafe);
+        log.storeValueInt(3,count,theta);
+
+        log.storeValueInt(4,count,ws[3]);
+        log.storeValueInt(5,count,ws[2]);
+        log.storeValueInt(6,count,ws[1]);
+        log.storeValueInt(7,count,ws[0]);
+
+        log.storeValueInt(8,count,wa[3]);
+        log.storeValueInt(9,count,wa[2]);
+        log.storeValueInt(10,count,wa[1]);
+        log.storeValueInt(11,count,wa[0]);
+
+        log.storeValueInt(12,count,D1.angle());
+        log.storeValueInt(13,count,D1.reverse);
+        log.storeValueInt(14,count,D1.angleError);
+        log.storeValueInt(15,count,D1.angleErrorOp);
+        log.storeValueInt(16,count,D1.targetOp);
+
+        log.storeValueInt(17,count,D2.angle());
+        log.storeValueInt(18,count,D2.reverse);
+        log.storeValueInt(19,count,D2.angleError);
+        log.storeValueInt(20,count,D2.angleErrorOp);
+        log.storeValueInt(21,count,D2.targetOp);
+
+        log.storeValueInt(22,count,P1.angle());
+        log.storeValueInt(23,count,P1.reverse);
+        log.storeValueInt(24,count,P1.angleError);
+        log.storeValueInt(25,count,P1.angleErrorOp);
+        log.storeValueInt(26,count,P1.targetOp);
+
+        log.storeValueInt(27,count,P2.angle());
+        log.storeValueInt(28,count,P2.reverse);
+        log.storeValueInt(29,count,P2.angleError);
+        log.storeValueInt(30,count,P2.angleErrorOp);
+        log.storeValueInt(31,count,P2.targetOp);
+
+        if (doa&&!done) {
+            log.log();
+            done = true;
+        }
+    }
+
+    public void a (boolean value) {
+        doa = value;
     }
 
 }

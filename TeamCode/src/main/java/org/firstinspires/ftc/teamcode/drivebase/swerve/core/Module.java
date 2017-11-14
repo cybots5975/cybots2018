@@ -11,11 +11,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Module {
     //PID loop Variables
     private int integral = 0;
-    private int error;
+    public int error;
     private int previousError = 0;
 
     private double zeroPosition;
-    private int reverse;
+    public int reverse;
     private boolean zeroReset;
     private boolean efficiency = true;
 
@@ -49,7 +49,7 @@ public class Module {
     }
 
     //find the current angle of the encoder
-    private int angle() {
+    public int angle() {
         double maxVolt = 2.06;
         double angle = ((encoder.getVoltage()-zeroPosition)/ maxVolt)*360;
         if (angle<0) {
@@ -73,12 +73,15 @@ public class Module {
         this.efficiency = efficiency;
     }
 
+
+    public int angleError;
+    public int angleErrorOp;
+    public int targetOp;
+
     //reverse180 calculates the error (difference) from the current angle to the the target angle...
     //...it also finds the opposite angle (180° offset) to see if it is colser for the module to rotate to
     private int reverse180(int targetAngle, int position) {
-        int angleError;
-        int angleErrorOp;
-        int targetOp = (targetAngle +180)%360;
+        targetOp = (targetAngle +180)%360;
 
         angleError = (targetAngle - position);
         angleError -= (360*Math.floor(0.5+((angleError+0d)/360.0)));
