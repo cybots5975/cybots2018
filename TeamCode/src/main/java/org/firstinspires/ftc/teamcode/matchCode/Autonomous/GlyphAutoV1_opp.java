@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.general.Robot;
  * Created by kskrueger on 10/22/17.
  */
 
-@Autonomous(name="Test Glyph Auto OPP", group="Swerve")
+@Autonomous(name="Test Glyph Auto RED", group="Swerve")
 public class GlyphAutoV1_opp extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -33,9 +33,9 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
         while (!isStarted()&&!isStopRequested()) {
             robot.drive.setEfficiency(false);
-            robot.drive.setModuleAngle(-90);
-            telemetry.addData("VuMark",robot.VuMark1.scan());
-            if (robot.VuMark1.scan()==RelicRecoveryVuMark.UNKNOWN) {
+            robot.drive.holdModuleAngle(90);
+            telemetry.addData("VuMark",robot.VuMark1.scan().toString());
+            if (robot.VuMark1.scan().equals(RelicRecoveryVuMark.UNKNOWN)) {
                 VuMark = RelicRecoveryVuMark.CENTER;
             } else {
                 VuMark = robot.VuMark1.scan();
@@ -83,9 +83,9 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                     robot.drive.RobotCentric(0, .15, 0, false);
                 }
 
-                pause(5, true);
-
                 robot.intake.setSpeed(0);
+                pause(2, true);
+
 
                 loop = false;
             }

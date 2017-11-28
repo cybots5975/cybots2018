@@ -5,13 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
 
 /**
  * Created by kskrueger on 10/22/17.
  */
 
-@Autonomous(name="Test Glyph Auto", group="Swerve")
+@Autonomous(name="Test Glyph Auto BLUE", group="Swerve")
 public class GlyphAutoV1 extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -33,9 +34,9 @@ public class GlyphAutoV1 extends LinearOpMode{
 
         while (!isStarted()&&!isStopRequested()) {
             robot.drive.setEfficiency(false);
-            robot.drive.setModuleAngle(90);
-            telemetry.addData("VuMark",robot.VuMark1.scan());
-            if (robot.VuMark1.scan()==RelicRecoveryVuMark.UNKNOWN) {
+            robot.drive.holdModuleAngle(90);
+            telemetry.addData("VuMark",robot.VuMark1.scan().toString());
+            if (robot.VuMark1.scan().equals(RelicRecoveryVuMark.UNKNOWN)) {
                 VuMark = RelicRecoveryVuMark.CENTER;
             } else {
                 VuMark = robot.VuMark1.scan();
@@ -44,6 +45,7 @@ public class GlyphAutoV1 extends LinearOpMode{
             telemetry.update();
         }
 
+        AutoTransitioner.transitionOnStop(this, "Teleop V1");
         waitForStart();
         if (isStarted()) {
             while(opModeIsActive()&&loop&&!isStopRequested()) {
@@ -72,10 +74,12 @@ public class GlyphAutoV1 extends LinearOpMode{
                     robot.drive.RobotCentric(-.15, 0, 0, false);
                 }
 
+                //robot.drive.holdModuleAngle(90); todo try this later and remove timer hack
                 pause(3, true);
 
                 robot.intake.setSpeed(-.5);
 
+                //robot.drive.holdModuleAngle(0); todo here too
                 pause(2,true);
 
                 runtime.reset();
@@ -83,9 +87,9 @@ public class GlyphAutoV1 extends LinearOpMode{
                     robot.drive.RobotCentric(0, .15, 0, false);
                 }
 
-                pause(5, true);
-
                 robot.intake.setSpeed(0);
+                pause(2, true);
+
 
                 loop = false;
             }
