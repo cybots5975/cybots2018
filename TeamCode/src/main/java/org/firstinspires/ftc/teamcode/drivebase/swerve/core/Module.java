@@ -19,6 +19,10 @@ public class Module {
     private boolean zeroReset;
     private boolean efficiency = true;
 
+    private int holdPosition;
+
+    private boolean hold = false;
+
     //define the motor, servo, and encoders
     private DcMotor motor;
     private Servo servo;
@@ -33,6 +37,7 @@ public class Module {
 
     //sets the angle and speed to the module
     void set(double angle, double speed) {
+        holdPosition = 0;
         setAngle((int)angle);
         setVelocity(reverse*speed);
     }
@@ -58,6 +63,11 @@ public class Module {
         return (int)angle;
     }
 
+    public void holdAngle (int angle) {
+        holdPosition = angle;
+        setAngle(holdPosition);
+    }
+
     //convert the angle of the module to radians
     private double angleRadians() {
         return Math.toRadians(angle());
@@ -74,9 +84,9 @@ public class Module {
     }
 
 
-    public int angleError;
-    public int angleErrorOp;
-    public int targetOp;
+    int angleError;
+    int angleErrorOp;
+    int targetOp;
 
     //reverse180 calculates the error (difference) from the current angle to the the target angle...
     //...it also finds the opposite angle (180° offset) to see if it is colser for the module to rotate to

@@ -43,51 +43,14 @@ public class SwerveDrive {
         this.imu2 = imuPS;
 
         //define the 4 swerve drive modules with motor,servo,encoder sensor,and starting voltage
-        D1 = new Module(FLMotor,FLServo,FLSensor, Constants.FL_OFFSET); //driver side module 1  ----Constants.FL_OFFSET
+        D1 = new Module(FLMotor,FLServo,FLSensor, Constants.FL_OFFSET); //driver side module 1
         D2 = new Module(BLMotor,BLServo,BLSensor,Constants.BL_OFFSET); //driver side module 2
         P1 = new Module(FRMotor,FRServo,FRSensor,Constants.FR_OFFSET); //passenger side module 1
         P2 = new Module(BRMotor,BRServo,BRSensor, Constants.BR_OFFSET); //passenger side module 2
 
         previousError = 0;
 
-        log.storeValue(0,0,"Count #");
-        log.storeValue(1,0,"Y JoyStick");
-        log.storeValue(2,0,"X JoyStick");
-        log.storeValue(3,0,"Turn JoyStick");
-
-        log.storeValue(4,0,"D1 Math Speed");
-        log.storeValue(5,0,"D2 Math Speed");
-        log.storeValue(6,0,"P1 Math Speed");
-        log.storeValue(7,0,"P2 Math Speed");
-
-        log.storeValue(8,0,"D1 Math Angle");
-        log.storeValue(9,0,"D2 Math Angle");
-        log.storeValue(10,0,"P1 Math Angle");
-        log.storeValue(11,0,"P2 Math Angle");
-
-        log.storeValue(12,0,"D1 Angle");
-        log.storeValue(13,0,"D1 Reverse");
-        log.storeValue(14,0,"D1 angleError");
-        log.storeValue(15,0,"D1 angleErrorOp");
-        log.storeValue(16,0,"D1 targetOp");
-
-        log.storeValue(17,0,"D2 Angle");
-        log.storeValue(18,0,"D2 Reverse");
-        log.storeValue(19,0,"D2 angleError");
-        log.storeValue(20,0,"D2 angleErrorOp");
-        log.storeValue(21,0,"D2 targetOp");
-
-        log.storeValue(22,0,"P1 Angle");
-        log.storeValue(23,0,"P1 Reverse");
-        log.storeValue(24,0,"P1 angleError");
-        log.storeValue(25,0,"P1 angleErrorOp");
-        log.storeValue(26,0,"P1 targetOp");
-
-        log.storeValue(27,0,"P2 Angle");
-        log.storeValue(28,0,"P2 Reverse");
-        log.storeValue(29,0,"P2 angleError");
-        log.storeValue(30,0,"P2 angleErrorOp");
-        log.storeValue(31,0,"P2 targetOp");
+        initializeLogging();
     }
 
     //RobotCentric is one method of driving the swerve drive robot
@@ -135,12 +98,12 @@ public class SwerveDrive {
         D1.set(wa[3],ws[3]);
     }
 
-    public void setModuleAngle(int angle) {
+    public void holdModuleAngle(int angle) {
         double power = 0;
-        D1.set(angle,0);
-        D2.set(angle,0);
-        P1.set(angle,0);
-        P2.set(angle,0);
+        D1.holdAngle(angle);
+        D2.holdAngle(angle);
+        P1.holdAngle(angle);
+        P2.holdAngle(angle);
     }
 
     public void resetEncoders() {
@@ -224,8 +187,7 @@ public class SwerveDrive {
 
     //Calculate the average heading of the 2 absolute orientation sensors on the robot
     private double getAvgHeading() {
-        double angle = ((imu.getHeading(90)+imu2.getHeading(90))/2)%360;
-        return angle;
+        return ((imu.getHeading(90)+imu2.getHeading(90))/2)%360;
     }
 
     public void RobotCentricLOG (double strafe, double forward, double theta, boolean zeroReset) throws IOException {
@@ -270,6 +232,60 @@ public class SwerveDrive {
         P1.set(wa[2],ws[2]);
         D1.set(wa[3],ws[3]);
 
+        log(forward,strafe,theta,ws,wa);
+
+        if (doa&&!done) {
+            log.log();
+            done = true;
+        }
+    }
+
+    public void a (boolean value) {
+        doa = value;
+    }
+
+    private void initializeLogging () {
+        log.storeValue(0, 0, "Count #");
+        log.storeValue(1, 0, "Y JoyStick");
+        log.storeValue(2, 0, "X JoyStick");
+        log.storeValue(3, 0, "Turn JoyStick");
+
+        log.storeValue(4, 0, "D1 Math Speed");
+        log.storeValue(5, 0, "D2 Math Speed");
+        log.storeValue(6, 0, "P1 Math Speed");
+        log.storeValue(7, 0, "P2 Math Speed");
+
+        log.storeValue(8, 0, "D1 Math Angle");
+        log.storeValue(9, 0, "D2 Math Angle");
+        log.storeValue(10, 0, "P1 Math Angle");
+        log.storeValue(11, 0, "P2 Math Angle");
+
+        log.storeValue(12, 0, "D1 Angle");
+        log.storeValue(13, 0, "D1 Reverse");
+        log.storeValue(14, 0, "D1 angleError");
+        log.storeValue(15, 0, "D1 angleErrorOp");
+        log.storeValue(16, 0, "D1 targetOp");
+
+        log.storeValue(17, 0, "D2 Angle");
+        log.storeValue(18, 0, "D2 Reverse");
+        log.storeValue(19, 0, "D2 angleError");
+        log.storeValue(20, 0, "D2 angleErrorOp");
+        log.storeValue(21, 0, "D2 targetOp");
+
+        log.storeValue(22, 0, "P1 Angle");
+        log.storeValue(23, 0, "P1 Reverse");
+        log.storeValue(24, 0, "P1 angleError");
+        log.storeValue(25, 0, "P1 angleErrorOp");
+        log.storeValue(26, 0, "P1 targetOp");
+
+        log.storeValue(27, 0, "P2 Angle");
+        log.storeValue(28, 0, "P2 Reverse");
+        log.storeValue(29, 0, "P2 angleError");
+        log.storeValue(30, 0, "P2 angleErrorOp");
+        log.storeValue(31, 0, "P2 targetOp");
+    }
+
+    public void log (double forward,double strafe,double theta, double[] ws, double[] wa) {
         count += 1;
 
         log.storeValueInt(0,count,count);
@@ -310,28 +326,6 @@ public class SwerveDrive {
         log.storeValueInt(29,count,P2.angleError);
         log.storeValueInt(30,count,P2.angleErrorOp);
         log.storeValueInt(31,count,P2.targetOp);
-
-        if (doa&&!done) {
-            log.log();
-            done = true;
-        }
-    }
-
-    public void a (boolean value) {
-        doa = value;
     }
 
 }
-
-/*    private void initIMU(HardwareMap hwMap, BNO055IMU imu, String name){
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        imu = hwMap.get(BNO055IMU.class, name);
-        imu.initialize(parameters);
-    }*/
