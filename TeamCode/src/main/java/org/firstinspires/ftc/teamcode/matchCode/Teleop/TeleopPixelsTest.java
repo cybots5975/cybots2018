@@ -32,26 +32,35 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
+import org.firstinspires.ftc.teamcode.general.DotStarStrip;
 import org.firstinspires.ftc.teamcode.general.Robot;
 
-@TeleOp(name="Template", group="Template")
-@Disabled
-public class TeleopTemplate extends LinearOpMode {
+@TeleOp(name = "Pixels Testing", group = "Testing")
+//@Disabled
+public class TeleopPixelsTest extends LinearOpMode {
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
 
     @Override
     public void runOpMode() {
+        DigitalChannel dataPin;
+        DigitalChannel clockPin;
 
+        dataPin = hardwareMap.digitalChannel.get("dP");
+        clockPin = hardwareMap.digitalChannel.get("cP");
+
+        DotStarStrip strip = new DotStarStrip(dataPin,clockPin,4);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            strip.setBrightness(.5);
+            strip.updateStrip();
 
             telemetry.update();
         }
