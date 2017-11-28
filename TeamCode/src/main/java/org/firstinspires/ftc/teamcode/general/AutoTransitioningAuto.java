@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.general;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,7 +13,7 @@ public class AutoTransitioningAuto extends LinearOpMode {
         telemetry.update();
 
 
-        AutoTransitioner.transitionOnStop(this, "Robot Teleop");
+        AutoTransitioner.transitionOnStop(this, "Teleop V1");
         // AutoTransitioner used before waitForStart()
         waitForStart();
 

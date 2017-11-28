@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.general;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -9,7 +9,7 @@ public class AutoTransitioningAuto2 extends OpMode {
     public void init() {
         telemetry.addData("Initializing Here", true);
 
-        AutoTransitioner.transitionOnStop(this, "Robot Teleop");
+        AutoTransitioner.transitionOnStop(this, "Teleop V1");
         // AutoTransitioner used in init()
     }
 
