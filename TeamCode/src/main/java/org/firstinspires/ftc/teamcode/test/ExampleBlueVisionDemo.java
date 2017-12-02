@@ -28,6 +28,9 @@ public class ExampleBlueVisionDemo extends OpMode {
     @Override
     public void loop() {
         blueVision.setShowBlue(true);
+        telemetry.addData("Running","");
+        telemetry.addData("Order",blueVision.order);
+        telemetry.update();
     }
 
     public void stop() {

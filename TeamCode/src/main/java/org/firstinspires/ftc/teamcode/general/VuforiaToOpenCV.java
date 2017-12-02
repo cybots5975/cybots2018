@@ -1,19 +1,31 @@
 package org.firstinspires.ftc.teamcode.general;
 
+import android.graphics.Bitmap;
+
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+
 /**
  * Created by kskrueger on 11/15/17.
  */
 
 public class VuforiaToOpenCV {
+    VuforiaLocalizer vuforia;
 
-    /*public Mat readFrame() {
+    public Mat readFrame() {
         VuforiaLocalizer.CloseableFrame frame;
         Image rgb = null;
         try {
 // grab the last frame pushed onto the queue
             frame = vuforia.getFrameQueue().take();
         } catch (InterruptedException e) {
-            Log.d(LOG_TAG, "Problem taking frame off Vuforia queue");
+            //Log.d(LOG_TAG, "Problem taking frame off Vuforia queue");
             e.printStackTrace();
             return null;
         }
@@ -27,7 +39,7 @@ public class VuforiaToOpenCV {
             }
         }
         if(rgb == null) {
-            Log.d(LOG_TAG, "Image format not found");
+            //Log.d(LOG_TAG, "Image format not found");
             return null;
         }
 // create a new bitmap and copy the byte buffer returned by rgb.getPixels() to it
@@ -39,7 +51,7 @@ public class VuforiaToOpenCV {
 // convert to BGR before returning
         Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2BGR);
         frame.close();
-        Log.d(LOG_TAG, "Frame closed");
+        //Log.d(LOG_TAG, "Frame closed");
         return mat;
-    }*/
+    }
 }
