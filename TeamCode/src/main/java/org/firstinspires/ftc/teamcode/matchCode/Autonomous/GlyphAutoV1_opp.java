@@ -68,28 +68,31 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
                 blueVision.setShowBlue(true);
 
-                GlyphAutoV1.order jewelOrder;
+                order jewelOrder;
 
-                if (blueVision.order.equals("Blue,Red")) {
-                    jewelOrder = GlyphAutoV1.order.blueFirst;
+                /*if (blueVision.order.equals("Blue,Red")) {
+                    jewelOrder = order.blueFirst;
                     telemetry.addData("Order",jewelOrder.toString());
                 } else {
-                    jewelOrder = GlyphAutoV1.order.redFirst;
+                    jewelOrder = order.redFirst;
                     telemetry.addData("Order",jewelOrder.toString());
-                }
+                }*/
 
                 double jewelTime = 0;
 
                 robot.drive.setEfficiency(false);
                 pause(1.5,false);
 
-                switch (jewelOrder) {
+                switch (ExampleBlueVision.jewelsOrder) {
                     case redFirst:
                         robot.drive.setEfficiency(true);
                         runtime.reset();
-                        jewelTime = .3;
-                        while (runtime.seconds() < .4) {
+                        jewelTime = .4;
+                        while (runtime.seconds() < .5) {
+                            //////////////
                             robot.drive.RobotCentric(-.1, 0, 0, false);
+                            telemetry.addData("Red jewel","stop");
+                            telemetry.update();
                         }
                         robot.drive.RobotCentric(0,.001,0,false);
                         robot.drive.setEfficiency(false);
@@ -100,7 +103,10 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                         runtime.reset();
                         jewelTime = -.5;
                         while (runtime.seconds() < .3) {
+                            /////////////
                             robot.drive.RobotCentric(.1, 0, 0, false);
+                            telemetry.addData("Blue jewel","stop");
+                            telemetry.update();
                         }
                         robot.drive.RobotCentric(0,.001,0,false);
                         robot.drive.setEfficiency(false);
@@ -154,6 +160,9 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                 }
 
                 robot.intake.setSpeed(0);
+
+                blueVision.setShowBlue(false);
+                blueVision.disable();
 
                 loop = false;
             }

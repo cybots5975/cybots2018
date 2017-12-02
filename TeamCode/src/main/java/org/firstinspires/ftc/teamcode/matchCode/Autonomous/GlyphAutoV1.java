@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
 import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
 
@@ -54,11 +53,11 @@ public class GlyphAutoV1 extends LinearOpMode{
             telemetry.update();
         }
 
-        AutoTransitioner.transitionOnStop(this, "Teleop V1");
-        waitForStart();
         robot.VuMark1.close();
+        waitForStart();
         if (isStarted()) {
             while(opModeIsActive()&&loop&&!isStopRequested()) {
+                robot.JewelArm.setPosition(1);
                 blueVision = new ExampleBlueVision();
                 // can replace with ActivityViewDisplay.getInstance() for fullscreen
                 blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
@@ -68,35 +67,52 @@ public class GlyphAutoV1 extends LinearOpMode{
 
                 blueVision.setShowBlue(true);
 
-                order jewelOrder;
+                GlyphAutoV1.order jewelOrder;
 
                 if (blueVision.order.equals("Blue,Red")) {
-                    jewelOrder = order.blueFirst;
+                    jewelOrder = GlyphAutoV1.order.blueFirst;
                     telemetry.addData("Order",jewelOrder.toString());
                 } else {
-                    jewelOrder = order.redFirst;
+                    jewelOrder = GlyphAutoV1.order.redFirst;
                     telemetry.addData("Order",jewelOrder.toString());
                 }
+
+                double jewelTime = 0;
 
                 robot.drive.setEfficiency(false);
                 pause(1.5,false);
 
-                switch (jewelOrder) {
+                switch (ExampleBlueVision.jewelsOrder) {
                     case redFirst:
+                        robot.drive.setEfficiency(true);
                         runtime.reset();
-                        while (runtime.seconds() < .2) {
+                        jewelTime = .4;
+                        while (runtime.seconds() < .5) {
                             robot.drive.RobotCentric(-.1, 0, 0, false);
+                            telemetry.addData("Red jewel","stop");
+                            telemetry.update();
                         }
-                        robot.drive.RobotCentric(0,0,0,false);
+                        robot.drive.RobotCentric(0,.001,0,false);
+                        robot.drive.setEfficiency(false);
+                        robot.JewelArm.setPosition(0);
                         break;
                     case blueFirst:
+                        robot.drive.setEfficiency(true);
                         runtime.reset();
-                        while (runtime.seconds() < .2) {
+                        jewelTime = -.5;
+                        while (runtime.seconds() < .3) {
                             robot.drive.RobotCentric(.1, 0, 0, false);
+                            telemetry.addData("Blue jewel","stop");
+                            telemetry.update();
                         }
-                        robot.drive.RobotCentric(0,0,0,false);
+                        robot.drive.RobotCentric(0,.001,0,false);
+                        robot.drive.setEfficiency(false);
+                        robot.JewelArm.setPosition(0);
                         break;
                 }
+
+                robot.drive.setEfficiency(false);
+                pause(1.5,false);
 
                 //robot.drive.resetEncoders();
 
@@ -133,8 +149,16 @@ public class GlyphAutoV1 extends LinearOpMode{
                     robot.drive.RobotCentric(0, .15, 0, false);
                 }
 
-                robot.intake.setSpeed(0);
                 pause(2, true);
+
+                robot.drive.setEfficiency(true);
+
+                runtime.reset();
+                while (runtime.seconds() < 1) {
+                    robot.drive.RobotCentric(0, -.15, 0, false);
+                }
+
+                robot.intake.setSpeed(0);
 
                 blueVision.setShowBlue(false);
                 blueVision.disable();

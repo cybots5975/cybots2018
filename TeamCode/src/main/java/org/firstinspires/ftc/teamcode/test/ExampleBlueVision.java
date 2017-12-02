@@ -29,7 +29,12 @@ public class ExampleBlueVision extends OpenCVPipeline {
     private Mat thresholded = new Mat();
     private Mat thresholded_rgba = new Mat();
 
+    public enum order{
+        blueFirst,
+        redFirst;
+    }
 
+    public static order jewelsOrder;
 
     public void setShowBlue(boolean enabled) {
         showBlue = enabled;
@@ -490,10 +495,13 @@ public class ExampleBlueVision extends OpenCVPipeline {
                 {
                     Imgproc.putText(frame, "Order: red,blue", new Point(5, 25), Core.FONT_HERSHEY_PLAIN, 2, new Scalar(0, 255, 0), 2);
                     order = "Red,Blue";
+                    jewelsOrder = jewelsOrder.redFirst;
                 } else
                 {
                     Imgproc.putText(frame, "Order: blue,red", new Point(5, 25), Core.FONT_HERSHEY_PLAIN, 2, new Scalar(0, 255, 0), 2);
                     order = "Blue,Red";
+                    jewelsOrder = jewelsOrder.blueFirst;
+
                 }
 
                 Imgproc.putText(frame, "Confidence: " + confidence + "%", new Point(5, 50), Core.FONT_HERSHEY_PLAIN, 2, new Scalar(0, 255, 0), 2);
