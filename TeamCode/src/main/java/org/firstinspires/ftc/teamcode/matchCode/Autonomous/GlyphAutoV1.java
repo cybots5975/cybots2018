@@ -4,9 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
 
 /**
  * Created by kskrueger on 10/22/17.
@@ -20,8 +22,15 @@ public class GlyphAutoV1 extends LinearOpMode{
     double driveTime, distance;
     boolean loop = true;
 
+    ExampleBlueVision blueVision;
+
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
     //SwerveDrive drive;
+
+    enum order{
+        blueFirst,
+        redFirst;
+    }
 
     @Override
     public void runOpMode() {
@@ -47,10 +56,47 @@ public class GlyphAutoV1 extends LinearOpMode{
 
         AutoTransitioner.transitionOnStop(this, "Teleop V1");
         waitForStart();
+        robot.VuMark1.close();
         if (isStarted()) {
             while(opModeIsActive()&&loop&&!isStopRequested()) {
+                blueVision = new ExampleBlueVision();
+                // can replace with ActivityViewDisplay.getInstance() for fullscreen
+                blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+                blueVision.setShowBlue(false);
+                // start the vision system
+                blueVision.enable();
+
+                blueVision.setShowBlue(true);
+
+                order jewelOrder;
+
+                if (blueVision.order.equals("Blue,Red")) {
+                    jewelOrder = order.blueFirst;
+                    telemetry.addData("Order",jewelOrder.toString());
+                } else {
+                    jewelOrder = order.redFirst;
+                    telemetry.addData("Order",jewelOrder.toString());
+                }
+
                 robot.drive.setEfficiency(false);
                 pause(1.5,false);
+
+                switch (jewelOrder) {
+                    case redFirst:
+                        runtime.reset();
+                        while (runtime.seconds() < .2) {
+                            robot.drive.RobotCentric(-.1, 0, 0, false);
+                        }
+                        robot.drive.RobotCentric(0,0,0,false);
+                        break;
+                    case blueFirst:
+                        runtime.reset();
+                        while (runtime.seconds() < .2) {
+                            robot.drive.RobotCentric(.1, 0, 0, false);
+                        }
+                        robot.drive.RobotCentric(0,0,0,false);
+                        break;
+                }
 
                 //robot.drive.resetEncoders();
 
@@ -90,6 +136,8 @@ public class GlyphAutoV1 extends LinearOpMode{
                 robot.intake.setSpeed(0);
                 pause(2, true);
 
+                blueVision.setShowBlue(false);
+                blueVision.disable();
 
                 loop = false;
             }
