@@ -9,17 +9,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MA3Encoder{
     private final AnalogInput encoder;
-    private double zeroVoltage;
-    private int rotations = 0;
-    public boolean previousBelow0 = false, currentBelow0 = false;
+    private double zeroVoltage, maxVolt = 2.06;
     private double startTime = System.currentTimeMillis();
 
-    public MA3Encoder(HardwareMap hwMap, String name) {
-        encoder = hwMap.analogInput.get(name);
+    public MA3Encoder(HardwareMap hwMap, String configName) {
+        encoder = hwMap.analogInput.get(configName);
     }
 
     public void setZeroVoltage(double zeroVoltage){
         this.zeroVoltage = zeroVoltage;
+    }
+
+    public void setMaxVoltage(double maxVoltage){
+        this.maxVolt = maxVoltage;
     }
 
     public double getVoltage(){
@@ -43,7 +45,6 @@ public class MA3Encoder{
     }
 
     public double getAbsolute(){
-        double maxVolt = 2.06;
         double angle = ((encoder.getVoltage()-zeroVoltage)/ maxVolt)*360;
         if (angle<0) {
             angle = 360+angle;
@@ -64,36 +65,4 @@ public class MA3Encoder{
         prev = curr;
         return incremental;
     }
-
 }
-
-/*
-if ((getAbsolute()<(360-getAbsolute()))&&getAbsolute()<90) {
-            currentBelow0 = true;
-        } else if ((getAbsolute()>(360-getAbsolute()))&&(360-getAbsolute())<90) {
-            currentBelow0 = false;
-        }
-
-        if (!currentBelow0&&previousBelow0) {
-            rotations -= 1;
-        }
-
-        if (currentBelow0&&!previousBelow0) {
-            rotations += 1;
-        }
-
-        if ((getAbsolute()<(360-getAbsolute()))&&getAbsolute()<90) {
-            previousBelow0 = true;
-        } else if ((getAbsolute()>(360-getAbsolute()))&&(360-getAbsolute())<90) {
-            previousBelow0 = false;
-        }
-
-
-
-
-                currentReading = getAbsolute();
-
-        difference = currentReading-lastReading;
-
-        incremental += difference;
-*/
