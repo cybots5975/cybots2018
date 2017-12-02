@@ -1,7 +1,45 @@
-package org.firstinspires.ftc.teamcode.test;
+/*
+Copyright (c) 2016 Robert Atkinson
 
-import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted (subject to the limitations in the disclaimer below) provided that
+the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list
+of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+
+Neither the name of Robert Atkinson nor the names of his contributors may be used to
+endorse or promote products derived from this software without specific prior
+written permission.
+
+NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESSFOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+package org.firstinspires.ftc.teamcode.matchCode.Teleop;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.teamcode.general.ClosableVuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;
+import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -15,278 +53,56 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by guinea on 10/5/17.
- * A nice demo class for using OpenCVPipeline. This one also demonstrates how to use OpenCV to threshold
- * for a certain color (blue), which is very common in robotics OpenCV applications.
- */
+@TeleOp(name="Test CV 1", group="TESTING CV")
+//@Disabled
+public class TeleopTemplateCV1 extends LinearOpMode {
+    private ClosableVuforiaLocalizer vuforia;
+    ExampleBlueVision blueVision;
 
-public class ExampleBlueVision extends OpenCVPipeline {
-    private boolean showBlue = true;
-    // To keep it such that we don't have to instantiate a new Mat every call to processFrame,
-    // we declare the Mats up here and reuse them. This is easier on the garbage collector.
-    private Mat hsv = new Mat();
-    private Mat thresholded = new Mat();
-    private Mat thresholded_rgba = new Mat();
-
-
-
-    public void setShowBlue(boolean enabled) {
-        showBlue = enabled;
-    }
-
-    // This is called every camera frame.
     @Override
-    public Mat processFrame(Mat frame) {
-        // First, we change the colorspace from RGBA to HSV, which is usually better for color
-        //Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
-        // Then, we threshold our hsv image so that we get a black/white binary image where white
-        // is the blues listed in the specified range
-        //Core.inRange(hsv, new Scalar(90, 128, 30), new Scalar(170, 255, 255), thresholded);
-        // Then we display our nice little binary threshold on screen
+    public void runOpMode() {
 
-        /*if (showBlue) {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters;
 
+        parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-            // since the thresholded image data is a black and white image, we have to convert it back to rgba
-            Imgproc.cvtColor(thresholded, thresholded_rgba, Imgproc.COLOR_GRAY2RGBA);
-            return thresholded_rgba;
-        } else {
-            // if we aren't displaying the binary image, just show the original frame onscreen.
-            return rgba;
-        }*/
+        parameters.vuforiaLicenseKey = "AWXa2Uv/////AAAAGfurKeRqY0A1kSnac5nkp2JqA4O6hIqfI5aTjOVuQjPZo5eceByKm3Xz+vTurmsPQ7W9lS7qB1/CAPf04NarSGqMSvs+YE2Zf5xuqRcEvvTQe2RG8hk7J3jUnWs1ujcnTCezIboYM8OVMAb7rb7Xq1vid7DsKNlgX1ubpcE/DJ+0waUR3vTfU/tPuoeANaEld54egOAq8pLEpZ1MsYNWKhqiihzwqnbftT94r9dSMnoevFIzxtX7T02EQekUFO8Hu+RJgLkvpUE87tvygVUVcKH5Dtn1Or9lpYXtAbJ21oPoElpvWyabwOrUwjQXq9tJ+HII1uyBxJ8eefdXW8dgJ3efwG4Ydj2bXERZ4ri55nFe";
 
-        //Mat frameb = new Mat();
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        vuforia = new ClosableVuforiaLocalizer(parameters);
 
-        //Core.rotate(frame,frame,Core.ROTATE_90_COUNTERCLOCKWISE);
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
 
-        //Core.transpose(frame,frame);
+        vuforia.close();
 
-        Mat output = new Mat();
+        blueVision = new ExampleBlueVision();
+        // can replace with ActivityViewDisplay.getInstance() for fullscreen
+        blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        blueVision.setShowBlue(false);
+        // start the vision system
+        blueVision.enable();
 
-        //process(frame);
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
 
-        output = processFrame2(frame);
+            blueVision.setShowBlue(true);
 
-        return output;
-    }
+            telemetry.addData("Order",blueVision.order);
+            telemetry.update();
 
-    /*private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val,
-                              Mat out) {
-        Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HSV);
-        Core.inRange(out, new Scalar(hue[0], sat[0], val[0]),
-                new Scalar(hue[1], sat[1], val[1]), out);
-    }*/
-
-    //Outputs
-//Outputs
-    private Mat blurOutput = new Mat();
-    private Mat hsvThresholdOutput = new Mat();
-    private Mat cvDilateOutput = new Mat();
-    private Mat cvErodeOutput = new Mat();
-
-    /**
-     * This is the primary method that runs the entire pipeline and updates the outputs.
-     */
-    public void process(Mat source0) {
-        // Step Blur0:
-        Mat blurInput = source0;
-        BlurType blurType = BlurType.get("Box Blur");
-        double blurRadius = 0.0;
-        blur(blurInput, blurType, blurRadius, blurOutput);
-
-        // Step HSV_Threshold0:
-        Mat hsvThresholdInput = blurOutput;
-        double[] hsvThresholdHue = {89.02877697841726, 131.10356536502547};
-        double[] hsvThresholdSaturation = {167.4010791366906, 255.0};
-        double[] hsvThresholdValue = {11.465827338129495, 239.84719864176571};
-        hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
-
-        // Step CV_dilate0:
-        Mat cvDilateSrc = hsvThresholdOutput;
-        Mat cvDilateKernel = new Mat();
-        Point cvDilateAnchor = new Point(-1, -1);
-        double cvDilateIterations = 8.0;
-        int cvDilateBordertype = Core.BORDER_CONSTANT;
-        Scalar cvDilateBordervalue = new Scalar(-1);
-        cvDilate(cvDilateSrc, cvDilateKernel, cvDilateAnchor, cvDilateIterations, cvDilateBordertype, cvDilateBordervalue, cvDilateOutput);
-
-        // Step CV_erode0:
-        Mat cvErodeSrc = cvDilateOutput;
-        Mat cvErodeKernel = new Mat();
-        Point cvErodeAnchor = new Point(-1, -1);
-        double cvErodeIterations = 2.0;
-        int cvErodeBordertype = Core.BORDER_CONSTANT;
-        Scalar cvErodeBordervalue = new Scalar(-1);
-        cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype, cvErodeBordervalue, cvErodeOutput);
-
-    }
-
-    /**
-     * This method is a generated getter for the output of a Blur.
-     * @return Mat output from Blur.
-     */
-    public Mat blurOutput() {
-        return blurOutput;
-    }
-
-    /**
-     * This method is a generated getter for the output of a HSV_Threshold.
-     * @return Mat output from HSV_Threshold.
-     */
-    public Mat hsvThresholdOutput() {
-        return hsvThresholdOutput;
-    }
-
-    /**
-     * This method is a generated getter for the output of a CV_dilate.
-     * @return Mat output from CV_dilate.
-     */
-    public Mat cvDilateOutput() {
-        return cvDilateOutput;
-    }
-
-    /**
-     * This method is a generated getter for the output of a CV_erode.
-     * @return Mat output from CV_erode.
-     */
-    public Mat cvErodeOutput() {
-        return cvErodeOutput;
-    }
-
-
-    /**
-     * An indication of which type of filter to use for a blur.
-     * Choices are BOX, GAUSSIAN, MEDIAN, and BILATERAL
-     */
-    enum BlurType{
-        BOX("Box Blur"), GAUSSIAN("Gaussian Blur"), MEDIAN("Median Filter"),
-        BILATERAL("Bilateral Filter");
-
-        private final String label;
-
-        BlurType(String label) {
-            this.label = label;
-        }
-
-        public static BlurType get(String type) {
-            if (BILATERAL.label.equals(type)) {
-                return BILATERAL;
-            }
-            else if (GAUSSIAN.label.equals(type)) {
-                return GAUSSIAN;
-            }
-            else if (MEDIAN.label.equals(type)) {
-                return MEDIAN;
-            }
-            else {
-                return BOX;
+            if (isStopRequested()) {
+                blueVision.setShowBlue(false);
+                blueVision.disable();
             }
         }
 
-        @Override
-        public String toString() {
-            return this.label;
-        }
-    }
-
-    /**
-     * Softens an image using one of several filters.
-     * @param input The image on which to perform the blur.
-     * @param type The blurType to perform.
-     * @param doubleRadius The radius for the blur.
-     * @param output The image in which to store the output.
-     */
-    private void blur(Mat input, BlurType type, double doubleRadius,
-                      Mat output) {
-        int radius = (int)(doubleRadius + 0.5);
-        int kernelSize;
-        switch(type){
-            case BOX:
-                kernelSize = 2 * radius + 1;
-                Imgproc.blur(input, output, new Size(kernelSize, kernelSize));
-                break;
-            case GAUSSIAN:
-                kernelSize = 6 * radius + 1;
-                Imgproc.GaussianBlur(input,output, new Size(kernelSize, kernelSize), radius);
-                break;
-            case MEDIAN:
-                kernelSize = 2 * radius + 1;
-                Imgproc.medianBlur(input, output, kernelSize);
-                break;
-            case BILATERAL:
-                Imgproc.bilateralFilter(input, output, -1, radius, radius);
-                break;
-        }
-    }
-
-    /**
-     * Segment an image based on hue, saturation, and value ranges.
-     *
-     * @param input The image on which to perform the HSL threshold.
-     * @param hue The min and max hue
-     * @param sat The min and max saturation
-     * @param val The min and max value
-    //* @param output The image in which to store the output.
-     */
-    private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val,
-                              Mat out) {
-        Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HSV);
-        Core.inRange(out, new Scalar(hue[0], sat[0], val[0]),
-                new Scalar(hue[1], sat[1], val[1]), out);
-    }
-
-    /**
-     * Expands area of higher value in an image.
-     * @param src the Image to dilate.
-     * @param kernel the kernel for dilation.
-     * @param anchor the center of the kernel.
-     * @param iterations the number of times to perform the dilation.
-     * @param borderType pixel extrapolation method.
-     * @param borderValue value to be used for a constant border.
-     * @param dst Output Image.
-     */
-    private void cvDilate(Mat src, Mat kernel, Point anchor, double iterations,
-                          int borderType, Scalar borderValue, Mat dst) {
-        if (kernel == null) {
-            kernel = new Mat();
-        }
-        if (anchor == null) {
-            anchor = new Point(-1,-1);
-        }
-        if (borderValue == null){
-            borderValue = new Scalar(-1);
-        }
-        Imgproc.dilate(src, dst, kernel, anchor, (int)iterations, borderType, borderValue);
-    }
-
-    /**
-     * Expands area of lower value in an image.
-     * @param src the Image to erode.
-     * @param kernel the kernel for erosion.
-     * @param anchor the center of the kernel.
-     * @param iterations the number of times to perform the erosion.
-     * @param borderType pixel extrapolation method.
-     * @param borderValue value to be used for a constant border.
-     * @param dst Output Image.
-     */
-    private void cvErode(Mat src, Mat kernel, Point anchor, double iterations,
-                         int borderType, Scalar borderValue, Mat dst) {
-        if (kernel == null) {
-            kernel = new Mat();
-        }
-        if (anchor == null) {
-            anchor = new Point(-1,-1);
-        }
-        if (borderValue == null) {
-            borderValue = new Scalar(-1);
-        }
-        Imgproc.erode(src, dst, kernel, anchor, (int)iterations, borderType, borderValue);
     }
 
     public String order = "";
 
-    public Mat processFrame2(Mat frame)
+    public Mat processFrame(Mat frame)
     {
         // if the frame is not empty, process it
         if (!frame.empty())
@@ -486,7 +302,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
                     confidence = 0;
                 }
 
-                if (blueRect.y > redRect.y)
+                if (blueRect.x > redRect.x)
                 {
                     Imgproc.putText(frame, "Order: red,blue", new Point(5, 25), Core.FONT_HERSHEY_PLAIN, 2, new Scalar(0, 255, 0), 2);
                     order = "Red,Blue";
@@ -518,4 +334,5 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
         return frame;
     }
+
 }
