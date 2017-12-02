@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
 import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
 
@@ -55,6 +56,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
         }
 
         robot.VuMark1.close();
+        AutoTransitioner.transitionOnStop(this, "Teleop V1");
         waitForStart();
         if (isStarted()) {
             while(opModeIsActive()&&loop&&!isStopRequested()) {
@@ -84,27 +86,25 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                 pause(1.5,false);
 
                 switch (ExampleBlueVision.jewelsOrder) {
-                    case redFirst:
-                        robot.drive.setEfficiency(true);
+                    case blueFirst:
+                        /*robot.drive.setEfficiency(true);
                         runtime.reset();
                         jewelTime = .4;
                         while (runtime.seconds() < .5) {
-                            //////////////
                             robot.drive.RobotCentric(-.1, 0, 0, false);
                             telemetry.addData("Red jewel","stop");
                             telemetry.update();
                         }
                         robot.drive.RobotCentric(0,.001,0,false);
                         robot.drive.setEfficiency(false);
-                        robot.JewelArm.setPosition(0);
+                        robot.JewelArm.setPosition(0);*/
                         break;
-                    case blueFirst:
+                    case redFirst:
                         robot.drive.setEfficiency(true);
                         runtime.reset();
                         jewelTime = -.5;
-                        while (runtime.seconds() < .3) {
-                            /////////////
-                            robot.drive.RobotCentric(.1, 0, 0, false);
+                        while (runtime.seconds() < .5) {
+                            robot.drive.RobotCentric(-.15, 0, 0, false);
                             telemetry.addData("Blue jewel","stop");
                             telemetry.update();
                         }
@@ -135,7 +135,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                 }
 
                 runtime.reset();
-                while (runtime.seconds() < driveTime+jewelTime) {
+                while (runtime.seconds() < driveTime/*+jewelTime*/) {
                     robot.drive.RobotCentric(.15, 0, 0, false);
                 }
 
