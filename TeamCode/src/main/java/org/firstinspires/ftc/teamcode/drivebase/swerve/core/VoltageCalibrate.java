@@ -34,7 +34,7 @@ package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.oldSwerve.HardwareSwerveV1;
+import org.firstinspires.ftc.teamcode.general.Robot;
 import org.firstinspires.ftc.teamcode.oldSwerve.SwerveLinearBase;
 
 @TeleOp(name="Voltage Calibrate", group="Swerve")
@@ -42,7 +42,7 @@ import org.firstinspires.ftc.teamcode.oldSwerve.SwerveLinearBase;
 public class VoltageCalibrate extends SwerveLinearBase {
 
     /* Declare OpMode members. */
-    HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
+    Robot robot           = new Robot();   // Use the SwerveV1 hardware file
 
     @Override
     public void runOpMode() {
@@ -51,37 +51,17 @@ public class VoltageCalibrate extends SwerveLinearBase {
          */
         robot.init(hardwareMap);
 
-        //Define and initialize ALL installed servos.
-        DServo1 = hardwareMap.servo.get("DS1"); //Driver Servo Front(1)
-        DServo2 = hardwareMap.servo.get("DS2"); //Driver Servo Back(2)
-        PServo1 = hardwareMap.servo.get("PS1"); //Pass Servo Front(1)
-        PServo2 = hardwareMap.servo.get("PS2"); //Pass Servo Back(2)*/
-
-        DServo1.setPosition(.5); //Set Driver Servo Front(1) to 0 power
-        DServo2.setPosition(.5); //Set Driver Servo Back(2) to 0 power
-        PServo1.setPosition(.5); //Set Pass Servo Front(1) to 0 power
-        PServo2.setPosition(.5); //Set Pass Servo Back(2) to 0 power
-
-        DSensor1 = hardwareMap.analogInput.get("DSe1");
-        DSensor2 = hardwareMap.analogInput.get("DSe2");
-        PSensor1 = hardwareMap.analogInput.get("PSe1");
-        PSensor2 = hardwareMap.analogInput.get("PSe2");
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("DS1",DSensor1.getVoltage());
-            telemetry.addData("DS2",DSensor2.getVoltage());
-            telemetry.addData("PS1",PSensor1.getVoltage());
-            telemetry.addData("PS2",PSensor2.getVoltage());
+            telemetry.addData("DS1",robot.DSensor1.getVoltage());
+            telemetry.addData("DS2",robot.DSensor2.getVoltage());
+            telemetry.addData("PS1",robot.PSensor1.getVoltage());
+            telemetry.addData("PS2",robot.PSensor2.getVoltage());
             telemetry.update();
 
-
-
-            // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-            robot.waitForTick(40);
         }
     }
 
