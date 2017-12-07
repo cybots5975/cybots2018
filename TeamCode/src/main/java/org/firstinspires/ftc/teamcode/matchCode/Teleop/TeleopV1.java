@@ -41,6 +41,14 @@ public class TeleopV1 extends  LinearOpMode {
             double leftX = -gamepad1.left_stick_x;
             double rightX = -gamepad1.right_stick_x/2;
 
+            if (gamepad1.right_bumper) {
+                leftY = leftY/2;
+            }
+
+            if (gamepad1.left_bumper) {
+                leftX = leftX+.001;
+            }
+
             robot.drive.setEfficiency(true);
             robot.drive.RobotCentric(leftX,leftY,rightX,gamepad1.a);
             if (gamepad1.right_trigger>.1) {
