@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.general.Constants;
-import org.firstinspires.ftc.teamcode.sensors.IMU;
-
 import org.firstinspires.ftc.teamcode.logging.ArrayLogging;
+import org.firstinspires.ftc.teamcode.sensors.IMU;
 
 import java.io.IOException;
 
@@ -28,10 +27,10 @@ public class SwerveDrive {
     boolean doa = false;
 
     public SwerveDrive(IMU imuDS, IMU imuPS,
-                       DcMotor FLMotor, Servo FLServo, AnalogInput FLSensor,
-                       DcMotor BLMotor, Servo BLServo, AnalogInput BLSensor,
-                       DcMotor FRMotor, Servo FRServo, AnalogInput FRSensor,
-                       DcMotor BRMotor, Servo BRServo, AnalogInput BRSensor){
+                       DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
+                       DcMotor BLMotor, CRServo BLServo, AnalogInput BLSensor,
+                       DcMotor FRMotor, CRServo FRServo, AnalogInput FRSensor,
+                       DcMotor BRMotor, CRServo BRServo, AnalogInput BRSensor){
 
 
         this.FLMotor = FLMotor;

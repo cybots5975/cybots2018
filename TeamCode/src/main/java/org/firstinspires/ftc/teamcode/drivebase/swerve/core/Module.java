@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by Karter Krueger on 10/10/17.
@@ -25,10 +25,10 @@ public class Module {
 
     //define the motor, servo, and encoders
     private DcMotor motor;
-    private Servo servo;
+    private CRServo servo;
     private AnalogInput encoder;
 
-    Module(DcMotor motor, Servo servo, AnalogInput encoder, double zeroPosition) {
+    Module(DcMotor motor, CRServo servo, AnalogInput encoder, double zeroPosition) {
         this.motor = motor;
         this.servo = servo;
         this.encoder = encoder;
@@ -44,8 +44,8 @@ public class Module {
 
     //set the angle to the module (ex: 90° is sideways and 0° is forward)
     private void setAngle(int targetAngle) {
-        double servoPosition = swivelPID(angle(),(targetAngle));
-        servo.setPosition(servoPosition);
+        double servoPower = swivelPID(angle(),(targetAngle));
+        servo.setPower(servoPower);
     }
 
     //set the velocity to the drive motor for the wheel
@@ -121,7 +121,7 @@ public class Module {
     }
 
     //PID (Proportional Integral Derivative) loop is used to take the error from target and...
-    //...proportionally calculate what speed it needs to rotate to reach the target value
+    //...proportionally calculate what speed it needs `to rotate to reach the target value
     private double swivelPID (int angle, int targetAngle) {
         final double Kp = .03;
         final double Ki = 0;
@@ -139,14 +139,14 @@ public class Module {
         double PIDpower = -1 * u;
 
         //convert to servo power range from 0-1
-        double powerOut;
-        if (PIDpower >0) {
+        double powerOut = PIDpower*.85;
+        /*if (PIDpower >0) {
             powerOut = .5+(PIDpower /2);
         } else if (PIDpower <0) {
             powerOut = .5+(PIDpower /2);
         } else {
             powerOut = PIDpower;
-        }
+        }*/
         return powerOut;
     }
 }
