@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
 import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
 
+import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.order.unknown;
+
 /**
  * Created by kskrueger on 10/22/17.
  */
@@ -55,6 +57,7 @@ public class GlyphAutoV1 extends LinearOpMode{
         if (isStarted()) {
             while(opModeIsActive()&&loop&&!isStopRequested()) {
                 robot.JewelArm.setPosition(1);
+                ExampleBlueVision.jewelsOrder = unknown;
                 blueVision = new ExampleBlueVision();
                 // can replace with ActivityViewDisplay.getInstance() for fullscreen
                 blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());

@@ -31,7 +31,8 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
     public enum order{
         blueFirst,
-        redFirst;
+        redFirst,
+        unknown;
     }
 
     public static order jewelsOrder;
