@@ -1,9 +1,8 @@
 dependencies {
     compile project(':FtcRobotController')
-    compile (name: 'RobotCore-release', ext: 'aar')
-    compile (name: 'Hardware-release', ext: 'aar')
-    compile (name: 'FtcCommon-release', ext: 'aar')
-    compile (name:'Analytics-release', ext:'aar')
+    compile project(':RobotCore')
+    compile project(':Hardware')
+    compile project(':FtcCommon')
     compile (name:'WirelessP2p-release', ext:'aar')
     compile group: 'com.opencsv', name: 'opencsv', version: '3.5'
 }

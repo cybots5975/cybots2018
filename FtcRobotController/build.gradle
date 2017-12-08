@@ -1,10 +1,8 @@
-//<<<<<<< HEAD
-//=======
-//>>>>>>> 9f1e829930e7e5e9c74d26aada5e19742dcd1e82
 //
 // build.gradle in FtcRobotController
 //
 apply plugin: 'com.android.library'
+
 android {
 
     defaultConfig {
@@ -13,23 +11,18 @@ android {
     }
 
     compileSdkVersion 23
-//<<<<<<< HEAD
-    buildToolsVersion '26.0.1'
-//=======
-    buildToolsVersion '26.0.2'
+    buildToolsVersion "25.0.3"
 
-//>>>>>>> 9f1e829930e7e5e9c74d26aada5e19742dcd1e82
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
+
 repositories {
     flatDir {
         dirs '../libs'
     }
 }
-apply from: 'build.release.gradle'
 
-dependencies {
-}
+apply from: 'build.release.gradle'
