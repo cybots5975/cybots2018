@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
 public class GlyphAutoV1 extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 
-    public RelicRecoveryVuMark VuMark;
+    private RelicRecoveryVuMark VuMark;
     double driveTime, distance;
     boolean loop = true;
 
@@ -26,11 +26,6 @@ public class GlyphAutoV1 extends LinearOpMode{
 
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
     //SwerveDrive drive;
-
-    enum order{
-        blueFirst,
-        redFirst;
-    }
 
     @Override
     public void runOpMode() {
@@ -69,16 +64,6 @@ public class GlyphAutoV1 extends LinearOpMode{
 
                 blueVision.setShowBlue(true);
 
-                GlyphAutoV1.order jewelOrder;
-
-                if (blueVision.order.equals("Blue,Red")) {
-                    jewelOrder = GlyphAutoV1.order.blueFirst;
-                    telemetry.addData("Order",jewelOrder.toString());
-                } else {
-                    jewelOrder = GlyphAutoV1.order.redFirst;
-                    telemetry.addData("Order",jewelOrder.toString());
-                }
-
                 double jewelTime = 0;
 
                 robot.drive.setEfficiency(false);
@@ -86,7 +71,7 @@ public class GlyphAutoV1 extends LinearOpMode{
 
                 switch (ExampleBlueVision.jewelsOrder) {
                     case redFirst:
-                        /*robot.drive.setEfficiency(true);
+                        robot.drive.setEfficiency(true);
                         runtime.reset();
                         jewelTime = .4;
                         while (runtime.seconds() < .5) {
@@ -96,7 +81,7 @@ public class GlyphAutoV1 extends LinearOpMode{
                         }
                         robot.drive.RobotCentric(0,.001,0,false);
                         robot.drive.setEfficiency(false);
-                        robot.JewelArm.setPosition(0);*/
+                        robot.JewelArm.setPosition(0);
                         break;
                     case blueFirst:
                         robot.drive.setEfficiency(true);

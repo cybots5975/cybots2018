@@ -20,17 +20,12 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
     ExampleBlueVision blueVision;
 
-    public RelicRecoveryVuMark VuMark;
+    private RelicRecoveryVuMark VuMark;
     double driveTime, distance;
     boolean loop = true;
 
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
     //SwerveDrive drive;
-
-    enum order{
-        blueFirst,
-        redFirst;
-    }
 
     @Override
     public void runOpMode() {
@@ -70,16 +65,6 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
                 blueVision.setShowBlue(true);
 
-                order jewelOrder;
-
-                /*if (blueVision.order.equals("Blue,Red")) {
-                    jewelOrder = order.blueFirst;
-                    telemetry.addData("Order",jewelOrder.toString());
-                } else {
-                    jewelOrder = order.redFirst;
-                    telemetry.addData("Order",jewelOrder.toString());
-                }*/
-
                 double jewelTime = 0;
 
                 robot.drive.setEfficiency(false);
@@ -87,7 +72,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
                 switch (ExampleBlueVision.jewelsOrder) {
                     case blueFirst:
-                        /*robot.drive.setEfficiency(true);
+                        robot.drive.setEfficiency(true);
                         runtime.reset();
                         jewelTime = .4;
                         while (runtime.seconds() < .5) {
@@ -97,7 +82,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                         }
                         robot.drive.RobotCentric(0,.001,0,false);
                         robot.drive.setEfficiency(false);
-                        robot.JewelArm.setPosition(0);*/
+                        robot.JewelArm.setPosition(0);
                         break;
                     case redFirst:
                         robot.drive.setEfficiency(true);
