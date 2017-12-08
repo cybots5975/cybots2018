@@ -111,9 +111,9 @@ public class TestSPM extends LinearOpMode {
     //PID (Proportional Integral Derivative) loop is used to take the error from target and...
     //...proportionally calculate what speed it needs `to rotate to reach the target value
     private double swivelPID (int angle, int targetAngle) {
-        final double Kp = .015; //.03
+        final double Kp = .01; //.03
         final double Ki = 0;
-        final double Kd = .01;
+        final double Kd = .005; //.01
         int dt = 20;
 
         error = reverse180(targetAngle,angle);
@@ -127,16 +127,10 @@ public class TestSPM extends LinearOpMode {
         double PIDpower = -1 * u;
 
         //convert to servo power range from 0-1
-        double powerOut = PIDpower/2;
+        double powerOut = PIDpower*1.5;
         telemetry.addData("PID Power",powerOut);
 
         powerOut = Range.clip(powerOut,-.88,.88);
-
-        /*if (powerOut<.2&&powerOut>.05) {
-            powerOut *= 2;
-        } else if (powerOut>-.2&&powerOut<-.05) {
-            powerOut *= 2;
-        }*/
 
         return powerOut;
     }
