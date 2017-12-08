@@ -84,8 +84,8 @@ public class Module {
     }
 
 
-    int angleError;
-    int angleErrorOp;
+    double angleError;
+    double angleErrorOp;
     int targetOp;
 
     //reverse180 calculates the error (difference) from the current angle to the the target angle...
@@ -94,10 +94,10 @@ public class Module {
         targetOp = (targetAngle +180)%360;
 
         angleError = (targetAngle - position);
-        angleError -= (360*Math.floor(0.5+((angleError+0d)/360.0)));
+        angleError -= (360*Math.floor(0.5+((angleError)/360.0)));
 
         angleErrorOp = (targetOp - position);
-        angleErrorOp -= (360*Math.floor(0.5+((angleErrorOp+0d)/360.0)));
+        angleErrorOp -= (360*Math.floor(0.5+((angleErrorOp)/360.0)));
 
         int targetValue;
         if ((Math.abs(angleError)>Math.abs(angleErrorOp))&&efficiency) {
@@ -115,7 +115,7 @@ public class Module {
         angleError = (targetValue - position);
         angleError -= (360*Math.floor(0.5+((angleError+0d)/360.0)));
 
-        error = angleError;
+        error = (int)angleError;
 
         return error;
     }
