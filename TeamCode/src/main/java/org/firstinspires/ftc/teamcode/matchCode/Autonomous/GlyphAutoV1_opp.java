@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
 import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
 
+import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.jewelsOrder;
 import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.order.unknown;
 
 /**
@@ -59,7 +60,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
         waitForStart();
         if (isStarted()) {
             while(opModeIsActive()&&loop&&!isStopRequested()) {
-                ExampleBlueVision.jewelsOrder = unknown;
+                jewelsOrder = unknown;
                 robot.JewelKick.setPosition(kickCenter);
                 robot.JewelArm.setPosition(1);
                 blueVision = new ExampleBlueVision();
@@ -73,7 +74,8 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
                 pause(4,false);
 
-                switch (ExampleBlueVision.jewelsOrder) {
+                //jewelsOrder = jewelsOrder.blueFirst;
+                switch (jewelsOrder) {
                     case blueFirst:
                         runtime.reset();
                         while (runtime.seconds() < 2) {
@@ -82,7 +84,6 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                             telemetry.addData("Red jewel","stop");
                             telemetry.update();
                         }
-                        robot.drive.setEfficiency(false);
                         robot.JewelKick.setPosition(kickCenter);
                         robot.JewelArm.setPosition(raisedArm);
                         break;
@@ -90,7 +91,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                         runtime.reset();
                         while (runtime.seconds() < 2) {
                             robot.JewelKick.setPosition(1);
-                            robot.drive.holdModuleAngle(90);
+                            robot.drive.holdModuleAngle(90+180);
                             telemetry.addData("Blue jewel","stop");
                             telemetry.update();
                         }
@@ -99,9 +100,8 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                         break;
                 }
 
+                robot.drive.setEfficiency(false);
                 pause(1.5, false);
-
-                //robot.drive.resetEncoders();
 
                 switch (VuMark) {
                     case LEFT:
@@ -119,7 +119,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                 }
 
                 runtime.reset();
-                while (runtime.seconds() < driveTime/*+jewelTime*/) {
+                while (runtime.seconds() < driveTime) {
                     robot.drive.RobotCentric(.15, 0, 0, false);
                 }
 
@@ -136,7 +136,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
                 pause(2, true);
 
-//                robot.drive.setEfficiency(true);
+                robot.drive.setEfficiency(true);
 
                 runtime.reset();
                 while (runtime.seconds() < 1) {
@@ -157,13 +157,13 @@ public class GlyphAutoV1_opp extends LinearOpMode{
         runtime.reset();
         while (runtime.seconds()<seconds){
             if (fwd) {
-                //robot.drive.RobotCentric(0,.01,0,false);
-                robot.drive.setEfficiency(false);
-                robot.drive.holdModuleAngle(0);
+                robot.drive.RobotCentric(0,.001,0,false);
+                //robot.drive.setEfficiency(false);
+                //robot.drive.holdModuleAngle(0);
             } else {
-                //robot.drive.RobotCentric(.001,0,0,false);
-                robot.drive.setEfficiency(false);
-                robot.drive.holdModuleAngle(90);
+                robot.drive.RobotCentric(.001,0,0,false);
+                //robot.drive.setEfficiency(false);
+                //robot.drive.holdModuleAngle(90+180);
             }
             //wait
             telemetry.addData("Waiting",seconds+" seconds");
