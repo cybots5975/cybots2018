@@ -130,8 +130,8 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                 pause(2,true);
 
                 runtime.reset();
-                while (runtime.seconds() < .5) {
-                    robot.drive.RobotCentric(0, .15, 0, false);
+                while (runtime.seconds() < 1) {
+                    robot.drive.RobotCentric(0, .2, 0, false);
                 }
 
                 pause(2, true);
