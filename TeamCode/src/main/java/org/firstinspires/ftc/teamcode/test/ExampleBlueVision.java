@@ -509,15 +509,18 @@ public class ExampleBlueVision extends OpenCVPipeline {
             } else
             {
                 Imgproc.putText(frame, "Err - MTOROSC", new Point(5, 25), Core.FONT_HERSHEY_PLAIN, 2, new Scalar(0, 255, 0), 2);
+                jewelsOrder = jewelsOrder.unknown;
             }
         } else
         {
             if (!MTOROSC)
             {
                 Imgproc.putText(frame, "Order: ???", new Point(5, 25), Core.FONT_HERSHEY_PLAIN, 2, new Scalar(0, 255, 0), 2);
+                jewelsOrder = jewelsOrder.unknown;
             } else
             {
                 Imgproc.putText(frame, "Err - MTOROSC", new Point(5, 25), Core.FONT_HERSHEY_PLAIN, 2, new Scalar(0, 255, 0), 2);
+                jewelsOrder = jewelsOrder.unknown;
             }
         }
 
