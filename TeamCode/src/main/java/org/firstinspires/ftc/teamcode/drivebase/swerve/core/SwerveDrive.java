@@ -371,7 +371,7 @@ public class SwerveDrive {
     double lastTime;
     public void mecanumGyroCorrect(double ySpeed, double xSpeed, double heading, double offsetMult, double kP, double kI, double kD) {
         double dt = (System.currentTimeMillis() - lastTime);
-        double offset = PID(kP,kI,kD,(int)dt,(int)heading,(int)getAvgHeading());
+        double offset = PID(kP,kI,kD,20,(int)heading,(int)getAvgHeading());
         driveMecanum(ySpeed,xSpeed,offset/offsetMult);
         lastTime = System.currentTimeMillis();
     }
