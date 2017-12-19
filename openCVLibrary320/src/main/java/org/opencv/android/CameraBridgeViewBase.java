@@ -1,5 +1,15 @@
 package org.opencv.android;
 
+<<<<<<< HEAD
+=======
+import java.util.List;
+
+import org.opencv.BuildConfig;
+import org.opencv.R;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+
+>>>>>>> 1240e0ce4f53658b68c41324708a6ac7125afda4
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,6 +23,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+<<<<<<< HEAD
 import org.opencv.BuildConfig;
 import org.opencv.R;
 import org.opencv.core.Mat;
@@ -20,6 +31,8 @@ import org.opencv.core.Size;
 
 import java.util.List;
 
+=======
+>>>>>>> 1240e0ce4f53658b68c41324708a6ac7125afda4
 /**
  * This is a basic class, implementing the interaction with Camera and OpenCV library.
  * The main responsibility of it - is to control when camera can be enabled, process the frame,
@@ -35,8 +48,13 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     private static final int STARTED = 1;
 
     private int mState = STOPPED;
+<<<<<<< HEAD
     protected Bitmap mCacheBitmap;
     protected CvCameraViewListener2 mListener;
+=======
+    private Bitmap mCacheBitmap;
+    private CvCameraViewListener2 mListener;
+>>>>>>> 1240e0ce4f53658b68c41324708a6ac7125afda4
     private boolean mSurfaceExist;
     private Object mSyncObject = new Object();
 
