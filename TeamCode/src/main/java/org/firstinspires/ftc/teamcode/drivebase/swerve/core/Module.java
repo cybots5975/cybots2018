@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by Karter Krueger on 10/10/17.
@@ -123,9 +124,9 @@ public class Module {
     //PID (Proportional Integral Derivative) loop is used to take the error from target and...
     //...proportionally calculate what speed it needs `to rotate to reach the target value
     private double swivelPID (int angle, int targetAngle) {
-        final double Kp = .03;
+        final double Kp = .02; //.03
         final double Ki = 0;
-        final double Kd = .01;
+        final double Kd = .02;
         int dt = 20;
 
         error = reverse180(targetAngle,angle);
@@ -136,17 +137,19 @@ public class Module {
 
         previousError = error;
 
-        double PIDpower = -1 * u;
+        double PIDpower = u;
 
         //convert to servo power range from 0-1
-        double powerOut = PIDpower*.85;
-        /*if (PIDpower >0) {
-            powerOut = .5+(PIDpower /2);
-        } else if (PIDpower <0) {
-            powerOut = .5+(PIDpower /2);
-        } else {
-            powerOut = PIDpower;
-        }*/
+        double powerOut = PIDpower;
+
+        powerOut = Range.clip(powerOut,-.88,.88);
+
+        if (powerOut<.2&&powerOut>.01) {
+            powerOut *= 1.75 + .08;
+        } else if (powerOut>-.2&&powerOut<-.01) {
+            powerOut *= 1.75 - .08;
+        }
+
         return powerOut;
     }
 }

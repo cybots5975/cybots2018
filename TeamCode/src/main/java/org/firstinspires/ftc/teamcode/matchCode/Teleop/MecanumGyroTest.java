@@ -32,19 +32,22 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.general.Robot;
 
-@TeleOp(name="Template", group="Template")
-@Disabled
-public class TeleopTemplate extends LinearOpMode {
+@TeleOp(name="Test Mecanum Gyro", group="Template")
+//@Disabled
+public class MecanumGyroTest extends LinearOpMode {
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    Boolean lastButton = true, stateButton = true, modeField = false;
+    double divider = 40, kP = .007;
 
     @Override
     public void runOpMode() {
+
+
         robot.init(hardwareMap);
 
         // Wait for the game to start (driver presses PLAY)
@@ -53,9 +56,23 @@ public class TeleopTemplate extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            if (gamepad1.dpad_up) {
+                divider += .5;
+            } else if (gamepad1.dpad_down) {
+                divider -= .5;
+            }
+
+            if (gamepad1.y) {
+                kP += .0005;
+            } else if (gamepad1.a) {
+                kP -= .0005;
+            }
+
+            robot.drive.mecanumGyroCorrect(.25,0,0,divider,.007,0,.12);
+
+            telemetry.addData("Divder",divider);
+            telemetry.addData("kP",kP);
             telemetry.update();
         }
     }
-
-
 }

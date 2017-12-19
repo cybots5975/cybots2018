@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.logging.ArrayLogging;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -25,6 +26,8 @@ public class SwerveDrive {
     public int count;
     public boolean done = false;
     boolean doa = false;
+
+    private double SCALEDPOWER = 1;
 
     public SwerveDrive(IMU imuDS, IMU imuPS,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
@@ -186,7 +189,9 @@ public class SwerveDrive {
 
     //Calculate the average heading of the 2 absolute orientation sensors on the robot
     private double getAvgHeading() {
-        return ((imu.getHeading(90)+imu2.getHeading(90))/2)%360;
+        imu.setHeadingOffset(0);
+        imu2.setHeadingOffset(0);
+        return ((imu.getHeading()+imu2.getHeading())/2)%360;
     }
 
     public void RobotCentricLOG (double strafe, double forward, double theta, boolean zeroReset) throws IOException {
@@ -325,6 +330,50 @@ public class SwerveDrive {
         log.storeValueInt(29,count,P2.angleError);
         log.storeValueInt(30,count,P2.angleErrorOp);
         log.storeValueInt(31,count,P2.targetOp);
+    }
+
+    public void driveMecanum(double forwards, double horizontal, double turning) {
+        double leftFront = forwards + horizontal + turning;
+        double leftBack = forwards - horizontal + turning;
+        double rightFront = forwards - horizontal - turning;
+        double rightBack = forwards + horizontal - turning;
+
+        double[] wheelPowers = {Math.abs(rightFront), Math.abs(leftFront), Math.abs(leftBack), Math.abs(rightBack)};
+        Arrays.sort(wheelPowers);
+        double biggestInput = wheelPowers[3];
+        if (biggestInput > 1) {
+            leftFront /= biggestInput;
+            leftBack /= biggestInput;
+            rightFront /= biggestInput;
+            rightBack /= biggestInput;
+        }
+
+        FLMotor.setPower(leftBack);
+        FRMotor.setPower(rightFront);
+        BLMotor.setPower(leftFront);
+        BRMotor.setPower(rightBack);
+    }
+
+    public void driveMecanumField(double forwards, double horizontal, double turning) {
+        double forwrd = forwards * -1;
+        double strafe = horizontal;
+
+        double gyro_radians = getAvgHeading() * Math.PI/180;
+        double temp = forwrd * cos(gyro_radians) +
+                strafe * sin(gyro_radians);
+        strafe = -forwrd * sin(gyro_radians) +
+                strafe * cos(gyro_radians);
+        forwrd = temp;
+
+        driveMecanum(forwrd,strafe,turning);
+    }
+
+    double lastTime;
+    public void mecanumGyroCorrect(double ySpeed, double xSpeed, double heading, double offsetMult, double kP, double kI, double kD) {
+        double dt = (System.currentTimeMillis() - lastTime);
+        double offset = PID(kP,kI,kD,(int)dt,(int)heading,(int)getAvgHeading());
+        driveMecanum(ySpeed,xSpeed,offset/offsetMult);
+        lastTime = System.currentTimeMillis();
     }
 
 }

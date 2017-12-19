@@ -35,10 +35,6 @@ public class TestEncoder extends LinearOpMode{
         if (isStarted()) {
             while (opModeIsActive() ) {
 
-
-                telemetry.addData("Time1",DSEncoder.time1);
-                telemetry.addData("Time2",DSEncoder.time2);
-
                 telemetry.addData("Velocity",DSEncoder.getVelocity());
 
                 telemetry.addData("Absolute",DSEncoder.getAbsolute());

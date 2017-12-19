@@ -32,19 +32,21 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.general.Robot;
 
-@TeleOp(name="Template", group="Template")
-@Disabled
-public class TeleopTemplate extends LinearOpMode {
+@TeleOp(name="Test Mecanum", group="Template")
+//@Disabled
+public class MecanumTest extends LinearOpMode {
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    Boolean lastButton = true, stateButton = true, modeField = false;
 
     @Override
     public void runOpMode() {
+
+
         robot.init(hardwareMap);
 
         // Wait for the game to start (driver presses PLAY)
@@ -53,9 +55,26 @@ public class TeleopTemplate extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            if(gamepad1.a && !lastButton) {
+                stateButton = !stateButton;
+                if(stateButton) {
+                    modeField = true;
+                    telemetry.addData("Mode","Robot Centric");
+                } else {
+                    //other mode here
+                    modeField = false;
+                    telemetry.addData("Mode","Field Centric");
+                }
+            }
+            lastButton = gamepad1.a;
+
+            if (modeField) {
+                robot.drive.driveMecanumField(-gamepad1.left_stick_y,-gamepad1.left_stick_x,gamepad1.right_stick_x);
+            } else {
+                robot.drive.driveMecanum(-gamepad1.left_stick_y,-gamepad1.left_stick_x,gamepad1.right_stick_x);
+            }
+
             telemetry.update();
         }
     }
-
-
 }

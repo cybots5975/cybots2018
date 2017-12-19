@@ -30,32 +30,54 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode.matchCode.Teleop;
+package org.firstinspires.ftc.teamcode.test;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.sensors.MA3Encoder;
 
-@TeleOp(name="Template", group="Template")
-@Disabled
-public class TeleopTemplate extends LinearOpMode {
-    Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+@TeleOp(name="Test MA3 Encoder", group="Testing")
+public class TestMA3 extends LinearOpMode {
+    private MA3Encoder enc;
+    private DcMotorImplEx motor;
+    double deltaTime, lastTime, pos1, pos2, deltaPos, velocity; //variables used for getVelocity
+    double incremental;
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
 
+        motor = (DcMotorImplEx) hardwareMap.dcMotor.get("motor");
+
+        enc = new MA3Encoder(hardwareMap,"enc");
+        enc.setMaxVoltage(5);
+        enc.setZeroVoltage(0);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            telemetry.addData("Absolute Position",enc.getAbsolute());
+            telemetry.addData("Incremental Position",enc.getIncremental());
+            telemetry.addData("Velocity",enc.getVelocity());
+            telemetry.addData("Voltage",enc.getVoltage());
+            telemetry.addLine();
+            telemetry.addData("DeltaTime",enc.deltaTime);
+            telemetry.addData("Last Time",enc.lastTime);
+            telemetry.addData("Pos1",enc.pos1);
+            telemetry.addData("Pos2",enc.pos2);
+            telemetry.addData("PosDelta",enc.deltaPos);
             telemetry.update();
+
+            velocity = gamepad1.left_stick_y*1440;
+            motor.setVelocity(velocity+enc.getVelocity(), AngleUnit.DEGREES);
+
+            sleep(20);
         }
     }
-
-
 }
