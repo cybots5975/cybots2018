@@ -8,9 +8,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 
 public class MA3Encoder{
-    private final AnalogInput encoder;
-    private double zeroVoltage, maxVolt = 2.06;
-    private double startTime = System.currentTimeMillis();
+    private final AnalogInput encoder; //define the Analog Input device
+    private double zeroVoltage = 0, maxVolt = 2.06; //variables used for getAbsolute
+    public double deltaTime, lastTime, pos1, pos2, deltaPos, velocity; //variables used for getVelocity
+    private double deltaTime2, lastTime2, vel1, vel2, deltaVel, acceleration;
+    private double prev = 0, incremental; //variables for the getIncremental
 
     public MA3Encoder(HardwareMap hwMap, String configName) {
         encoder = hwMap.analogInput.get(configName);
@@ -28,22 +30,6 @@ public class MA3Encoder{
         return encoder.getVoltage();
     }
 
-    public double pos1, pos2, time1, time2, velocity, diff;
-    public double getVelocity(){
-        pos1 = getIncremental();
-        time1 = System.currentTimeMillis();
-        diff = (time1-time2);
-        if (diff<50) {
-            //nothing
-        } else {
-            velocity = (pos1-pos2)/(diff/1000);
-        }
-        pos2 = pos1;
-        time2 = time1;
-
-        return velocity;
-    }
-
     public double getAbsolute(){
         double angle = ((encoder.getVoltage()-zeroVoltage)/ maxVolt)*360;
         if (angle<0) {
@@ -52,7 +38,6 @@ public class MA3Encoder{
         return (int)angle%360;
     }
 
-    private double prev = 0, incremental;
     public double getIncremental() {
         double curr = getAbsolute();
         if ((360 - prev) < 10 && curr < 10) {
@@ -64,5 +49,31 @@ public class MA3Encoder{
         }
         prev = curr;
         return incremental;
+    }
+
+    public double getVelocity(){
+        pos1 = getIncremental();
+        deltaTime = (System.currentTimeMillis() - lastTime);
+        deltaPos = pos1-pos2;
+
+        velocity = (deltaPos)/(deltaTime)*1000;
+
+        pos2 = getIncremental();
+        lastTime = System.currentTimeMillis();
+
+        return velocity;
+    }
+
+    public double getAcceleration(){
+        vel1 = getVelocity();
+        deltaTime2 = (System.currentTimeMillis() - lastTime);
+        deltaVel = vel1-vel2;
+
+        acceleration = (deltaVel)/(deltaTime2)*1000;
+
+        vel2 = getVelocity();
+        lastTime2 = System.currentTimeMillis();
+
+        return acceleration;
     }
 }
