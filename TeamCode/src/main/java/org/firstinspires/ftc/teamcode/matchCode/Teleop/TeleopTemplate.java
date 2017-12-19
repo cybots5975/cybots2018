@@ -45,7 +45,7 @@ public class TeleopTemplate extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        robot.init(hardwareMap);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
