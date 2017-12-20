@@ -56,6 +56,4 @@ public class TeleopTemplate extends LinearOpMode {
             telemetry.update();
         }
     }
-
-
 }

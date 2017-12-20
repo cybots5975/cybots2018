@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.sensors.MA3Encoder;
  * Created by kskrueger on 10/22/17.
  */
 
-@Autonomous(name="Test Enc", group="Test")
+@Autonomous(name="Test Enc", group="Testing")
 public class TestEncoder extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 

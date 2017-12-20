@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.general.Robot;
 
-@TeleOp(name="Servo Calibrate", group="Test")
+@TeleOp(name="Servo Calibrate", group="Testing")
 public class ServoCalibrate extends LinearOpMode {
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
 

@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="PID Test 2", group="Drive")
+@TeleOp(name="PID Test 2", group="Testing")
 //@Disabled
 public class TestServoPID extends LinearOpMode {
     //DcMotor leftSide;

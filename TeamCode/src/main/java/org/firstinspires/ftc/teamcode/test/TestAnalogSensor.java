@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.oldSwerve.HardwareSwerveV1;
 
-@TeleOp(name="Test Analog Sensor", group="Swerve")
+@TeleOp(name="Test Analog Sensor", group="Testing")
 //@Disabled
 public class TestAnalogSensor extends LinearOpMode {
 

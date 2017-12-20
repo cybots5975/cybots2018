@@ -12,7 +12,7 @@ import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
  * where a certain color is, in this case, blue.
  *
  */
-@TeleOp(name="Example: Blue Vision Demo")
+@TeleOp(name="Example: Blue Vision Demo",group = "Testing")
 public class ExampleBlueVisionDemo extends OpMode {
     ExampleBlueVision blueVision;
     @Override

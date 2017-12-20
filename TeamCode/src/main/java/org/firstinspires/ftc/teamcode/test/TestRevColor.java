@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-@TeleOp(name="REV COLOR", group="Test")
+@TeleOp(name="REV COLOR", group="Testing")
 //@Disabled
 public class TestRevColor extends LinearOpMode {
     ColorSensor sensorColor;
