@@ -20,7 +20,10 @@ import static java.lang.Math.sin;
 
 public class SwerveDrive {
     private Module D1, D2, P1, P2;
-    private DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
+    public DcMotor FLMotor;
+    public DcMotor BLMotor;
+    public DcMotor FRMotor;
+    public DcMotor BRMotor;
     private IMU imu, imu2;
     private ArrayLogging log = new ArrayLogging(32,10000);
     public int count;
@@ -172,7 +175,7 @@ public class SwerveDrive {
     private int integral = 0;
     private int previousError = 0;
 
-    double PID (double kP, double kI, double kD, int dt, int targetValue, int position) {
+    public double PID(double kP, double kI, double kD, int dt, int targetValue, int position) {
         int angleError = (targetValue - position);
         angleError -= (360*Math.floor(0.5+(((double)angleError)/360.0)));
 
@@ -188,7 +191,7 @@ public class SwerveDrive {
     }
 
     //Calculate the average heading of the 2 absolute orientation sensors on the robot
-    private double getAvgHeading() {
+    public double getAvgHeading() {
         imu.setHeadingOffset(0);
         imu2.setHeadingOffset(0);
         return ((imu.getHeading()+imu2.getHeading())/2)%360;
@@ -365,7 +368,7 @@ public class SwerveDrive {
                 strafe * cos(gyro_radians);
         forwrd = temp;
 
-        driveMecanum(forwrd,strafe,turning);
+        driveMecanum(-forwrd,strafe,turning);
     }
 
     double lastTime;
@@ -374,6 +377,56 @@ public class SwerveDrive {
         double offset = PID(kP,kI,kD,20,(int)heading,(int)getAvgHeading());
         driveMecanum(ySpeed,xSpeed,offset/offsetMult);
         lastTime = System.currentTimeMillis();
+    }
+
+    public void mecanumPIDTurn(double speed, double heading, double kP, double kI, double kD) {
+
+    }
+
+    public void zeroEncoders(){
+        FLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void setEncoderMode(DcMotor.RunMode mode){
+        FLMotor.setMode(mode);
+        FRMotor.setMode(mode);
+        BLMotor.setMode(mode);
+        BRMotor.setMode(mode);
+    }
+
+    public int getStrafeEncoderAverage(){
+        double FL = FLMotor.getCurrentPosition();
+        double FR = FRMotor.getCurrentPosition();
+        double BL = -BLMotor.getCurrentPosition();
+        double BR = -BRMotor.getCurrentPosition();
+
+        return (int)(FL+FR+BL+BR)/4;
+    }
+
+    public int getFwdEncoderAverage(){
+        double FL = FLMotor.getCurrentPosition();
+        double FR = FRMotor.getCurrentPosition();
+        double BL = BLMotor.getCurrentPosition();
+        double BR = BRMotor.getCurrentPosition();
+
+        return (int)(FL+FR+BL+BR)/4;
+    }
+
+    public void encoderStrafe(double power, int encoder){
+        while (getStrafeEncoderAverage()>encoder) {
+            driveMecanum(0,power,0);
+        }
+        driveMecanum(0,0,0);
+    }
+
+    public void encoderFwd(double power, int encoder) {
+        while (getStrafeEncoderAverage()<power) {
+            driveMecanum(0,power,0);
+        }
+        driveMecanum(0,0,0);
     }
 
 }
