@@ -42,7 +42,7 @@ import org.firstinspires.ftc.teamcode.general.Robot;
 public class MecanumGyroTest extends LinearOpMode {
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
     Boolean lastButton = true, stateButton = true, modeField = false;
-    double divider = 40, kP = .007, kD = .12, kI = 0;
+    double divider = 40, kP = .1, kD = .08, kI = 0;
 
     @Override
     public void runOpMode() {
@@ -56,37 +56,29 @@ public class MecanumGyroTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            if (gamepad1.dpad_up) {
-                divider += .5;
-            } else if (gamepad1.dpad_down) {
-                divider -= .5;
-            }
+            gyroTurn(.25,90);
 
-            if (gamepad1.y) {
-                kP += .0005;
-            } else if (gamepad1.a) {
-                kP -= .0005;
-            }
-
-            if (gamepad1.b) {
-                kD += .0005;
-            } else if (gamepad1.x) {
-                kD -= .0005;
-            }
-
-            if (gamepad1.dpad_right) {
-                kI += .0005;
-            } else if (gamepad1.dpad_left) {
-                kI -= .0005;
-            }
-
-            robot.drive.mecanumGyroCorrect(.25,0,0,divider,kP,kI,kD);
 
             telemetry.addData("Divder",divider);
             telemetry.addData("kP",kP);
             telemetry.addData("kI",kI);
             telemetry.addData("kD",kD);
             telemetry.update();
+
+            sleep(10);
         }
+
+    }
+
+    private double dt, lastTime;
+    public void gyroTurn (double turnSpeed, int targetAngle) {
+        dt = (System.currentTimeMillis() - lastTime);
+
+        double pidOffset = robot.drive.PID(kP,kI,kD,10,targetAngle,(int)robot.drive.getAvgHeading());
+
+        double power = -pidOffset*turnSpeed;
+        //set power to motors
+        robot.drive.driveMecanum(0,0,power);
+        lastTime = System.currentTimeMillis();
     }
 }

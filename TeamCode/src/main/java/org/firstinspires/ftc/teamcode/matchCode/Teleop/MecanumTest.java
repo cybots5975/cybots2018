@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.general.Robot;
 
@@ -48,6 +49,8 @@ public class MecanumTest extends LinearOpMode {
 
 
         robot.init(hardwareMap);
+        robot.drive.zeroEncoders();
+        robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -73,6 +76,23 @@ public class MecanumTest extends LinearOpMode {
             } else {
                 robot.drive.driveMecanum(-gamepad1.left_stick_y,-gamepad1.left_stick_x,gamepad1.right_stick_x);
             }
+
+            if (gamepad1.right_trigger>.1) {
+                robot.intake.setSpeed(gamepad1.right_trigger);
+            } else {
+                robot.intake.setSpeed(-gamepad1.left_trigger);
+            }
+
+            double FL = robot.drive.FLMotor.getCurrentPosition();
+            double FR = robot.drive.FRMotor.getCurrentPosition();
+            double BL = robot.drive.BLMotor.getCurrentPosition();
+            double BR = robot.drive.BRMotor.getCurrentPosition();
+
+            telemetry.addData("Encoder Counts",robot.drive.getStrafeEncoderAverage());
+            telemetry.addData("FL",FL);
+            telemetry.addData("FR",FR);
+            telemetry.addData("BL",BL);
+            telemetry.addData("BR",BR);
 
             telemetry.update();
         }
