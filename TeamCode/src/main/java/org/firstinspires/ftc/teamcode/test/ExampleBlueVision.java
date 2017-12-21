@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.test;
 
-import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
+//import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
+
+import com.disnodeteam.dogecv.OpenCVPipeline;
+
 import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -29,6 +32,11 @@ public class ExampleBlueVision extends OpenCVPipeline {
     private Mat thresholded = new Mat();
     private Mat thresholded_rgba = new Mat();
 
+    @Override
+    public Mat processFrame(Mat rgba, Mat gray) {
+        return null;
+    }
+
     public enum order{
         blueFirst,
         redFirst,
@@ -42,7 +50,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
     }
 
     // This is called every camera frame.
-    @Override
+    //@Override
     public Mat processFrame(Mat frame) {
         // First, we change the colorspace from RGBA to HSV, which is usually better for color
         //Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);

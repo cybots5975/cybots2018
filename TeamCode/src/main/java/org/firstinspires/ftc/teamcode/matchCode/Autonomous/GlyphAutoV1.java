@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
+//import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
@@ -62,7 +62,7 @@ public class GlyphAutoV1 extends LinearOpMode{
                 ExampleBlueVision.jewelsOrder = unknown;
                 blueVision = new ExampleBlueVision();
                 // can replace with ActivityViewDisplay.getInstance() for fullscreen
-                blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+                //blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
                 blueVision.setShowBlue(false);
                 // start the vision system
                 blueVision.enable();

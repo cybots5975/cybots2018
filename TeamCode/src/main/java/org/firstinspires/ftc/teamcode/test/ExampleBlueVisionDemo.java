@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.test;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
+//import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 
 /**
  * Created by guinea on 10/5/17.
@@ -19,7 +19,7 @@ public class ExampleBlueVisionDemo extends OpMode {
     public void init() {
         blueVision = new ExampleBlueVision();
         // can replace with ActivityViewDisplay.getInstance() for fullscreen
-        blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        //blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         blueVision.setShowBlue(false);
         // start the vision system
         blueVision.enable();

@@ -35,7 +35,7 @@ package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
+//import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.general.ClosableVuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;
@@ -79,7 +79,7 @@ public class TeleopTemplateCV1 extends LinearOpMode {
 
         blueVision = new ExampleBlueVision();
         // can replace with ActivityViewDisplay.getInstance() for fullscreen
-        blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        //blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         blueVision.setShowBlue(false);
         // start the vision system
         blueVision.enable();

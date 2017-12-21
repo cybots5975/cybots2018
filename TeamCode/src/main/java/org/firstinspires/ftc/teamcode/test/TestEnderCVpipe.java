@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.test;
 
-import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
+//import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
+
+import com.disnodeteam.dogecv.OpenCVPipeline;
+
 import org.opencv.core.Mat;
 
 /**
@@ -8,9 +11,14 @@ import org.opencv.core.Mat;
  */
 
 public class TestEnderCVpipe extends OpenCVPipeline {
-    @Override
+    //@Override
     public Mat processFrame(Mat rgba) {
 
+        return null;
+    }
+
+    @Override
+    public Mat processFrame(Mat rgba, Mat gray) {
         return null;
     }
 }
