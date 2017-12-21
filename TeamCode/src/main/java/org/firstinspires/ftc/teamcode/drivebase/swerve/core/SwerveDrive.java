@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -29,15 +30,14 @@ public class SwerveDrive {
     public int count;
     public boolean done = false;
     boolean doa = false;
+    public LinearOpMode opMode;
 
-    private double SCALEDPOWER = 1;
-
-    public SwerveDrive(IMU imuDS, IMU imuPS,
+    public SwerveDrive(LinearOpMode opMode, IMU imuDS, IMU imuPS,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
                        DcMotor BLMotor, CRServo BLServo, AnalogInput BLSensor,
                        DcMotor FRMotor, CRServo FRServo, AnalogInput FRSensor,
                        DcMotor BRMotor, CRServo BRServo, AnalogInput BRSensor){
-
+        this.opMode = opMode;
 
         this.FLMotor = FLMotor;
         this.BLMotor = BLMotor;
@@ -384,6 +384,7 @@ public class SwerveDrive {
     }
 
     public void zeroEncoders(){
+
         FLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -415,33 +416,33 @@ public class SwerveDrive {
         return (int)(FL+FR+BL+BR)/4;
     }
 
-    public void encoderStrafe(double power, int encoder, boolean stop){
+    public void encoderStrafe(double power, int encoder){
         if (encoder>0) {
-            while (getStrafeEncoderAverage()<encoder&&!stop) {
+            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
                 driveMecanum(0,-power,0);
             }
         } else {
-            while (getStrafeEncoderAverage()>encoder&&!stop) {
+            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
                 driveMecanum(0,-power,0);
             }
         }
         driveMecanum(0,0,0);
     }
 
-    public void encoderFwd(double power, int encoder, boolean stop) {
+    public void encoderFwd(double power, int encoder) {
         if (encoder>0) {
-            while (getFwdEncoderAverage()<encoder&&!stop) {
+            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()) {
                 driveMecanum(power,0,0);
             }
         } else {
-            while (getFwdEncoderAverage()>encoder&&!stop) {
+            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()) {
                 driveMecanum(power,0,0);
             }
         }
         driveMecanum(0,0,0);
     }
 
-    public void encoderPidStrafeDistance(double power, int encoder, boolean stop, boolean gyroOn) {
+    public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {
 
     }
 

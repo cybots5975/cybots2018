@@ -31,6 +31,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
     public void runOpMode() {
         robot.Vuforia = true;
         robot.init(hardwareMap);
+        robot.setOpMode(this);
         robot.drive.zeroEncoders();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.VuMark1.activate();
@@ -64,52 +65,20 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
 
             blueVision.setShowBlue(true);
 
-            robot.pause(2,isStopRequested());
+            robot.pause(2);
 
-            //jewelsOrder = jewelsOrder.blueFirst;
-            switch (jewelsOrder) {
-                case blueFirst:
-                    robot.runtime.reset();
-                    while (robot.runtime.seconds() < 2) {
-                        robot.JewelKick.setPosition(0);
-                        telemetry.addData("Red jewel","stop");
-                        telemetry.update();
-                    }
-                    robot.JewelKick.setPosition(kickCenter);
-                    robot.JewelArm.setPosition(raisedArm);
-                    break;
-                case redFirst:
-                    robot.runtime.reset();
-                    while (robot.runtime.seconds() < 2) {
-                        robot.JewelKick.setPosition(1);
-                        telemetry.addData("Blue jewel","stop");
-                        telemetry.update();
-                    }
-                    robot.JewelKick.setPosition(kickCenter);
-                    robot.JewelArm.setPosition(raisedArm);
-                    break;
-            }
+            scoreJewel();
 
-            robot.pause(1.5,isStopRequested());
+            robot.pause(1.5);
 
-            switch (VuMark) {
-                case LEFT:
-                    encoderCounts = -1460-325;
-                    break;
-                case CENTER:
-                    encoderCounts = -1460;
-                    break;
-                case RIGHT:
-                    encoderCounts = -1460+400;
-                    break;
-            }
+            setVuMarkColumn();
 
-            robot.drive.encoderStrafe(-.25,encoderCounts,isStopRequested());
-            robot.pause(1,isStopRequested());
+            robot.drive.encoderStrafe(-.25,encoderCounts);
+            robot.pause(1);
             robot.intake.setSpeed(-1);
-            robot.drive.encoderFwd(.25,300,isStopRequested());
-            robot.pause(1,isStopRequested());
-            robot.drive.encoderFwd(-.25,0,isStopRequested());
+            robot.drive.encoderFwd(.25,300);
+            robot.pause(1);
+            robot.drive.encoderFwd(-.25,0);
 
             robot.intake.setSpeed(0);
 
@@ -117,6 +86,45 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
             blueVision.disable();
 
             loop = false;
+        }
+    }
+
+    private void scoreJewel(){
+        switch (jewelsOrder) {
+            case blueFirst:
+                robot.runtime.reset();
+                while (robot.runtime.seconds() < 2) {
+                    robot.JewelKick.setPosition(0);
+                    telemetry.addData("Red jewel","stop");
+                    telemetry.update();
+                }
+                robot.JewelKick.setPosition(kickCenter);
+                robot.JewelArm.setPosition(raisedArm);
+                break;
+            case redFirst:
+                robot.runtime.reset();
+                while (robot.runtime.seconds() < 2) {
+                    robot.JewelKick.setPosition(1);
+                    telemetry.addData("Blue jewel","stop");
+                    telemetry.update();
+                }
+                robot.JewelKick.setPosition(kickCenter);
+                robot.JewelArm.setPosition(raisedArm);
+                break;
+        }
+    }
+
+    private void setVuMarkColumn(){
+        switch (VuMark) {
+            case LEFT:
+                encoderCounts = -1460-325;
+                break;
+            case CENTER:
+                encoderCounts = -1460;
+                break;
+            case RIGHT:
+                encoderCounts = -1460+400;
+                break;
         }
     }
 }
