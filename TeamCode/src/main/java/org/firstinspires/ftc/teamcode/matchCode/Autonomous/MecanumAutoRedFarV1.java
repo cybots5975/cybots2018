@@ -16,9 +16,9 @@ import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.order.unknow
  * Created by kskrueger on 10/22/17.
  */
 
-@Autonomous(name="Red Close V1", group="Mecanum")
+@Autonomous(name="Red Far V1", group="Mecanum")
 //@Disabled
-public class MecanumAutoRedCloseV1 extends LinearOpMode {
+public class MecanumAutoRedFarV1 extends LinearOpMode {
     private RelicRecoveryVuMark VuMark;
     private int encoderCounts;
     private double kickCenter = .45, raisedArm = .02;
@@ -94,19 +94,29 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
 
             switch (VuMark) {
                 case LEFT:
-                    encoderCounts = -1460-325;
+                    encoderCounts = 700+325;
                     break;
                 case CENTER:
-                    encoderCounts = -1460;
+                    encoderCounts = 700;
                     break;
                 case RIGHT:
-                    encoderCounts = -1460+400;
+                    encoderCounts = 700-325;
                     break;
             }
 
-            robot.drive.encoderStrafe(-.25,encoderCounts,isStopRequested());
+            robot.drive.encoderFwd(-.25,-960,isStopRequested()); //drive backwards off stone
+
+            gyroTurn(.1,90,1); //turn 90 degrees to the left
+
+            robot.drive.zeroEncoders();
+            robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.drive.encoderFwd(.25,1000,isStopRequested());
+
+            robot.drive.encoderStrafe(.25,encoderCounts,isStopRequested());
             robot.pause(1,isStopRequested());
             robot.intake.setSpeed(-1);
+            robot.drive.zeroEncoders();
+            robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.drive.encoderFwd(.25,300,isStopRequested());
             robot.pause(1,isStopRequested());
             robot.drive.encoderFwd(-.25,0,isStopRequested());
@@ -118,5 +128,23 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
 
             loop = false;
         }
+    }
+
+    private double kP = .1, kD = .08, kI = 0;
+    private double dt, lastTime;
+    public void gyroTurn (double turnSpeed, int targetAngle, int error) {
+        while (Math.abs(robot.drive.getAvgHeading()-targetAngle)>error) {
+
+            dt = (System.currentTimeMillis() - lastTime);
+
+            double pidOffset = robot.drive.PID(kP, kI, kD, 10, targetAngle, (int) robot.drive.getAvgHeading());
+
+            double power = -pidOffset * turnSpeed;
+            //set power to motors
+            robot.drive.driveMecanum(0, 0, power);
+            lastTime = System.currentTimeMillis();
+            sleep(10);
+        }
+        robot.drive.driveMecanum(0,0,0);
     }
 }

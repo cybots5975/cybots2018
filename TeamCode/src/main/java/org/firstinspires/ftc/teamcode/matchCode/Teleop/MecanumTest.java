@@ -62,11 +62,11 @@ public class MecanumTest extends LinearOpMode {
                 stateButton = !stateButton;
                 if(stateButton) {
                     modeField = true;
-                    telemetry.addData("Mode","Robot Centric");
+                    telemetry.addData("Mode","Field Centric");
                 } else {
                     //other mode here
                     modeField = false;
-                    telemetry.addData("Mode","Field Centric");
+                    telemetry.addData("Mode","Robot Centric");
                 }
             }
             lastButton = gamepad1.a;
@@ -83,12 +83,18 @@ public class MecanumTest extends LinearOpMode {
                 robot.intake.setSpeed(-gamepad1.left_trigger);
             }
 
+            if (gamepad1.b) {
+                robot.drive.zeroEncoders();
+                robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
             double FL = robot.drive.FLMotor.getCurrentPosition();
             double FR = robot.drive.FRMotor.getCurrentPosition();
             double BL = robot.drive.BLMotor.getCurrentPosition();
             double BR = robot.drive.BRMotor.getCurrentPosition();
 
-            telemetry.addData("Encoder Counts",robot.drive.getStrafeEncoderAverage());
+            telemetry.addData("Encoder Strafe",robot.drive.getStrafeEncoderAverage());
+            telemetry.addData("Fwd Encoder",robot.drive.getFwdEncoderAverage());
             telemetry.addData("FL",FL);
             telemetry.addData("FR",FR);
             telemetry.addData("BL",BL);

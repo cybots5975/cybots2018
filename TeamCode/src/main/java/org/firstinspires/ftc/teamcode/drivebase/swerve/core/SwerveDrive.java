@@ -415,18 +415,34 @@ public class SwerveDrive {
         return (int)(FL+FR+BL+BR)/4;
     }
 
-    public void encoderStrafe(double power, int encoder){
-        while (getStrafeEncoderAverage()>encoder) {
-            driveMecanum(0,power,0);
+    public void encoderStrafe(double power, int encoder, boolean stop){
+        if (encoder>0) {
+            while (getStrafeEncoderAverage()<encoder&&!stop) {
+                driveMecanum(0,-power,0);
+            }
+        } else {
+            while (getStrafeEncoderAverage()>encoder&&!stop) {
+                driveMecanum(0,-power,0);
+            }
         }
         driveMecanum(0,0,0);
     }
 
-    public void encoderFwd(double power, int encoder) {
-        while (getStrafeEncoderAverage()<power) {
-            driveMecanum(0,power,0);
+    public void encoderFwd(double power, int encoder, boolean stop) {
+        if (encoder>0) {
+            while (getFwdEncoderAverage()<encoder&&!stop) {
+                driveMecanum(power,0,0);
+            }
+        } else {
+            while (getFwdEncoderAverage()>encoder&&!stop) {
+                driveMecanum(power,0,0);
+            }
         }
         driveMecanum(0,0,0);
+    }
+
+    public void encoderPidStrafeDistance(double power, int encoder, boolean stop, boolean gyroOn) {
+
     }
 
 }
