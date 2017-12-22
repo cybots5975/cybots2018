@@ -4,14 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-//import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
-import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
 
 import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.jewelsOrder;
-import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.order.unknown;
 
 /**
  * Created by kskrueger on 10/22/17.
@@ -25,8 +22,6 @@ public class GlyphAutoV1 extends LinearOpMode{
     double driveTime, distance;
     private double kickCenter = .45, raisedArm = .02;
     boolean loop = true;
-
-    ExampleBlueVision blueVision;
 
     Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
     //SwerveDrive drive;
@@ -59,15 +54,7 @@ public class GlyphAutoV1 extends LinearOpMode{
         if (isStarted()) {
             while(opModeIsActive()&&loop&&!isStopRequested()) {
                 robot.JewelArm.setPosition(1);
-                ExampleBlueVision.jewelsOrder = unknown;
-                blueVision = new ExampleBlueVision();
-                // can replace with ActivityViewDisplay.getInstance() for fullscreen
-                //blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-                blueVision.setShowBlue(false);
-                // start the vision system
-                blueVision.enable();
 
-                blueVision.setShowBlue(true);
 
                 pause(4,false);
 
@@ -144,8 +131,7 @@ public class GlyphAutoV1 extends LinearOpMode{
 
                 robot.intake.setSpeed(0);
 
-                blueVision.setShowBlue(false);
-                blueVision.disable();
+                
 
                 loop = false;
             }

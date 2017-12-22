@@ -77,6 +77,17 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
         viewDisplay.setCurrentView(context, getCameraView());
     }
 
+    public void enableCustom(Mat rgba, Mat gray) {
+        if (!initStarted) throw new IllegalStateException("init() needs to be called before an OpenCVPipeline can be enabled!");
+        // this is an absolute hack
+        try {
+            while (!inited) Thread.sleep(10);
+        } catch (InterruptedException e) { return; }
+
+        //cameraView.enableView();
+        //viewDisplay.setCurrentView(context,  onCameraFrameCustom(rgba, gray));
+    }
+
     /**
      * Detaches the JavaCameraView from the camera and the screen, stopping OpenCV processing.
      * Be careful not to:
@@ -125,6 +136,11 @@ public abstract class OpenCVPipeline implements CameraBridgeViewBase.CvCameraVie
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
 
         return processFrame(inputFrame.rgba(), inputFrame.gray());
+    }
+
+    public Mat onCameraFrameCustom(Mat rgba, Mat gray){
+
+        return processFrame(rgba, gray);
     }
 
     /**

@@ -51,10 +51,10 @@ public class TestMA3 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        motor = (DcMotorImplEx) hardwareMap.dcMotor.get("motor");
+        motor = (DcMotorImplEx) hardwareMap.dcMotor.get("DS1");
 
-        enc = new MA3Encoder(hardwareMap,"enc");
-        enc.setMaxVoltage(5);
+        enc = new MA3Encoder(hardwareMap,"DSe1");
+        enc.setMaxVoltage(5.12);
         enc.setZeroVoltage(0);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
