@@ -30,14 +30,14 @@ public class SwerveDrive {
     public int count;
     public boolean done = false;
     boolean doa = false;
-    public LinearOpMode opMode;
+    //public LinearOpMode opMode;
 
     public SwerveDrive(LinearOpMode opMode, IMU imuDS, IMU imuPS,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
                        DcMotor BLMotor, CRServo BLServo, AnalogInput BLSensor,
                        DcMotor FRMotor, CRServo FRServo, AnalogInput FRSensor,
                        DcMotor BRMotor, CRServo BRServo, AnalogInput BRSensor){
-        this.opMode = opMode;
+        //this.opMode = opMode;
 
         this.FLMotor = FLMotor;
         this.BLMotor = BLMotor;
@@ -418,11 +418,11 @@ public class SwerveDrive {
 
     public void encoderStrafe(double power, int encoder){
         if (encoder>0) {
-            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+            while (getStrafeEncoderAverage()<encoder/*&&!opMode.isStopRequested()*/) {
                 driveMecanum(0,-power,0);
             }
         } else {
-            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+            while (getStrafeEncoderAverage()>encoder/*&&!opMode.isStopRequested()*/) {
                 driveMecanum(0,-power,0);
             }
         }
@@ -431,11 +431,11 @@ public class SwerveDrive {
 
     public void encoderFwd(double power, int encoder) {
         if (encoder>0) {
-            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+            while (getFwdEncoderAverage()<encoder/*&&!opMode.isStopRequested()*/) {
                 driveMecanum(power,0,0);
             }
         } else {
-            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+            while (getFwdEncoderAverage()>encoder/*&&!opMode.isStopRequested()*/) {
                 driveMecanum(power,0,0);
             }
         }

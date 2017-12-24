@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.test;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
+import com.disnodeteam.dogecv.CameraViewDisplay;
 
 /**
  * Created by guinea on 10/5/17.

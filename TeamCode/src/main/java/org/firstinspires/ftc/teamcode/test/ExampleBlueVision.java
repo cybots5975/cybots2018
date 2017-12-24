@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.test;
 
-import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
+import com.disnodeteam.dogecv.OpenCVPipeline;
 import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -43,7 +43,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
     // This is called every camera frame.
     @Override
-    public Mat processFrame(Mat frame) {
+    public Mat processFrame(Mat frame, Mat gray) {
         // First, we change the colorspace from RGBA to HSV, which is usually better for color
         //Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
         // Then, we threshold our hsv image so that we get a black/white binary image where white

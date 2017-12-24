@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.matchCode.Autonomous;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
@@ -13,9 +13,9 @@ import org.firstinspires.ftc.teamcode.general.Robot;
  * Created by kskrueger on 12/20/17.
  */
 
-@Autonomous(name="Red Close V1", group="Mecanum")
+@Autonomous(name="Red Close V1 Non Linear", group="Mecanum")
 //@Disabled
-public class MecanumAutoRedCloseV1 extends LinearOpMode {
+public class MecanumAutoRedCloseV1OpMode extends OpMode {
     private RelicRecoveryVuMark VuMark;
     private int encoderCounts;
     private double kickCenter = .45, raisedArm = .02;
@@ -27,10 +27,10 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
     JewelDetector.JewelOrder jewelOrder;
 
     @Override
-    public void runOpMode() {
+    public void init() {
         robot.Vuforia = true;
         robot.init(hardwareMap);
-        robot.setOpMode(this);
+        //robot.setOpMode(this);
         robot.drive.zeroEncoders();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -49,7 +49,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
 
         robot.VuMark1.activate();
 
-        while (!isStarted()&&!isStopRequested()) {
+        /*while (true) {
             telemetry.addData("VuMark",robot.VuMark1.scan().toString());
             if (robot.VuMark1.scan().equals(RelicRecoveryVuMark.UNKNOWN)) {
                 VuMark = RelicRecoveryVuMark.CENTER;
@@ -58,14 +58,26 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
             }
             telemetry.addData("Status", "Initialized");
             telemetry.update();
+        }*/
+    }
+
+    @Override
+    public void init_loop(){
+        telemetry.addData("VuMark",robot.VuMark1.scan().toString());
+        if (robot.VuMark1.scan().equals(RelicRecoveryVuMark.UNKNOWN)) {
+            VuMark = RelicRecoveryVuMark.CENTER;
+        } else {
+            VuMark = robot.VuMark1.scan();
         }
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+    }
 
+    @Override
+    public void loop() {
         robot.VuMark1.close();
-        //AutoTransitioner.transitionOnStop(this, "Teleop V1");
-        waitForStart();
-
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()&&loop&&!isStopRequested()) {
+        while (loop) {
             jewelDetector.enable(); //enable jewel detection
             robot.intake.init(); //initialize robot
             robot.JewelArm.setPosition(1); //set jewel arm to start position
@@ -81,12 +93,12 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
 
             setVuMarkColumn();
 
-            robot.drive.encoderStrafe(-.25,encoderCounts);
+            robot.drive.encoderStrafe(-.25, encoderCounts);
             robot.pause(1);
             robot.intake.setSpeed(-1);
-            robot.drive.encoderFwd(.25,300);
+            robot.drive.encoderFwd(.25, 300);
             robot.pause(1);
-            robot.drive.encoderFwd(-.25,0);
+            robot.drive.encoderFwd(-.25, 0);
 
             robot.intake.setSpeed(0);
 
@@ -94,13 +106,13 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
         }
     }
 
-    private void scoreJewel(JewelDetector.JewelOrder jewelOrder){
+    private void scoreJewel(JewelDetector.JewelOrder jewelOrder) {
         switch (jewelOrder) {
             case RED_BLUE:
                 robot.runtime.reset();
                 while (robot.runtime.seconds() < 2) {
                     robot.JewelKick.setPosition(0);
-                    telemetry.addData("Red jewel","stop");
+                    telemetry.addData("Red jewel", "stop");
                     telemetry.update();
                 }
                 robot.JewelKick.setPosition(kickCenter);
@@ -110,7 +122,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
                 robot.runtime.reset();
                 while (robot.runtime.seconds() < 2) {
                     robot.JewelKick.setPosition(1);
-                    telemetry.addData("Blue jewel","stop");
+                    telemetry.addData("Blue jewel", "stop");
                     telemetry.update();
                 }
                 robot.JewelKick.setPosition(kickCenter);
@@ -122,16 +134,16 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
         }
     }
 
-    private void setVuMarkColumn(){
+    private void setVuMarkColumn() {
         switch (VuMark) {
             case LEFT:
-                encoderCounts = -1460-325;
+                encoderCounts = -1460 - 325;
                 break;
             case CENTER:
                 encoderCounts = -1460;
                 break;
             case RIGHT:
-                encoderCounts = -1460+400;
+                encoderCounts = -1460 + 400;
                 break;
         }
     }

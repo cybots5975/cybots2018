@@ -35,7 +35,7 @@ package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
+import com.disnodeteam.dogecv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.general.ClosableVuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;

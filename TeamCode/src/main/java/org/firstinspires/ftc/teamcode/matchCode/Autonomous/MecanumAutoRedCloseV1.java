@@ -1,19 +1,16 @@
 package org.firstinspires.ftc.teamcode.matchCode.Autonomous;
 
+import com.disnodeteam.dogecv.CameraViewDisplay;
+import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.general.Robot;
-import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
-
-import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.jewelsOrder;
-import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.order.unknown;
 
 /**
- * Created by kskrueger on 10/22/17.
+ * Created by kskrueger on 12/20/17.
  */
 
 @Autonomous(name="Red Close V1", group="Mecanum")
@@ -22,10 +19,12 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
     private RelicRecoveryVuMark VuMark;
     private int encoderCounts;
     private double kickCenter = .45, raisedArm = .02;
-
-    private ExampleBlueVision blueVision;
     private Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
     private boolean loop = true;
+
+    JewelDetector jewelDetector = null;
+
+    JewelDetector.JewelOrder jewelOrder;
 
     @Override
     public void runOpMode() {
@@ -34,6 +33,20 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
         robot.setOpMode(this);
         robot.drive.zeroEncoders();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        jewelDetector = new JewelDetector();
+        jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+
+        //Jewel Detector Settings
+        jewelDetector.areaWeight = 0.02;
+        jewelDetector.detectionMode = JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
+        //jewelDetector.perfectArea = 6500; <- Needed for PERFECT_AREA
+        jewelDetector.debugContours = true;
+        jewelDetector.maxDiffrence = 15;
+        jewelDetector.ratioWeight = 15;
+        jewelDetector.minArea = 700;
+
         robot.VuMark1.activate();
 
         while (!isStarted()&&!isStopRequested()) {
@@ -48,26 +61,22 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
         }
 
         robot.VuMark1.close();
+        jewelDetector.enable();
         //AutoTransitioner.transitionOnStop(this, "Teleop V1");
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()&&loop&&!isStopRequested()) {
-            robot.intake.init();
-            robot.JewelArm.setPosition(1);
-            ExampleBlueVision.jewelsOrder = unknown;
-            blueVision = new ExampleBlueVision();
-            // can replace with ActivityViewDisplay.getInstance() for fullscreen
-            blueVision.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-            blueVision.setShowBlue(false);
-            // start the vision system
-            blueVision.enable();
+            //jewelDetector.enable(); //enable jewel detection
+            robot.intake.init(); //initialize robot
+            robot.JewelArm.setPosition(1); //set jewel arm to start position
+            robot.pause(5);
+            jewelOrder = jewelDetector.getCurrentOrder(); //set the current order to the jewelOrder enum
+            jewelDetector.disable(); //diable the jewel detector after
 
-            blueVision.setShowBlue(true);
+            robot.pause(.5); //wait .5 seconds to diable, then score the jewel
 
-            robot.pause(2);
-
-            scoreJewel();
+            scoreJewel(jewelOrder);
 
             robot.pause(1.5);
 
@@ -82,16 +91,13 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
 
             robot.intake.setSpeed(0);
 
-            blueVision.setShowBlue(false);
-            blueVision.disable();
-
             loop = false;
         }
     }
 
-    private void scoreJewel(){
-        switch (jewelsOrder) {
-            case blueFirst:
+    private void scoreJewel(JewelDetector.JewelOrder jewelOrder){
+        switch (jewelOrder) {
+            case RED_BLUE:
                 robot.runtime.reset();
                 while (robot.runtime.seconds() < 2) {
                     robot.JewelKick.setPosition(0);
@@ -101,7 +107,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
                 robot.JewelKick.setPosition(kickCenter);
                 robot.JewelArm.setPosition(raisedArm);
                 break;
-            case redFirst:
+            case BLUE_RED:
                 robot.runtime.reset();
                 while (robot.runtime.seconds() < 2) {
                     robot.JewelKick.setPosition(1);
@@ -110,6 +116,9 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
                 }
                 robot.JewelKick.setPosition(kickCenter);
                 robot.JewelArm.setPosition(raisedArm);
+                break;
+            case UNKNOWN:
+
                 break;
         }
     }

@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.matchCode.Autonomous;
 
+import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.corningrobotics.enderbots.endercv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.general.Robot;
 import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
@@ -13,12 +13,12 @@ import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.jewelsOrder;
 import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.order.unknown;
 
 /**
- * Created by kskrueger on 10/22/17.
+ * Created by kskrueger on 12/20/17.
  */
 
 @Autonomous(name="Red Far V1", group="Mecanum")
 //@Disabled
-public class MecanumAutoRedFarV1 extends LinearOpMode {
+public class MecanumAutoRedFarV1 extends LinearOpMode{
     private RelicRecoveryVuMark VuMark;
     private int encoderCounts;
     private double kickCenter = .45, raisedArm = .02;
@@ -31,6 +31,7 @@ public class MecanumAutoRedFarV1 extends LinearOpMode {
     public void runOpMode() {
         robot.Vuforia = true;
         robot.init(hardwareMap);
+        robot.setOpMode(this);
         robot.drive.zeroEncoders();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.VuMark1.activate();
@@ -64,7 +65,7 @@ public class MecanumAutoRedFarV1 extends LinearOpMode {
 
             blueVision.setShowBlue(true);
 
-            robot.pause(2,isStopRequested());
+            robot.pause(2);
 
             //jewelsOrder = jewelsOrder.blueFirst;
             switch (jewelsOrder) {
@@ -90,7 +91,7 @@ public class MecanumAutoRedFarV1 extends LinearOpMode {
                     break;
             }
 
-            robot.pause(1.5,isStopRequested());
+            robot.pause(1.5);
 
             switch (VuMark) {
                 case LEFT:
@@ -104,22 +105,22 @@ public class MecanumAutoRedFarV1 extends LinearOpMode {
                     break;
             }
 
-            robot.drive.encoderFwd(-.25,-960,isStopRequested()); //drive backwards off stone
+            robot.drive.encoderFwd(-.25,-960); //drive backwards off stone
 
             gyroTurn(.1,90,1); //turn 90 degrees to the left
 
             robot.drive.zeroEncoders();
             robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.drive.encoderFwd(.25,1000,isStopRequested());
+            robot.drive.encoderFwd(.25,1000);
 
-            robot.drive.encoderStrafe(.25,encoderCounts,isStopRequested());
-            robot.pause(1,isStopRequested());
+            robot.drive.encoderStrafe(.25,encoderCounts);
+            robot.pause(1);
             robot.intake.setSpeed(-1);
             robot.drive.zeroEncoders();
             robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.drive.encoderFwd(.25,300,isStopRequested());
-            robot.pause(1,isStopRequested());
-            robot.drive.encoderFwd(-.25,0,isStopRequested());
+            robot.drive.encoderFwd(.25,300);
+            robot.pause(1);
+            robot.drive.encoderFwd(-.25,0);
 
             robot.intake.setSpeed(0);
 

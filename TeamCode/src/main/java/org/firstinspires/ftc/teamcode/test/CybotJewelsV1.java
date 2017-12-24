@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.test;
 
-import org.corningrobotics.enderbots.endercv.OpenCVPipeline;
+import com.disnodeteam.dogecv.OpenCVPipeline;
 import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -34,7 +34,7 @@ public class CybotJewelsV1 extends OpenCVPipeline {
 
     // This is called every camera frame.
     @Override
-    public Mat processFrame(Mat frame) {
+    public Mat processFrame(Mat frame, Mat gray) {
         Mat output = process(frame);
 
         return output;
