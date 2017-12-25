@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
 public class CryptoboxDetector extends OpenCVPipeline {
 
     public enum CryptoboxDetectionMode {
@@ -28,7 +27,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
         VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
     }
 
-
     public CryptoboxDetectionMode detectionMode      = CryptoboxDetectionMode.HSV_RED;
     public double                 downScaleFactor    = 0.6;
     public boolean                rotateMat          = false;
@@ -36,11 +34,9 @@ public class CryptoboxDetector extends OpenCVPipeline {
     public int                    centerOffset       = 0;
     public boolean                debugShowMask      = true;
 
-
     private boolean CryptoBoxDetected = false;
     private boolean ColumnDetected = false;
     private int[] CryptoBoxPositions = new int[3];
-
 
     Scalar lower = new Scalar(90, 135, 25);
     Scalar upper = new Scalar(130, 250, 150);
@@ -55,7 +51,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
     Mat kernel = Mat.ones(5,5,CvType.CV_32F);
 
     private Size newSize = new Size();
-
 
     @Override
     public Mat[] processFrame(Mat rgba, Mat gray) {
@@ -231,7 +226,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
         return mask;
     }
 
-
     public Point drawSlot(int slot, List<Rect> boxes){
         Rect leftColumn = boxes.get(slot); //Get the pillar to the left
         Rect rightColumn = boxes.get(slot + 1); //Get the pillar to the right
@@ -307,7 +301,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
         int center = (int)(newSize.width / 2) + centerOffset;
         return  CryptoBoxPositions[2] - center;
     }
-
 
     public Size getFrameSize() {
         return newSize;

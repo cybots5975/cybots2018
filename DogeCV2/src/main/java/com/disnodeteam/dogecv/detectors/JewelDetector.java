@@ -4,7 +4,6 @@ package com.disnodeteam.dogecv.detectors;
 import com.disnodeteam.dogecv.OpenCVPipeline;
 
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
@@ -29,21 +28,18 @@ public class JewelDetector extends OpenCVPipeline {
         UNKNOWN
     }
 
-
-
-
     public enum JewelDetectionMode {
-        PERFECT_AREA, MAX_AREA
+        PERFECT_AREA,
+        MAX_AREA
     }
 
     public enum JewelDetectionSpeed {
         VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
     }
 
-
     public JewelDetectionMode  detectionMode    = JewelDetectionMode.MAX_AREA;
     public double              downScaleFactor  = 0.4;
-    public boolean             rotateMat        = false;
+    public boolean             rotateMat        = true;
     public JewelDetectionSpeed speed            = JewelDetectionSpeed.BALANCED;
     public double              perfectArea      = 6500;
     public double              areaWeight       = 0.05; // Since we're dealing with 100's of pixels
