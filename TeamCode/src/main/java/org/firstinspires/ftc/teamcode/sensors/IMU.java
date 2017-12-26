@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.sensors;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -53,27 +52,5 @@ public class IMU {
         angleError -= (360*Math.floor(0.5+((angleError)/360.0)));
 
         return angleError;
-    }
-
-    public void setPIDVariables(double kP, double kI, double kD, double dt) {
-        this.kP = kP;
-        this.kI = kI;
-        this.kD = kD;
-        this.dt = dt;
-        PIDVariablesSet = true;
-    }
-
-    public double getPIDPower(double targetAngle, double powerDivider) {
-        double pidOutput = pidMath(targetAngle)/powerDivider;
-        Range.clip(pidOutput,-1,1);
-        return pidOutput;
-    }
-
-    private double pidMath(double targetValue) {
-        int error = (int)getError(targetValue);
-        integral += kI * error * dt;
-        double u = (kP * error + integral + kD * (error - previousError) / dt);
-        previousError = error;
-        return u;
     }
 }
