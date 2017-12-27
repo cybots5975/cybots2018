@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.teamcode.drivebase.VectorDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive;
 import org.firstinspires.ftc.teamcode.general.Robot;
 
 /**

@@ -8,11 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * Created by kskrueger on 12/1/17.
  */
 
-public class Outtake {
+public class GlyphHopper {
     private DcMotor armMotor1, armMotor2;
     private CRServoImplEx clampLeft, clampRight, belt;
 
-    public Outtake (DcMotor flipMotor1, DcMotor flipMotor2, CRServoImplEx clampLeft, CRServoImplEx clampRight, CRServoImplEx belt) {
+    public GlyphHopper(DcMotor flipMotor1, DcMotor flipMotor2, CRServoImplEx clampLeft, CRServoImplEx clampRight, CRServoImplEx belt) {
         this.armMotor1 = flipMotor1;
         this.armMotor2 = flipMotor2;
         this.clampLeft = clampLeft;

@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.drivebase.mecanum.core;
+package org.firstinspires.ftc.teamcode.subsystems.drivebase.mecanum;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drivebase.VectorDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
 
 import java.util.Arrays;

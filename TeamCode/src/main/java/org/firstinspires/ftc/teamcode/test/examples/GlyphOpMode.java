@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.test.Examples;
+package org.firstinspires.ftc.teamcode.test.examples;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.GlyphDetector;

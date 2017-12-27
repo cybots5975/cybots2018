@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
+package org.firstinspires.ftc.teamcode.subsystems.drivebase.swerve;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drivebase.VectorDrive;
+import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive;
 import org.firstinspires.ftc.teamcode.general.Constants;
 import org.firstinspires.ftc.teamcode.logging.ArrayLogging;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
