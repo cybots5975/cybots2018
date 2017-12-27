@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.drivebase.VectorDrive;
 import org.firstinspires.ftc.teamcode.general.Constants;
 import org.firstinspires.ftc.teamcode.logging.ArrayLogging;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
@@ -19,7 +20,7 @@ import static java.lang.Math.sin;
  * Created by Karter Krueger on 10/10/17.
  */
 
-public class SwerveDrive {
+public class SwerveDrive extends VectorDrive{
     private Module D1, D2, P1, P2;
     public DcMotor FLMotor;
     public DcMotor BLMotor;
@@ -32,20 +33,23 @@ public class SwerveDrive {
     boolean doa = false;
     //public LinearOpMode opMode;
 
-    public SwerveDrive(LinearOpMode opMode, IMU imuDS, IMU imuPS,
+    public SwerveDrive(LinearOpMode opMode,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
                        DcMotor BLMotor, CRServo BLServo, AnalogInput BLSensor,
                        DcMotor FRMotor, CRServo FRServo, AnalogInput FRSensor,
                        DcMotor BRMotor, CRServo BRServo, AnalogInput BRSensor){
+        super(opMode,
+                FLMotor,
+                BLMotor,
+                FRMotor,
+                BRMotor);
+
         //this.opMode = opMode;
 
         this.FLMotor = FLMotor;
         this.BLMotor = BLMotor;
         this.FRMotor = FRMotor;
         this.BRMotor = BRMotor;
-
-        this.imu = imuDS;
-        this.imu2 = imuPS;
 
         //define the 4 swerve drive modules with motor,servo,encoder sensor,and starting voltage
         D1 = new Module(FLMotor,FLServo,FLSensor, Constants.FL_OFFSET); //driver side module 1
@@ -109,13 +113,6 @@ public class SwerveDrive {
         D2.holdAngle(angle);
         P1.holdAngle(angle);
         P2.holdAngle(angle);
-    }
-
-    public void resetEncoders() {
-        FLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     //used to zero all the modules when reset is needed
@@ -335,6 +332,10 @@ public class SwerveDrive {
         log.storeValueInt(31,count,P2.targetOp);
     }
 
+    public enum direction {
+        FORWARD, STRAFE, TURN
+    }
+
     public void driveMecanum(double forwards, double horizontal, double turning) {
         double leftFront = forwards + horizontal + turning;
         double leftBack = forwards - horizontal + turning;
@@ -384,11 +385,23 @@ public class SwerveDrive {
     }
 
     public void zeroEncoders(){
+        //save the mode of each motor encoder
+        DcMotor.RunMode FLMode = FLMotor.getMode();
+        DcMotor.RunMode FRMode = FRMotor.getMode();
+        DcMotor.RunMode BLMode = BLMotor.getMode();
+        DcMotor.RunMode BRMode = BRMotor.getMode();
 
+        //reset the encoders
         FLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BLMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BRMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //restore motors back to original mode
+        FLMotor.setMode(FLMode);
+        FRMotor.setMode(FRMode);
+        BLMotor.setMode(BLMode);
+        BRMotor.setMode(BRMode);
     }
 
     public void setEncoderMode(DcMotor.RunMode mode){
@@ -414,6 +427,16 @@ public class SwerveDrive {
         double BR = BRMotor.getCurrentPosition();
 
         return (int)(FL+FR+BL+BR)/4;
+    }
+
+    public int getEncoderCounts(direction direction) {
+        if (direction.equals(SwerveDrive.direction.STRAFE)) {
+            return getStrafeEncoderAverage();
+        } else if (direction.equals(SwerveDrive.direction.FORWARD)) {
+            return getFwdEncoderAverage();
+        } else {
+            return getFwdEncoderAverage();
+        }
     }
 
     public void encoderStrafe(double power, int encoder){
@@ -445,5 +468,4 @@ public class SwerveDrive {
     public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {
 
     }
-
 }
