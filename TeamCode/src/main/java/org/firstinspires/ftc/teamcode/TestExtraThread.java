@@ -33,19 +33,19 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.oldSwerve.HardwareSwerveV1;
-import org.firstinspires.ftc.teamcode.oldSwerve.SwerveLinearBase;
+import org.firstinspires.ftc.teamcode.general.Robot;
 
 
 @TeleOp(name="", group="Swerve")
 @Disabled
-public class TestExtraThread extends SwerveLinearBase {
+public class TestExtraThread extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareSwerveV1 robot           = new HardwareSwerveV1();   // Use the SwerveV1 hardware file
+    Robot robot           = new Robot();   // Use the SwerveV1 hardware file
 
     @Override
     public void runOpMode() {
@@ -70,17 +70,17 @@ public class TestExtraThread extends SwerveLinearBase {
             double leftY = gamepad1.left_stick_y;
             double rightX = -gamepad1.right_stick_x;
 
-            SwerveDriveRobotCentricV2(leftX,leftY,rightX,false);
+            robot.drive.robotCentric(leftX,leftY,rightX);
 
-            telemetry.addData("Front Driver Power", DMotor1.getPower());
-            telemetry.addData("Back Driver Power", DMotor2.getPower());
-            telemetry.addData("Front Pass Power", PMotor1.getPower());
-            telemetry.addData("Back Pass Power", PMotor2.getPower());
+            telemetry.addData("Front Driver Power", robot.DMotor1.getPower());
+            telemetry.addData("Back Driver Power", robot.DMotor2.getPower());
+            telemetry.addData("Front Pass Power", robot.PMotor1.getPower());
+            telemetry.addData("Back Pass Power", robot.PMotor2.getPower());
 
-            telemetry.addData("Front Driver Angle", ((DSensor1.getVoltage())/5)*360);
-            telemetry.addData("Back Driver Angle", ((DSensor2.getVoltage())/5)*360);
-            telemetry.addData("Front Pass Angle", ((PSensor1.getVoltage())/5)*360);
-            telemetry.addData("Back Pass Angle", ((PSensor2.getVoltage())/5)*360);
+            telemetry.addData("Front Driver Angle", ((robot.DSensor1.getVoltage())/5)*360);
+            telemetry.addData("Back Driver Angle", ((robot.DSensor2.getVoltage())/5)*360);
+            telemetry.addData("Front Pass Angle", ((robot.PSensor1.getVoltage())/5)*360);
+            telemetry.addData("Back Pass Angle", ((robot.PSensor2.getVoltage())/5)*360);
 
 
             //double LRPM,RRPM; /*Left motor RPM, Right motor RPM*/
@@ -93,13 +93,13 @@ public class TestExtraThread extends SwerveLinearBase {
                     double LRPM, RRPM; /*Left motor RPM, Right motor RPM*/
                     while (thread_run) {
                 /*left and right are dcMotor instances*/
-                        int last_left_encoder = DMotor1.getCurrentPosition(); /*Get first sample*/
-                        int last_right_encoder = PMotor1.getCurrentPosition();
+                        int last_left_encoder = robot.DMotor1.getCurrentPosition(); /*Get first sample*/
+                        int last_right_encoder = robot.PMotor1.getCurrentPosition();
                         sms = tm.milliseconds();
                         while (tm.milliseconds() - sms < rpm_gate_time) {
                         } /*Wait rpm_gate_time mS*/
-                        int delta_l = DMotor1.getCurrentPosition() - last_left_encoder; /*Get second sample, subtract first sample to get change*/
-                        int delta_r = PMotor1.getCurrentPosition() - last_right_encoder;
+                        int delta_l = robot.DMotor1.getCurrentPosition() - last_left_encoder; /*Get second sample, subtract first sample to get change*/
+                        int delta_r = robot.PMotor1.getCurrentPosition() - last_right_encoder;
                         double factor = ((1000 / rpm_gate_time) * 60) / 1120; /*Compute factor to convert encoder ticks per gate window to RPM (assumes 1120 ticks/rev)*/
                         double RPM = delta_l * factor; /*Calculate the RPM for the left motor*/
                         if (Math.abs(RPM) < 400) {
@@ -117,9 +117,6 @@ public class TestExtraThread extends SwerveLinearBase {
 
                         //telemetry.addData("Motor RPM: ", "%.f, %.f", LRPM, RRPM); //The last measured/computed RPM value will always be available in the LRPM and RRPM global variables
                         telemetry.update();
-
-                        // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-                        robot.waitForTick(40);
                     }
                 }
 

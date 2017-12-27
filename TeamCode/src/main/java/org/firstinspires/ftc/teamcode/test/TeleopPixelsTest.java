@@ -30,54 +30,41 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode.general.vuforia;
+package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.teamcode.EmptyHardware;
+import org.firstinspires.ftc.teamcode.general.DotStarStrip;
+import org.firstinspires.ftc.teamcode.general.Robot;
 
-@TeleOp(name="Test Vuforia init loop", group="Testing")
+@TeleOp(name = "Pixels Testing", group = "Testing")
 //@Disabled
-public class TestVuforiaInitLoop extends LinearOpMode {
-
-    /* Declare OpMode members. */
-    EmptyHardware robot           = new EmptyHardware();   // Use the SwerveV1 hardware file
-    //FTCVuforia vuforia;
-    FTCVuforia2 vuforia2;
-    FTCVuforia vuforia;
+public class TeleopPixelsTest extends LinearOpMode {
+    Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
 
     @Override
     public void runOpMode() {
+        DigitalChannel dataPin;
+        DigitalChannel clockPin;
 
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-        robot.init(hardwareMap);
+        dataPin = hardwareMap.digitalChannel.get("dP");
+        clockPin = hardwareMap.digitalChannel.get("cP");
 
-        //vuforia = new FTCVuforia();
-        vuforia2 = new FTCVuforia2();
-        vuforia = new FTCVuforia();
-
-        vuforia2.preOp();
+        DotStarStrip strip = new DotStarStrip(dataPin,clockPin,4);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        vuforia2.activate();
-
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            strip.setBrightness(.5);
+            strip.updateStrip();
 
-            telemetry.addData("Vuforia X 0", vuforia2.getX(0));
-            telemetry.addData("Vuforia Y 0", vuforia2.getY(0));
-            telemetry.addData("Vuforia Angle 0", vuforia2.getAngle(0));
             telemetry.update();
-
-            // Pause for metronome tick.  40 mS each cycle = update 25 times a second.
-            //robot.waitForTick(40);
         }
     }
-}
 
+
+}

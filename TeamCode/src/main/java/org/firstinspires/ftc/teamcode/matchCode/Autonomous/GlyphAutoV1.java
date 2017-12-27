@@ -8,10 +8,10 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
 import org.firstinspires.ftc.teamcode.general.Robot;
-import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
+import org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision;
 
-import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.jewelsOrder;
-import static org.firstinspires.ftc.teamcode.test.ExampleBlueVision.order.unknown;
+import static org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision.jewelsOrder;
+import static org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision.order.unknown;
 
 /**
  * Created by kskrueger on 10/22/17.

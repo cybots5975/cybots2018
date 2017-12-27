@@ -32,17 +32,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.drivebase.swerve.core;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.general.Robot;
-import org.firstinspires.ftc.teamcode.oldSwerve.SwerveLinearBase;
 
 @TeleOp(name="Voltage Calibrate", group="Swerve")
 //@Disabled
-public class VoltageCalibrate extends SwerveLinearBase {
+public class VoltageCalibrate extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Robot robot           = new Robot();   // Use the SwerveV1 hardware file
+    Robot robot = new Robot();
 
     @Override
     public void runOpMode() {

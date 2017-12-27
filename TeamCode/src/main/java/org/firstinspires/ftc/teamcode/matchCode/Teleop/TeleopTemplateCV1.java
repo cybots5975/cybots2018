@@ -39,7 +39,7 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.general.ClosableVuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;
-import org.firstinspires.ftc.teamcode.test.ExampleBlueVision;
+import org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
