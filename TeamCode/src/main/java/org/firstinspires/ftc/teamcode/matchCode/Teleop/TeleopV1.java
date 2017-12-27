@@ -50,7 +50,8 @@ public class TeleopV1 extends  LinearOpMode {
             }
 
             robot.drive.setEfficiency(true);
-            robot.drive.RobotCentric(leftX,leftY,rightX,gamepad1.a);
+            robot.drive.robotCentric(leftX,leftY,rightX);
+            robot.drive.zeroReset(gamepad1.a);
             if (gamepad1.right_trigger>.1) {
                 robot.intake.setSpeed(gamepad1.right_trigger);
             } else {

@@ -45,10 +45,10 @@ public class TestLogging extends  LinearOpMode {
 
             robot.drive.setEfficiency(true);
 
-            robot.drive.a(gamepad1.b);
 
             try {
-                robot.drive.RobotCentricLOG(leftX,leftY,rightX,gamepad1.a);
+                robot.drive.robotCentricLog(leftX,leftY,rightX);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,9 +59,6 @@ public class TestLogging extends  LinearOpMode {
                 robot.intake.setSpeed(-gamepad1.left_trigger);
             }
 
-            if (robot.drive.done) {
-                telemetry.addData("WRITEN","");
-            }
             telemetry.addData("Swerve Running","");
             telemetry.update();
         }

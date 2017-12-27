@@ -56,9 +56,7 @@ public class MecanumGyroTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            robot.drive.turnPID.setVariables(.1,0,.08);
             robot.drive.gyroTurn(.25,90,1);
-
 
             telemetry.addData("Divder",divider);
             telemetry.addData("kP",kP);

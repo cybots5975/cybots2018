@@ -41,7 +41,8 @@ public class TestNewSwerve extends  LinearOpMode {
             double rightX = -gamepad1.right_stick_x/2;
 
             robot.drive.setEfficiency(true);
-            robot.drive.RobotCentric(leftX,leftY,rightX,gamepad1.a);
+            robot.drive.zeroReset(gamepad1.a);
+            robot.drive.robotCentric(leftX,leftY,rightX);
             //robot.intake.setAngle(3);
 
             telemetry.addData("Swerve Running","");
