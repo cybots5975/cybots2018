@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drivebase.VectorDrive;
 import org.firstinspires.ftc.teamcode.general.Constants;
+import org.firstinspires.ftc.teamcode.general.PID;
 import org.firstinspires.ftc.teamcode.logging.ArrayLogging;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -20,7 +20,7 @@ import static java.lang.Math.sin;
  * Created by Karter Krueger on 10/10/17.
  */
 
-public class SwerveDrive extends VectorDrive{
+public class SwerveDrive implements VectorDrive{
     private Module D1, D2, P1, P2;
     public DcMotor FLMotor;
     public DcMotor BLMotor;
@@ -31,18 +31,14 @@ public class SwerveDrive extends VectorDrive{
     public int count;
     public boolean done = false;
     boolean doa = false;
-    //public LinearOpMode opMode;
+    public LinearOpMode opMode;
+    public PID turnPID = new PID();
 
     public SwerveDrive(LinearOpMode opMode,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
                        DcMotor BLMotor, CRServo BLServo, AnalogInput BLSensor,
                        DcMotor FRMotor, CRServo FRServo, AnalogInput FRSensor,
                        DcMotor BRMotor, CRServo BRServo, AnalogInput BRSensor){
-        super(opMode,
-                FLMotor,
-                BLMotor,
-                FRMotor,
-                BRMotor);
 
         //this.opMode = opMode;
 
@@ -57,14 +53,12 @@ public class SwerveDrive extends VectorDrive{
         P1 = new Module(FRMotor,FRServo,FRSensor,Constants.FR_OFFSET); //passenger side module 1
         P2 = new Module(BRMotor,BRServo,BRSensor, Constants.BR_OFFSET); //passenger side module 2
 
-        previousError = 0;
-
         initializeLogging();
     }
 
-    //RobotCentric is one method of driving the swerve drive robot
-    //This is the primary function for doing all the math for the module speeds and angles as well
-    public void RobotCentric (double strafe, double forward, double theta, boolean zeroReset) {
+    public void robotCentric(double forward, double strafe, double theta) {
+        //RobotCentric is one method of driving the swerve drive robot
+        //This is the primary function for doing all the math for the module speeds and angles as well
         final double length = 13.25; //length between axles
         final double width = 15.5; //width between axles
 
@@ -98,13 +92,41 @@ public class SwerveDrive extends VectorDrive{
             }
         }
 
-        zeroReset(zeroReset); //used to override the wheel angles to 0 when needed to reset
-
         //set the angle and speed to all 4 modules
         P2.set(wa[0],ws[0]);
         D2.set(wa[1],ws[1]);
         P1.set(wa[2],ws[2]);
         D1.set(wa[3],ws[3]);
+    }
+
+    public void fieldCentric(double forwards, double horizontal, double turning) {
+        double forwrd = forwards * -1;
+        double strafe = horizontal;
+
+        double gyro_radians = getAvgHeading() * Math.PI/180;
+        double temp = forwrd * cos(gyro_radians) +
+                strafe * sin(gyro_radians);
+        strafe = -forwrd * sin(gyro_radians) +
+                strafe * cos(gyro_radians);
+        forwrd = temp;
+
+        robotCentric(-forwrd,strafe,turning);
+    }
+
+    public void gyroTurn(double turnSpeed, int targetAngle, int allowedError) {
+        turnPID.setVariables(.1,0,.08);
+        while (Math.abs(getAvgHeading()-targetAngle)>allowedError&&!opMode.isStopRequested()) {
+            double pidOffset = turnPID.run(targetAngle,(int)getAvgHeading());
+            double power = -pidOffset * turnSpeed;
+            robotCentric(0, 0, power);
+        }
+        robotCentric(0,0,0);
+    }
+
+    public void gyroDrive(double ySpeed, double xSpeed, double heading) {
+        turnPID.setVariables(.0007,0,.12);
+        double offset = turnPID.run((int)heading,(int)getAvgHeading());
+        robotCentric(ySpeed,xSpeed,offset);
     }
 
     public void holdModuleAngle(int angle) {
@@ -116,7 +138,7 @@ public class SwerveDrive extends VectorDrive{
     }
 
     //used to zero all the modules when reset is needed
-    private void zeroReset(boolean zeroReset){
+    public void zeroReset(boolean zeroReset){
         D1.zeroReset(zeroReset);
         D2.zeroReset(zeroReset);
         P1.zeroReset(zeroReset);
@@ -144,7 +166,7 @@ public class SwerveDrive extends VectorDrive{
                 strafe * cos(gyro_radians);
         forwrd = temp;
 
-        RobotCentric(forwrd,strafe, x2,zeroReset);
+        robotCentric(forwrd,strafe, x2);
     }
 
     //moveEnvoder finds the average encoder positions of all 4 wheel modules and drives until the target value is reached
@@ -154,7 +176,7 @@ public class SwerveDrive extends VectorDrive{
         double encoderposition = FLMotor.getCurrentPosition();
 
         while (encoderposition<encoder) {
-            gyroMove(xSpeed,ySpeed,90);
+            gyroDrive(xSpeed,ySpeed,90);
         }
         FLMotor.setPower(0);
         BLMotor.setPower(0);
@@ -162,29 +184,8 @@ public class SwerveDrive extends VectorDrive{
         BRMotor.setPower(0);
     }
 
-    //gyroMove uses the value of the current robot heading from the orientation sensor to keep the robot going straight
-    public void gyroMove(double ySpeed, double xSpeed, double heading) {
-        double offset = PID(.0007,0,.12,20,(int)heading,(int)getAvgHeading());
-        RobotCentric(xSpeed,ySpeed,offset/40,false);
-    }
+    public void robotCentricLOG(double strafe, double forward, double theta, boolean zeroReset) throws IOException {
 
-    //PID loop Variables
-    private int integral = 0;
-    private int previousError = 0;
-
-    public double PID(double kP, double kI, double kD, int dt, int targetValue, int position) {
-        int angleError = (targetValue - position);
-        angleError -= (360*Math.floor(0.5+(((double)angleError)/360.0)));
-
-        int error = angleError;
-
-        integral += kI * error * dt;
-
-        double u = (kP * error + integral + kD * (error - previousError) / dt);
-
-        previousError = error;
-
-        return u;
     }
 
     //Calculate the average heading of the 2 absolute orientation sensors on the robot
@@ -248,7 +249,7 @@ public class SwerveDrive extends VectorDrive{
         doa = value;
     }
 
-    private void initializeLogging () {
+    public void initializeLogging () {
         log.storeValue(0, 0, "Count #");
         log.storeValue(1, 0, "Y JoyStick");
         log.storeValue(2, 0, "X JoyStick");
@@ -332,58 +333,6 @@ public class SwerveDrive extends VectorDrive{
         log.storeValueInt(31,count,P2.targetOp);
     }
 
-    public enum direction {
-        FORWARD, STRAFE, TURN
-    }
-
-    public void driveMecanum(double forwards, double horizontal, double turning) {
-        double leftFront = forwards + horizontal + turning;
-        double leftBack = forwards - horizontal + turning;
-        double rightFront = forwards - horizontal - turning;
-        double rightBack = forwards + horizontal - turning;
-
-        double[] wheelPowers = {Math.abs(rightFront), Math.abs(leftFront), Math.abs(leftBack), Math.abs(rightBack)};
-        Arrays.sort(wheelPowers);
-        double biggestInput = wheelPowers[3];
-        if (biggestInput > 1) {
-            leftFront /= biggestInput;
-            leftBack /= biggestInput;
-            rightFront /= biggestInput;
-            rightBack /= biggestInput;
-        }
-
-        FLMotor.setPower(leftBack);
-        FRMotor.setPower(rightFront);
-        BLMotor.setPower(leftFront);
-        BRMotor.setPower(rightBack);
-    }
-
-    public void driveMecanumField(double forwards, double horizontal, double turning) {
-        double forwrd = forwards * -1;
-        double strafe = horizontal;
-
-        double gyro_radians = getAvgHeading() * Math.PI/180;
-        double temp = forwrd * cos(gyro_radians) +
-                strafe * sin(gyro_radians);
-        strafe = -forwrd * sin(gyro_radians) +
-                strafe * cos(gyro_radians);
-        forwrd = temp;
-
-        driveMecanum(-forwrd,strafe,turning);
-    }
-
-    double lastTime;
-    public void mecanumGyroCorrect(double ySpeed, double xSpeed, double heading, double offsetMult, double kP, double kI, double kD) {
-        double dt = (System.currentTimeMillis() - lastTime);
-        double offset = PID(kP,kI,kD,20,(int)heading,(int)getAvgHeading());
-        driveMecanum(ySpeed,xSpeed,offset/offsetMult);
-        lastTime = System.currentTimeMillis();
-    }
-
-    public void mecanumPIDTurn(double speed, double heading, double kP, double kI, double kD) {
-
-    }
-
     public void zeroEncoders(){
         //save the mode of each motor encoder
         DcMotor.RunMode FLMode = FLMotor.getMode();
@@ -429,40 +378,30 @@ public class SwerveDrive extends VectorDrive{
         return (int)(FL+FR+BL+BR)/4;
     }
 
-    public int getEncoderCounts(direction direction) {
-        if (direction.equals(SwerveDrive.direction.STRAFE)) {
-            return getStrafeEncoderAverage();
-        } else if (direction.equals(SwerveDrive.direction.FORWARD)) {
-            return getFwdEncoderAverage();
-        } else {
-            return getFwdEncoderAverage();
-        }
-    }
-
     public void encoderStrafe(double power, int encoder){
         if (encoder>0) {
             while (getStrafeEncoderAverage()<encoder/*&&!opMode.isStopRequested()*/) {
-                driveMecanum(0,-power,0);
+                robotCentric(0,-power,0);
             }
         } else {
             while (getStrafeEncoderAverage()>encoder/*&&!opMode.isStopRequested()*/) {
-                driveMecanum(0,-power,0);
+                robotCentric(0,-power,0);
             }
         }
-        driveMecanum(0,0,0);
+        robotCentric(0,0,0);
     }
 
     public void encoderFwd(double power, int encoder) {
         if (encoder>0) {
-            while (getFwdEncoderAverage()<encoder/*&&!opMode.isStopRequested()*/) {
-                driveMecanum(power,0,0);
+            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+                robotCentric(power,0,0);
             }
         } else {
-            while (getFwdEncoderAverage()>encoder/*&&!opMode.isStopRequested()*/) {
-                driveMecanum(power,0,0);
+            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+                robotCentric(power,0,0);
             }
         }
-        driveMecanum(0,0,0);
+        robotCentric(0,0,0);
     }
 
     public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {

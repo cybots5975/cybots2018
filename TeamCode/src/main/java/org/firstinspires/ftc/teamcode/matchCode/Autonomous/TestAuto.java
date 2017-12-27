@@ -42,9 +42,9 @@ public class TestAuto extends LinearOpMode{
             while (opModeIsActive() ) {
 
 
-                robot.drive.gyroMove(.2,0,90);
+                robot.drive.gyroDrive(.2,0,90);
 
-                robot.drive.gyroMove(.2,0,90);
+                robot.drive.gyroDrive(.2,0,90);
                 
             }
         }

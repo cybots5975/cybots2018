@@ -72,9 +72,9 @@ public class MecanumTest extends LinearOpMode {
             lastButton = gamepad1.a;
 
             if (modeField) {
-                robot.drive.driveMecanumField(-gamepad1.left_stick_y,-gamepad1.left_stick_x,gamepad1.right_stick_x);
+                robot.drive.fieldCentric(-gamepad1.left_stick_y,-gamepad1.left_stick_x,gamepad1.right_stick_x);
             } else {
-                robot.drive.driveMecanum(-gamepad1.left_stick_y,-gamepad1.left_stick_x,gamepad1.right_stick_x);
+                robot.drive.fieldCentric(-gamepad1.left_stick_y,-gamepad1.left_stick_x,gamepad1.right_stick_x);
             }
 
             if (gamepad1.right_trigger>.1) {
@@ -88,10 +88,10 @@ public class MecanumTest extends LinearOpMode {
                 robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
-            double FL = robot.drive.FLMotor.getCurrentPosition();
-            double FR = robot.drive.FRMotor.getCurrentPosition();
-            double BL = robot.drive.BLMotor.getCurrentPosition();
-            double BR = robot.drive.BRMotor.getCurrentPosition();
+            double FL = robot.DMotor1.getCurrentPosition();
+            double FR = robot.PMotor1.getCurrentPosition();
+            double BL = robot.DMotor2.getCurrentPosition();
+            double BR = robot.PMotor2.getCurrentPosition();
 
             telemetry.addData("Encoder Strafe",robot.drive.getStrafeEncoderAverage());
             telemetry.addData("Fwd Encoder",robot.drive.getFwdEncoderAverage());

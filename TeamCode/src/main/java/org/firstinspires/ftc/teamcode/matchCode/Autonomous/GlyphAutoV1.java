@@ -117,7 +117,7 @@ public class GlyphAutoV1 extends LinearOpMode{
 
                 runtime.reset();
                 while (runtime.seconds() < driveTime) {
-                    robot.drive.RobotCentric(-.15, 0, 0, false);
+                    robot.drive.robotCentric(-.15, 0, 0);
                 }
 
                 //robot.drive.holdModuleAngle(90); todo try this later and remove timer hack
@@ -130,7 +130,7 @@ public class GlyphAutoV1 extends LinearOpMode{
 
                 runtime.reset();
                 while (runtime.seconds() < .5) {
-                    robot.drive.RobotCentric(0, .15, 0, false);
+                    robot.drive.robotCentric(0, .15, 0);
                 }
 
                 pause(2, true);
@@ -139,7 +139,7 @@ public class GlyphAutoV1 extends LinearOpMode{
 
                 runtime.reset();
                 while (runtime.seconds() < 1) {
-                    robot.drive.RobotCentric(0, -.15, 0, false);
+                    robot.drive.robotCentric(0, -.15, 0);
                 }
 
                 robot.intake.setSpeed(0);
@@ -155,11 +155,11 @@ public class GlyphAutoV1 extends LinearOpMode{
 
     public void pause(double seconds, boolean fwd) {
         runtime.reset();
-        while (runtime.seconds()<seconds){
+        while (runtime.seconds()<seconds&&!isStopRequested()){
             if (fwd) {
-                robot.drive.RobotCentric(0,.001,0,false);
+                robot.drive.robotCentric(0,.001,0);
             } else {
-                robot.drive.RobotCentric(-.001,0,0,false);
+                robot.drive.robotCentric(-.001,0,0);
             }
             //wait
             telemetry.addData("Waiting",seconds+" seconds");

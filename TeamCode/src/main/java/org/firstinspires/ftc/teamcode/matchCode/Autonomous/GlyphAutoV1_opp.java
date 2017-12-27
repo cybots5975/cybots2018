@@ -120,7 +120,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
                 runtime.reset();
                 while (runtime.seconds() < driveTime) {
-                    robot.drive.RobotCentric(.15, 0, 0, false);
+                    robot.drive.robotCentric(.15, 0, 0);
                 }
 
                 pause(3, true);
@@ -132,7 +132,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
                 robot.drive.setEfficiency(true);
                 runtime.reset();
                 while (runtime.seconds() < 1) {
-                    robot.drive.RobotCentric(0, .2, 0, true);
+                    robot.drive.robotCentric(0, .2, 0);
                 }
 
                 pause(2, true);
@@ -141,7 +141,7 @@ public class GlyphAutoV1_opp extends LinearOpMode{
 
                 runtime.reset();
                 while (runtime.seconds() < 1) {
-                    robot.drive.RobotCentric(0, -.15, 0, true);
+                    robot.drive.robotCentric(0, -.15, 0);
                 }
 
                 robot.intake.setSpeed(0);
@@ -158,11 +158,11 @@ public class GlyphAutoV1_opp extends LinearOpMode{
         runtime.reset();
         while (runtime.seconds()<seconds){
             if (fwd) {
-                robot.drive.RobotCentric(0,.001,0,true);
+                robot.drive.robotCentric(0,.001,0);
                 //robot.drive.setEfficiency(false);
                 //robot.drive.holdModuleAngle(0);
             } else {
-                robot.drive.RobotCentric(.001,0,0,false);
+                robot.drive.robotCentric(.001,0,0);
                 //robot.drive.setEfficiency(false);
                 //robot.drive.holdModuleAngle(90+180);
             }

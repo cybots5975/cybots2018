@@ -56,7 +56,8 @@ public class MecanumGyroTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            gyroTurn(.25,90);
+            robot.drive.turnPID.setVariables(.1,0,.08);
+            robot.drive.gyroTurn(.25,90,1);
 
 
             telemetry.addData("Divder",divider);
@@ -68,17 +69,5 @@ public class MecanumGyroTest extends LinearOpMode {
             sleep(10);
         }
 
-    }
-
-    private double dt, lastTime;
-    public void gyroTurn (double turnSpeed, int targetAngle) {
-        dt = (System.currentTimeMillis() - lastTime);
-
-        double pidOffset = robot.drive.PID(kP,kI,kD,10,targetAngle,(int)robot.drive.getAvgHeading());
-
-        double power = -pidOffset*turnSpeed;
-        //set power to motors
-        robot.drive.driveMecanum(0,0,power);
-        lastTime = System.currentTimeMillis();
     }
 }

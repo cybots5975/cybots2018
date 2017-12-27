@@ -1,14 +1,16 @@
 package org.firstinspires.ftc.teamcode.drivebase.mecanum.core;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drivebase.VectorDrive;
-import org.firstinspires.ftc.teamcode.drivebase.swerve.core.SwerveDrive;
 import org.firstinspires.ftc.teamcode.general.PID;
 import org.firstinspires.ftc.teamcode.logging.ArrayLogging;
 import org.firstinspires.ftc.teamcode.sensors.IMU;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import static java.lang.Math.cos;
@@ -18,23 +20,18 @@ import static java.lang.Math.sin;
  * Created by kskrueger on 12/17/17.
  */
 
-public class MecanumDrive extends VectorDrive{
+public class MecanumDrive implements VectorDrive{
     private LinearOpMode opMode;
-    private DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
+    public DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
     private IMU imu, imu2;
     private ArrayLogging log = new ArrayLogging(32,10000);
-    private PID turnPID = new PID();
+    public PID turnPID = new PID();
 
     public MecanumDrive(LinearOpMode opMode,
-                        DcMotor FLMotor,
-                        DcMotor BLMotor,
-                        DcMotor FRMotor,
-                        DcMotor BRMotor){
-        /*super(opMode,
-                FLMotor,
-                BLMotor,
-                FRMotor,
-                BRMotor);*/
+                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
+                        DcMotor BLMotor, CRServo BLServo, AnalogInput BLSensor,
+                        DcMotor FRMotor, CRServo FRServo, AnalogInput FRSensor,
+                        DcMotor BRMotor, CRServo BRServo, AnalogInput BRSensor){
 
         this.opMode = opMode;
         this.FLMotor = FLMotor;
@@ -43,37 +40,11 @@ public class MecanumDrive extends VectorDrive{
         this.BRMotor = BRMotor;
     }
 
-    public void arcadeMecanum(double y, double x, double c) {
-        // y - forwards
-        // x - side
-        // c - rotation
-        double leftFrontVal = y + x + c;
-        double rightFrontVal = y - x - c;
-        double leftBackVal = y - x + c;
-        double rightBackVal = y + x - c;
-
-        //Move range to between 0 and +1, if not already
-        double[] wheelPowers = {rightFrontVal, leftFrontVal, leftBackVal, rightBackVal};
-        Arrays.sort(wheelPowers);
-        if (wheelPowers[3] > 1) {
-            leftFrontVal /= wheelPowers[3];
-            rightFrontVal /= wheelPowers[3];
-            leftBackVal /= wheelPowers[3];
-            rightBackVal /= wheelPowers[3];
-        }
-        double scaledPower = 1;
-
-        FLMotor.setPower(leftFrontVal*scaledPower+FLMotor.getPower()*(1-scaledPower));
-        FRMotor.setPower(rightFrontVal*scaledPower+FRMotor.getPower()*(1-scaledPower));
-        BLMotor.setPower(leftBackVal*scaledPower+BLMotor.getPower()*(1-scaledPower));
-        BRMotor.setPower(rightBackVal*scaledPower+BRMotor.getPower()*(1-scaledPower));
-    }
-
     public enum direction {
         FORWARD, STRAFE, TURN
     }
 
-    public void driveMecanum(double forwards, double horizontal, double turning) {
+    public void robotCentric(double forwards, double horizontal, double turning) {
         double leftFront = forwards + horizontal + turning;
         double leftBack = forwards - horizontal + turning;
         double rightFront = forwards - horizontal - turning;
@@ -95,7 +66,7 @@ public class MecanumDrive extends VectorDrive{
         BRMotor.setPower(rightBack);
     }
 
-    public void driveMecanumField(double forwards, double horizontal, double turning) {
+    public void fieldCentric(double forwards, double horizontal, double turning) {
         double forwrd = forwards * -1;
         double strafe = horizontal;
 
@@ -106,7 +77,7 @@ public class MecanumDrive extends VectorDrive{
                 strafe * cos(gyro_radians);
         forwrd = temp;
 
-        driveMecanum(-forwrd,strafe,turning);
+        robotCentric(-forwrd,strafe,turning);
     }
 
     public void gyroTurn (double turnSpeed, int targetAngle, int allowedError) {
@@ -114,18 +85,14 @@ public class MecanumDrive extends VectorDrive{
         while (Math.abs(getAvgHeading()-targetAngle)>allowedError&&!opMode.isStopRequested()) {
             double pidOffset = turnPID.run(targetAngle,(int)getAvgHeading());
             double power = -pidOffset * turnSpeed;
-            driveMecanum(0, 0, power);
+            robotCentric(0, 0, power);
         }
-        driveMecanum(0,0,0);
+        robotCentric(0,0,0);
     }
 
-    public void mecanumGyroCorrect(double ySpeed, double xSpeed, double heading, double offsetMult/*, double kP, double kI, double kD*/) {
-        //double dt = (System.currentTimeMillis() - lastTime);
-
-        //double offset = PID(kP,kI,kD,20,(int)heading,(int)robot.getAvgHeading());
+    public void gyroDrive(double ySpeed, double xSpeed, double heading) {
         double offset = turnPID.run((int)heading,(int)getAvgHeading());
-        driveMecanum(ySpeed,xSpeed,offset/offsetMult);
-        //lastTime = System.currentTimeMillis();
+        robotCentric(ySpeed,xSpeed,offset);
     }
 
     public void mecanumPIDTurn(double speed, double heading, double kP, double kI, double kD) {
@@ -159,7 +126,7 @@ public class MecanumDrive extends VectorDrive{
         BRMotor.setMode(mode);
     }
 
-    private int getStrafeEncoderAverage(){
+    public int getStrafeEncoderAverage(){
         double FL = FLMotor.getCurrentPosition();
         double FR = FRMotor.getCurrentPosition();
         double BL = -BLMotor.getCurrentPosition();
@@ -168,7 +135,7 @@ public class MecanumDrive extends VectorDrive{
         return (int)(FL+FR+BL+BR)/4;
     }
 
-    private int getFwdEncoderAverage(){
+    public int getFwdEncoderAverage(){
         double FL = FLMotor.getCurrentPosition();
         double FR = FRMotor.getCurrentPosition();
         double BL = BLMotor.getCurrentPosition();
@@ -177,48 +144,69 @@ public class MecanumDrive extends VectorDrive{
         return (int)(FL+FR+BL+BR)/4;
     }
 
-    public int getEncoderCounts(SwerveDrive.direction direction) {
-        if (direction.equals(SwerveDrive.direction.STRAFE)) {
-            return getStrafeEncoderAverage();
-        } else if (direction.equals(SwerveDrive.direction.FORWARD)) {
-            return getFwdEncoderAverage();
-        } else {
-            return getFwdEncoderAverage();
-        }
-    }
-
     public void encoderStrafe(double power, int encoder){
         if (encoder>0) {
             while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
-                driveMecanum(0,-power,0);
+                robotCentric(0,-power,0);
             }
         } else {
             while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
-                driveMecanum(0,-power,0);
+                robotCentric(0,-power,0);
             }
         }
-        driveMecanum(0,0,0);
+        robotCentric(0,0,0);
     }
 
     public void encoderFwd(double power, int encoder) {
         if (encoder>0) {
             while (getFwdEncoderAverage()<encoder/*&&!opMode.isStopRequested()*/) {
-                driveMecanum(power,0,0);
+                robotCentric(power,0,0);
             }
         } else {
             while (getFwdEncoderAverage()>encoder/*&&!opMode.isStopRequested()*/) {
-                driveMecanum(power,0,0);
+                robotCentric(power,0,0);
             }
         }
-        driveMecanum(0,0,0);
+        robotCentric(0,0,0);
     }
 
     public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {
 
     }
 
-    private double getAvgHeading() {
+    public double getAvgHeading() {
         //Calculate the average heading of the 2 absolute orientation sensors on the robot
         return ((imu.getHeading()+imu2.getHeading())/2)%360;
+    }
+
+    public void holdModuleAngle(int angle) {
+    }
+
+    public void zeroReset(boolean zeroReset) {
+
+    }
+
+    public void setEfficiency(boolean efficiency) {
+
+    }
+
+    public void moveEncoder(double ySpeed, double xSpeed, int encoder) {
+
+    }
+
+    public void robotCentricLOG(double strafe, double forward, double theta, boolean zeroReset) throws IOException {
+
+    }
+
+    public void a(boolean value) {
+
+    }
+
+    public void initializeLogging() {
+
+    }
+
+    public void log(double forward, double strafe, double theta, double[] ws, double[] wa) {
+
     }
 }
