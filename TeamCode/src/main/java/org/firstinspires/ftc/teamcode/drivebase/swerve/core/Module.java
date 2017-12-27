@@ -123,7 +123,7 @@ public class Module {
 
     //PID (Proportional Integral Derivative) loop is used to take the error from target and...
     //...proportionally calculate what speed it needs `to rotate to reach the target value
-    private double swivelPID (int angle, int targetAngle) {
+    private double swivelPID(int angle, int targetAngle) {
         final double Kp = .02; //.03
         final double Ki = 0;
         final double Kd = .02;
@@ -151,5 +151,9 @@ public class Module {
         }
 
         return powerOut;
+    }
+
+    int getCurrentEncoder(){
+        return motor.getCurrentPosition();
     }
 }
