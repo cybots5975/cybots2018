@@ -120,7 +120,7 @@ public class SwerveDrive extends VectorDrive{
     }
 
     @Override
-    public void robotCentricLog(double strafe, double forward, double theta) throws IOException {
+    public void robotCentricLog(double forward, double strafe, double theta) throws IOException {
         final double length = 13.25; //length between axles
         final double width = 15.5; //width between axles
 

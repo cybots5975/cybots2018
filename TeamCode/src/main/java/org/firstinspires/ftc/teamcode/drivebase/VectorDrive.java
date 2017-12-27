@@ -126,7 +126,7 @@ public class VectorDrive {
         //only used in SwerveDrive
     }
 
-    public void robotCentricLog(double strafe, double forward, double theta) throws IOException {
+    public void robotCentricLog(double forward, double strafe, double theta) throws IOException {
         //overide in SwerveDrive
     }
 
