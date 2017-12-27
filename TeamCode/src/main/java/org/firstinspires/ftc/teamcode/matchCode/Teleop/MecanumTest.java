@@ -36,19 +36,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name="Test Mecanum", group="Template")
 //@Disabled
 public class MecanumTest extends LinearOpMode {
-    Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    Robot robot = new Robot(this); //use the SwerveV1 hardware file to configure
     Boolean lastButton = true, stateButton = true, modeField = false;
 
     @Override
     public void runOpMode() {
-
-
-        robot.init(hardwareMap);
+        robot.init();
         robot.drive.zeroEncoders();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

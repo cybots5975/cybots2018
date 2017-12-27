@@ -35,21 +35,17 @@ package org.firstinspires.ftc.teamcode.subsystems.drivebase.swerve;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name="Voltage Calibrate", group="Swerve")
 //@Disabled
 public class VoltageCalibrate extends LinearOpMode {
 
-    /* Declare OpMode members. */
-    Robot robot = new Robot();
+    Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() {
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-        robot.init(hardwareMap);
+        robot.init();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

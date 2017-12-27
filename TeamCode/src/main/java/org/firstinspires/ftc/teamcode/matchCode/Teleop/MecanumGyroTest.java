@@ -35,12 +35,12 @@ package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name="Test Mecanum Gyro", group="Template")
 //@Disabled
 public class MecanumGyroTest extends LinearOpMode {
-    Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    Robot robot = new Robot(this); //use the SwerveV1 hardware file to configure
     Boolean lastButton = true, stateButton = true, modeField = false;
     double divider = 40, kP = .1, kD = .08, kI = 0;
 
@@ -48,7 +48,7 @@ public class MecanumGyroTest extends LinearOpMode {
     public void runOpMode() {
 
 
-        robot.init(hardwareMap);
+        robot.init();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

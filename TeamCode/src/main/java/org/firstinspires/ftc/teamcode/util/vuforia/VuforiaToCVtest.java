@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.general.vuforia;
+package org.firstinspires.ftc.teamcode.util.vuforia;
 
 import android.graphics.Bitmap;
 

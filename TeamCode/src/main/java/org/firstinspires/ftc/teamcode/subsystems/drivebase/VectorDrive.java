@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.general.PID;
-import org.firstinspires.ftc.teamcode.sensors.IMU;
+import org.firstinspires.ftc.teamcode.util.PID;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
 
 import java.io.IOException;
 
@@ -181,5 +181,10 @@ public class VectorDrive {
 
     public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {
 
+    }
+
+    public enum driveType {
+        MECANUM,
+        SWERVE
     }
 }

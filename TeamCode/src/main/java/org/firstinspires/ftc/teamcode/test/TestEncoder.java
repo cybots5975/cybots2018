@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.sensors.MA3Encoder;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.MA3Encoder;
 
 /**
  * Created by kskrueger on 10/22/17.

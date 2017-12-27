@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive;
-import org.firstinspires.ftc.teamcode.sensors.IMU;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
 
 import java.util.Arrays;
 

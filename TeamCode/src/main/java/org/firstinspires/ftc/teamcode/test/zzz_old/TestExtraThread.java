@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 
 @TeleOp(name="", group="Swerve")
@@ -45,14 +45,14 @@ import org.firstinspires.ftc.teamcode.general.Robot;
 public class TestExtraThread extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Robot robot           = new Robot();   // Use the SwerveV1 hardware file
+    Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+        robot.init();
 
         final boolean thread_run=true; /*Set to false to stop the thread i.e. when your opmode is ending */
         final double rpm_gate_time=250; /*How long to wait (mS) between encoder samples - trade off between update rate and precision*/

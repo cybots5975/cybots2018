@@ -36,16 +36,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name="Template", group="Template")
 @Disabled
 public class TeleopTemplate extends LinearOpMode {
-    Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

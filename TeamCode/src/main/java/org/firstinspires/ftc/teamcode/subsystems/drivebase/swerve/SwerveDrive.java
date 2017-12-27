@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive;
-import org.firstinspires.ftc.teamcode.general.Constants;
-import org.firstinspires.ftc.teamcode.logging.ArrayLogging;
-import org.firstinspires.ftc.teamcode.sensors.IMU;
+import org.firstinspires.ftc.teamcode.util.Constants;
+import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
 
 import java.io.IOException;
 

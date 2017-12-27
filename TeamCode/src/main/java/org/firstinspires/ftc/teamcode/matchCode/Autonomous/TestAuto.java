@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
-import org.firstinspires.ftc.teamcode.sensors.IMU;
+import org.firstinspires.ftc.teamcode.util.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
 
 /**
  * Created by kskrueger on 10/22/17.
@@ -23,12 +23,11 @@ public class TestAuto extends LinearOpMode{
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
     public IMU imu, imu2;
 
-    Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
-    //SwerveDrive drive;
+    Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init();
 
         gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
 

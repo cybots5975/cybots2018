@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.general;
+package org.firstinspires.ftc.teamcode.util;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.JewelDetector;

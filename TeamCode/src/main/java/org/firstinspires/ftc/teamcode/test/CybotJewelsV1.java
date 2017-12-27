@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import com.disnodeteam.dogecv.OpenCVPipeline;
-import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;
+import org.firstinspires.ftc.teamcode.util.vuforia.HSVfilters;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;

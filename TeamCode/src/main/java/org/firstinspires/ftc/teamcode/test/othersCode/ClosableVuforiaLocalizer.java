@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.othersCode;
+package org.firstinspires.ftc.teamcode.test.othersCode;
 
 import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaLocalizerImpl;
 

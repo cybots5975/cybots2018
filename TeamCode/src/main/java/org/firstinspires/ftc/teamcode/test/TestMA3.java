@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.sensors.MA3Encoder;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.MA3Encoder;
 
 @TeleOp(name="Test MA3 Encoder", group="Testing")
 public class TestMA3 extends LinearOpMode {

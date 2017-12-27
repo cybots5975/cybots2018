@@ -36,7 +36,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     Started new naming method, starting at V1
 */
 
-package org.firstinspires.ftc.teamcode.oldRobots;
+package org.firstinspires.ftc.teamcode.test.oldRobots;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;

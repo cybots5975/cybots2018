@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 import java.io.IOException;
 
@@ -13,18 +14,18 @@ import java.io.IOException;
  */
 
 @TeleOp(name="Teleop Logging V1", group="1Swerve")
-//@Disabled
+@Disabled
 public class TestLogging extends  LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    Robot robot = new Robot(this);
     //SwerveDrive drive;
 
     @Override
     public void runOpMode() {
         robot.Vuforia = false;
-        robot.init(hardwareMap);
+        robot.init();
 
         gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
 

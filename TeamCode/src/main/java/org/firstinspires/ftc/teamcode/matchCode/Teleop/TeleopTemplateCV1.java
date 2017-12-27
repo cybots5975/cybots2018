@@ -37,8 +37,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.teamcode.general.ClosableVuforiaLocalizer;
-import org.firstinspires.ftc.teamcode.general.vuforia.HSVfilters;
+import org.firstinspires.ftc.teamcode.util.ClosableVuforiaLocalizer;
+import org.firstinspires.ftc.teamcode.util.vuforia.HSVfilters;
 import org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;

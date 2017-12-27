@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 /**
  * Created by kskrueger on 12/20/17.
@@ -17,15 +17,13 @@ import org.firstinspires.ftc.teamcode.general.Robot;
 public class MecanumAutoRedCloseV1 extends LinearOpMode {
     private RelicRecoveryVuMark VuMark;
     private int encoderCounts;
-    private double kickCenter = .45, raisedArm = .02;
     private Robot robot = new Robot(this);
     private boolean loop = true;
 
     @Override
     public void runOpMode() {
         robot.Vuforia = true;
-        //robot.init(hardwareMap);
-        robot.setOpMode(this);
+        robot.init();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drive.zeroEncoders();
 
@@ -83,22 +81,22 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
             case RED_BLUE:
                 robot.runtime.reset();
                 while (robot.runtime.seconds() < 2) {
-                    robot.JewelKick.setPosition(0);
+                    robot.JewelKick.setPosition(robot.kickLeft);
                     telemetry.addData("Red jewel","stop");
                     telemetry.update();
                 }
-                robot.JewelKick.setPosition(kickCenter);
-                robot.JewelArm.setPosition(raisedArm);
+                robot.JewelKick.setPosition(robot.kickCenter);
+                robot.JewelArm.setPosition(robot.raisedArm);
                 break;
             case BLUE_RED:
                 robot.runtime.reset();
                 while (robot.runtime.seconds() < 2) {
-                    robot.JewelKick.setPosition(1);
+                    robot.JewelKick.setPosition(robot.kickRight);
                     telemetry.addData("Blue jewel","stop");
                     telemetry.update();
                 }
-                robot.JewelKick.setPosition(kickCenter);
-                robot.JewelArm.setPosition(raisedArm);
+                robot.JewelKick.setPosition(robot.kickCenter);
+                robot.JewelArm.setPosition(robot.raisedArm);
                 break;
             case UNKNOWN:
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.general;
+package org.firstinspires.ftc.teamcode.util;
 
 public class Vector2d {
     private double x, y;

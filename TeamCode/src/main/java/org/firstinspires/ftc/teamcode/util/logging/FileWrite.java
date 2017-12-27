@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.logging;
+package org.firstinspires.ftc.teamcode.util.logging;
 
 import android.os.Environment;
 

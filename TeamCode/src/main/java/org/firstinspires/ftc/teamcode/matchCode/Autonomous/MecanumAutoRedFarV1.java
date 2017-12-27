@@ -6,8 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive;
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 /**
  * Created by kskrueger on 12/20/17.
@@ -23,8 +22,7 @@ public class MecanumAutoRedFarV1 extends LinearOpMode{
     @Override
     public void runOpMode() {
         robot.Vuforia = true;
-        //robot.init(hardwareMap);
-        //robot.setOpMode(this);
+        robot.init();
         robot.drive.zeroEncoders();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.VuMark1.activate();

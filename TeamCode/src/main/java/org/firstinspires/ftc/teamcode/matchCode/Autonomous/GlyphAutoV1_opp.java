@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.teamcode.general.AutoTransitioner;
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.AutoTransitioner;
+import org.firstinspires.ftc.teamcode.util.Robot;
 import org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision;
 
 import static org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision.jewelsOrder;
@@ -28,13 +28,12 @@ public class GlyphAutoV1_opp extends LinearOpMode{
     private double kickCenter = .45, raisedArm = .02;
     private boolean loop = true;
 
-
-    private Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() {
         robot.Vuforia = true;
-        robot.init(hardwareMap);
+        robot.init();
 
         gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
 

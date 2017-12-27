@@ -98,7 +98,7 @@ public class SensorBNO055IMU extends LinearOpMode
         // Wait until we're told to go
         waitForStart();
 
-        // Start the org.firstinspires.ftc.teamcode.logging of measured acceleration
+        // Start the org.firstinspires.ftc.teamcode.util.logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         // Loop and update the dashboard

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sensors;
+package org.firstinspires.ftc.teamcode.subsystems.sensors;
 
 /**
  * Created by kskrueger on 10/10/17.

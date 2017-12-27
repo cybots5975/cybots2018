@@ -32,17 +32,18 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.teamcode.general.DotStarStrip;
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.DotStarStrip;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name = "Pixels Testing", group = "Testing")
-//@Disabled
+@Disabled
 public class TeleopPixelsTest extends LinearOpMode {
-    Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() {

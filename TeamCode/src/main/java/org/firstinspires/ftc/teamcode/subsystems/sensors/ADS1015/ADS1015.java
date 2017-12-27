@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sensors.ADS1015;
+package org.firstinspires.ftc.teamcode.subsystems.sensors.ADS1015;
 
 import com.qualcomm.robotcore.hardware.I2cAddr;
 

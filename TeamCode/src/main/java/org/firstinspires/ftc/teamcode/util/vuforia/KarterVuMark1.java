@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.general.vuforia;
+package org.firstinspires.ftc.teamcode.util.vuforia;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.teamcode.general.ClosableVuforiaLocalizer;
+import org.firstinspires.ftc.teamcode.util.ClosableVuforiaLocalizer;
 
 /**
  * Created by kskrueger on 11/11/17.

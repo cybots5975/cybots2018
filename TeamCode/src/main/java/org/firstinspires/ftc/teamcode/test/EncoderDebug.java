@@ -36,16 +36,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.general.Robot;
+import org.firstinspires.ftc.teamcode.util.Robot;
 
 @TeleOp(name="Encoder Debut", group="Testing")
 //@Disabled
 public class EncoderDebug extends LinearOpMode {
-    private Robot robot = new Robot(); //use the SwerveV1 hardware file to configure
+    private Robot robot = new Robot(this);
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init();
 
         robot.drive.zeroEncoders();
 
