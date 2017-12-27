@@ -23,6 +23,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.Vuforia = true;
+        robot.JewelVision = true;
         robot.init();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drive.zeroEncoders();
@@ -67,6 +68,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
             robot.pause(1);
             robot.intake.setSpeed(-1);
             robot.drive.encoderFwd(.25,300);
+            
             robot.pause(1);
             robot.drive.encoderFwd(-.25,0);
 
@@ -80,7 +82,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
         switch (jewelOrder) {
             case RED_BLUE:
                 robot.runtime.reset();
-                while (robot.runtime.seconds() < 2) {
+                while (robot.runtime.seconds() < 2&&!isStopRequested()) {
                     robot.JewelKick.setPosition(robot.kickLeft);
                     telemetry.addData("Red jewel","stop");
                     telemetry.update();
@@ -90,7 +92,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
                 break;
             case BLUE_RED:
                 robot.runtime.reset();
-                while (robot.runtime.seconds() < 2) {
+                while (robot.runtime.seconds() < 2&&isStopRequested()) {
                     robot.JewelKick.setPosition(robot.kickRight);
                     telemetry.addData("Blue jewel","stop");
                     telemetry.update();

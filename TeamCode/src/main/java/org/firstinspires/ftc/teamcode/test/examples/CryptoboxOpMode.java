@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode.test.examples;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="DogeCV Red Cryptobox Detector", group="DogeCV")
-
+@Disabled
 public class CryptoboxOpMode extends OpMode
 {
     // Declare OpMode members.

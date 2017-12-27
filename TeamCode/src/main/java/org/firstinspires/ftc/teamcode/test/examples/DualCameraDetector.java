@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.test.examples;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.GlyphDetector;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="DogeCV Dual Detector", group="DogeCV")
+@Disabled
 public class DualCameraDetector extends OpMode{
     private ElapsedTime runtime = new ElapsedTime();
 
