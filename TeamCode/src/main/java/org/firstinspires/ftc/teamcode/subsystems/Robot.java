@@ -1,7 +1,7 @@
 /*
 @author Karter
 */
-package org.firstinspires.ftc.teamcode.util;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,14 +13,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.teamcode.util.vuforia.KarterVuMark1;
-import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
-import org.firstinspires.ftc.teamcode.subsystems.sensors.VexMotor;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive.driveType;
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.swerve.SwerveDrive;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
+import org.firstinspires.ftc.teamcode.util.CybotsVisionConfig;
+import org.firstinspires.ftc.teamcode.util.vuforia.KarterVuMark1;
 
 import static org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive.driveType.MECANUM;
 
@@ -31,13 +30,13 @@ public class Robot{
     public DcMotor DMotor1, DMotor2, PMotor1, PMotor2, IntakeMotor;
     public CRServo DServo1, DServo2, PServo1, PServo2;
     public Servo DSIntakeServo, PSIntakeServo, JewelArm, JewelKick;
-    public VexMotor DSwervo1, DSwervo2, PSwervo1, PSwervo2;
+    //public VexMotor DSwervo1, DSwervo2, PSwervo1, PSwervo2;
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
     public Intake intake;
     public IMU imu, imu2;
 
-    public double   kickCenter = .45, kickLeft = 0, kickRight = 1,
-            raisedArm = .02, loweredArm = 1, middleArm = .5;
+    public final double kickLeft   = 0,   kickCenter = .45, kickRight = 1;
+    public final double raisedArm  = .02, middleArm = .5,   loweredArm = 1;
 
     public LinearOpMode opMode;
     public HardwareMap hwMap;
@@ -87,7 +86,7 @@ public class Robot{
         PSensor1 = hwMap.analogInput.get("PSe1");
         PSensor2 = hwMap.analogInput.get("PSe2");
 
-//        ServoImplEx myServo = (ServoImplEx)hwMap.servo.get("myservo");
+        //ServoImplEx myServo = (ServoImplEx)hwMap.servo.get("myservo");
 
         imu = new IMU();
         imu2 = new IMU();
@@ -103,11 +102,8 @@ public class Robot{
         PServo1.setPower(0); //Set Pass Servo Front(1) to 0 power
         PServo2.setPower(0); //Set Pass Servo Back(2) to 0 power
 
-        JewelArm.setPosition(.02);
-        JewelKick.setPosition(.45);
-
-        /*servoController.setServoPwmDisable(4);
-        servoController.setServoPwmDisable(5);*/
+        JewelArm.setPosition(raisedArm);
+        JewelKick.setPosition(kickCenter);
 
         DMotor1.setDirection(DcMotor.Direction.FORWARD);
         DMotor2.setDirection(DcMotor.Direction.FORWARD);
@@ -139,13 +135,11 @@ public class Robot{
         intake.store();
 
         if (Vuforia) {
-            KarterVuMark1 VuMark1 = new KarterVuMark1(hwMap,VuforiaLocalizer.CameraDirection.BACK,true);
-            this.VuMark1 = VuMark1;
+            this.VuMark1 = new KarterVuMark1(hwMap,VuforiaLocalizer.CameraDirection.BACK,true);
         }
 
         if (JewelVision) {
-            CybotsVisionConfig jewelVision = new CybotsVisionConfig(hwMap);
-            this.jewelVision = jewelVision;
+            this.jewelVision = new CybotsVisionConfig(hwMap);
         }
 
         if (driveType.equals(MECANUM)) {

@@ -35,7 +35,7 @@ package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.util.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
 @TeleOp(name="Test Mecanum Gyro", group="Template")
 //@Disabled

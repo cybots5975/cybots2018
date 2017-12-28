@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.teamcode.util.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
 /**
  * Created by kskrueger on 12/20/17.
@@ -49,9 +49,8 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()&&loop&&!isStopRequested()) {
-            //jewelDetector.enable(); //enable jewel detection
             robot.intake.init(); //initialize robot
-            robot.JewelArm.setPosition(1); //set jewel arm to start position
+            robot.JewelArm.setPosition(robot.raisedArm); //set jewel arm to start position
             robot.pause(5);
             robot.jewelOrder = robot.jewelVision.jewelOrder(); //set the current order to the jewelOrder enum
             robot.jewelVision.disable(); //diable the jewel detector after

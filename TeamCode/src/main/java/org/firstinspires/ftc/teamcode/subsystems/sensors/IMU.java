@@ -18,12 +18,6 @@ public class IMU {
 
     private double offset = 0; //offset will default to 0, but can be changed using setHeadingOffset(offsetNumberHere)
 
-    //initialize PID loop Variables at zero
-    private int integral = 0;
-    private int previousError = 0;
-    private double kP = 0,kI = 0,kD = 0,dt = 0; //start PID variables off at zero or set your values here if you choose
-    private boolean PIDVariablesSet = false;
-
     public void initIMU(HardwareMap hwMap, String name){
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
