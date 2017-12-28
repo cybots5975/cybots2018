@@ -68,7 +68,7 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
             robot.pause(1);
             robot.intake.setSpeed(-1);
             robot.drive.encoderFwd(.25,300);
-            
+
             robot.pause(1);
             robot.drive.encoderFwd(-.25,0);
 
