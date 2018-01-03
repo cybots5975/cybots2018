@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.matchCode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,6 +19,7 @@ import static org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision.orde
  */
 
 @Autonomous(name="Test Glyph Auto RED", group="Swerve")
+@Disabled
 public class GlyphAutoV1_opp extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 

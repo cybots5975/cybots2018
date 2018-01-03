@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.sensors.MA3Encoder;
  */
 
 @Autonomous(name="Test Enc", group="Testing")
+@Disabled
 public class TestEncoder extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 

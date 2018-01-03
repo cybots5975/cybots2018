@@ -32,13 +32,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
 @TeleOp(name="Test Mecanum Gyro", group="Template")
-//@Disabled
+@Disabled
 public class MecanumGyroTest extends LinearOpMode {
     Robot robot = new Robot(this); //use the SwerveV1 hardware file to configure
     Boolean lastButton = true, stateButton = true, modeField = false;

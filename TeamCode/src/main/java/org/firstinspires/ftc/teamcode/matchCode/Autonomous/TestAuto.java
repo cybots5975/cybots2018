@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.matchCode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
  */
 
 @Autonomous(name="Test Auto", group="Swerve")
+@Disabled
 public class TestAuto extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 

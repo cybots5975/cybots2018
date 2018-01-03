@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.matchCode.Autonomous;
 
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
  */
 
 @Autonomous(name="Red Close V1", group="Mecanum")
+@Disabled
 //@Disabled
 public class MecanumAutoRedCloseV1 extends LinearOpMode {
     private RelicRecoveryVuMark VuMark;
@@ -53,9 +55,9 @@ public class MecanumAutoRedCloseV1 extends LinearOpMode {
             robot.JewelArm.setPosition(robot.raisedArm); //set jewel arm to start position
             robot.pause(5);
             robot.jewelOrder = robot.jewelVision.jewelOrder(); //set the current order to the jewelOrder enum
-            robot.jewelVision.disable(); //diable the jewel detector after
+            robot.jewelVision.disable(); //disable the jewel detector after
 
-            robot.pause(.5); //wait .5 seconds to diable, then score the jewel
+            robot.pause(.5); //wait .5 seconds to disable, then score the jewel
 
             scoreJewel(robot.jewelOrder);
 

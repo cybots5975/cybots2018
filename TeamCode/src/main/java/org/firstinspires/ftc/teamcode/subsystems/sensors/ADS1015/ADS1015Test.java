@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.sensors.ADS1015;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Test the ADS1015 ADC driver
  */
 @TeleOp(name = "ADS1015 Test jaxn")
+@Disabled
 public class ADS1015Test extends OpMode {
     ADS1015 voltageSensor;
 

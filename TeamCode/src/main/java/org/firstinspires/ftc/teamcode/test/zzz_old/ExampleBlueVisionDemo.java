@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.test.zzz_old;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,6 +14,7 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
  *
  */
 @TeleOp(name="Example: Blue Vision Demo",group = "Testing")
+@Disabled
 public class ExampleBlueVisionDemo extends OpMode {
     ExampleBlueVision blueVision;
     @Override

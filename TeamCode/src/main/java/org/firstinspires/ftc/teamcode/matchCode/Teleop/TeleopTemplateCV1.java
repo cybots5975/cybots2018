@@ -32,14 +32,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 
+import com.disnodeteam.dogecv.CameraViewDisplay;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision;
 import org.firstinspires.ftc.teamcode.util.ClosableVuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.util.vuforia.HSVfilters;
-import org.firstinspires.ftc.teamcode.test.zzz_old.ExampleBlueVision;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -54,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @TeleOp(name="Test CV 1", group="TESTING CV")
-//@Disabled
+@Disabled
 public class TeleopTemplateCV1 extends LinearOpMode {
     private ClosableVuforiaLocalizer vuforia;
     ExampleBlueVision blueVision;

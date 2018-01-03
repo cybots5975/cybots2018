@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.matchCode.Autonomous;
 
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
  */
 
 @Autonomous(name="Red Far V1", group="Mecanum")
+@Disabled
 public class MecanumAutoRedFarV1 extends LinearOpMode{
     private RelicRecoveryVuMark VuMark;
     private int encoderCounts;

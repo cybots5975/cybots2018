@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.test.othersCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  * Created by kskrueger on 10/29/17.
  */
 @TeleOp(name="Test Amperage",group="Test")
+@Disabled
 public class TestAmperage extends LinearOpMode{
 
         @Override
