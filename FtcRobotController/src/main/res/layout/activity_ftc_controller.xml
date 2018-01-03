@@ -93,6 +93,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       android:layout_centerHorizontal="true"
       android:layout_margin="10dp"/>
 
+    <TextView
+        android:id="@+id/position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/menu_buttons"
+        android:layout_alignTop="@+id/robotIcon"
+        android:layout_marginEnd="33dp"
+        android:text="Position"
+        android:textAlignment="textEnd"
+        android:textAllCaps="true"
+        android:textColor="@color/bright_green"
+        android:textSize="24sp" />
+
   </RelativeLayout>
   <!-- end of black bar -->
 

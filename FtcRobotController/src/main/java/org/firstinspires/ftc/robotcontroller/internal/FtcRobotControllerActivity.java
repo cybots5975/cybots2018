@@ -54,7 +54,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-//modified for turbo: removed blockly imports
 import com.qualcomm.ftccommon.AboutActivity;
 import com.qualcomm.ftccommon.ClassManagerFactory;
 import com.qualcomm.ftccommon.FtcEventLoop;
@@ -70,6 +69,7 @@ import com.qualcomm.ftccommon.configuration.EditParameters;
 import com.qualcomm.ftccommon.configuration.FtcLoadFileActivity;
 import com.qualcomm.ftccommon.configuration.RobotConfigFile;
 import com.qualcomm.ftccommon.configuration.RobotConfigFileManager;
+import com.qualcomm.ftcrobotcontroller.ConfigOptions;
 import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.hardware.HardwareFactory;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
@@ -84,7 +84,6 @@ import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
 
 import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import org.firstinspires.ftc.ftccommon.internal.FtcRobotControllerWatchdogService;
-// modified for turbo: removed ProgramAndManageActivity import
 import org.firstinspires.ftc.robotcore.internal.hardware.DragonboardLynxDragonboardIsPresentPin;
 import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.PreferenceRemoterRC;
@@ -95,13 +94,16 @@ import org.firstinspires.ftc.robotcore.internal.system.PreferencesHelper;
 import org.firstinspires.ftc.robotcore.internal.system.ServiceController;
 import org.firstinspires.ftc.robotcore.internal.ui.ThemedActivity;
 import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
-//modified for turbo: removed 2 webserver imports
 import org.firstinspires.inspection.RcInspectionActivity;
 import org.openftc.UiUtils;
 import org.openftc.Utils;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+//modified for turbo: removed blockly imports
+// modified for turbo: removed ProgramAndManageActivity import
+//modified for turbo: removed 2 webserver imports
 
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends Activity
@@ -311,6 +313,8 @@ public class FtcRobotControllerActivity extends Activity
     ServiceController.startService(FtcRobotControllerWatchdogService.class);
     bindToService();
     logPackageVersions();
+
+    positionText();
   }
 
   protected UpdateUI createUpdateUI() {
@@ -446,6 +450,7 @@ public class FtcRobotControllerActivity extends Activity
     } else {
       immersion.cancelSystemUIHide();
     }
+    positionText();
   }
 
 
@@ -478,6 +483,11 @@ public class FtcRobotControllerActivity extends Activity
       Intent intentConfigure = new Intent(AppUtil.getDefContext(), FtcLoadFileActivity.class);
       parameters.putIntent(intentConfigure);
       startActivityForResult(intentConfigure, RequestCode.CONFIGURE_ROBOT_CONTROLLER.ordinal());
+    }
+    else if (id == R.id.action_config_screen) {
+      Intent configMenuIntent = new Intent(AppUtil.getDefContext(), ConfigOptions.class);
+      startActivity(configMenuIntent);
+      return true;
     }
     else if (id == R.id.action_settings) {
 	  // historical: this once erroneously used FTC_CONFIGURE_REQUEST_CODE_ROBOT_CONTROLLER
@@ -599,4 +609,22 @@ public class FtcRobotControllerActivity extends Activity
       }
     }
   }
+
+  private String readPrefs(String title) {
+      SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+      return preferences.getString(title, "");
+  }
+
+  private void positionText(){
+      TextView selection = (TextView) findViewById(R.id.position);
+      if (readPrefs("color").equals("blue")) {
+          selection.setTextColor(getResources().getColor(R.color.bright_blue));
+      } else if (readPrefs("color").equals("red")) {
+          selection.setTextColor(getResources().getColor(R.color.bright_red));
+      } else {
+          selection.setTextColor(getResources().getColor(R.color.bright_green));
+      }
+      selection.setText(readPrefs("position"));
+  }
+
 }

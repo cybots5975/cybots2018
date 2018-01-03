@@ -16,8 +16,15 @@ apply from: '../build.common.gradle'
 
 android {
     buildToolsVersion '26.0.2'
+    compileSdkVersion 23
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 dependencies {
     compile 'com.opencsv:opencsv:3.5'
+    implementation project(':openCVLibrary320')
     implementation project(':DogeCV2')
 }
