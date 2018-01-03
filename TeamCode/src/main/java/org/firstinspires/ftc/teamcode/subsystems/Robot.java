@@ -19,7 +19,8 @@ import org.firstinspires.ftc.teamcode.subsystems.drivebase.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.swerve.SwerveDrive;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
 import org.firstinspires.ftc.teamcode.util.CybotsVisionConfig;
-import org.firstinspires.ftc.teamcode.util.vuforia.KarterVuMark1;
+import org.firstinspires.ftc.teamcode.util.ReadPrefs;
+import org.firstinspires.ftc.teamcode.util.vuforia.CybotVuMark;
 
 import static org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive.driveType.MECANUM;
 
@@ -34,13 +35,14 @@ public class Robot{
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
     public Intake intake;
     public IMU imu, imu2;
+    public ReadPrefs prefs;
 
     public final double kickLeft   = 0,   kickCenter = .45, kickRight = 1;
     public final double raisedArm  = .02, middleArm = .5,   loweredArm = 1;
 
     public LinearOpMode opMode;
     public HardwareMap hwMap;
-    public KarterVuMark1 VuMark1;
+    public CybotVuMark VuMark1;
     public CybotsVisionConfig jewelVision;
     public boolean Vuforia = false;
     public boolean JewelVision = false;
@@ -135,7 +137,7 @@ public class Robot{
         intake.store();
 
         if (Vuforia) {
-            this.VuMark1 = new KarterVuMark1(hwMap,VuforiaLocalizer.CameraDirection.BACK,true);
+            this.VuMark1 = new CybotVuMark(hwMap,VuforiaLocalizer.CameraDirection.BACK,true);
         }
 
         if (JewelVision) {
@@ -157,6 +159,8 @@ public class Robot{
                     PMotor1, PServo1, PSensor1,
                     PMotor2, PServo2, PSensor2);
         }
+
+        prefs = new ReadPrefs(hwMap);
     }
 
     //stop all robot movements
