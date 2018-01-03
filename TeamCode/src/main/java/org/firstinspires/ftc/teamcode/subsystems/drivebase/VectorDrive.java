@@ -14,7 +14,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 /**
- * Created by kskrueger for Cybots Robotics on 12/26/17.
+ * Created by kskrueger on 12/12/17.
  */
 
 public class VectorDrive {
@@ -155,11 +155,11 @@ public class VectorDrive {
 
     public void encoderStrafe(double power, int encoder){
         if (encoder>0) {
-            while (getStrafeEncoderAverage()<encoder/*&&!opMode.isStopRequested()*/) {
+            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
                 robotCentric(0,-power,0);
             }
         } else {
-            while (getStrafeEncoderAverage()>encoder/*&&!opMode.isStopRequested()*/) {
+            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
                 robotCentric(0,-power,0);
             }
         }

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
  * Created by kskrueger on 10/18/17.
  */
 
-@TeleOp(name="Teleop V1", group="1Swerve")
+@TeleOp(name="Teleop V1", group="1League Champ")
 //@Disabled
 public class TeleopV1 extends  LinearOpMode {
     // Declare OpMode members.
@@ -49,7 +49,7 @@ public class TeleopV1 extends  LinearOpMode {
             }
 
             robot.drive.setEfficiency(true);
-            robot.drive.robotCentric(leftX,leftY,rightX);
+            robot.drive.robotCentric(leftY,leftX,rightX);
             robot.drive.zeroReset(gamepad1.a);
             if (gamepad1.right_trigger>.1) {
                 robot.intake.setSpeed(gamepad1.right_trigger);
@@ -57,7 +57,7 @@ public class TeleopV1 extends  LinearOpMode {
                 robot.intake.setSpeed(-gamepad1.left_trigger);
             }
 
-            telemetry.addData("Swerve Running","");
+            telemetry.addData("Running","");
             telemetry.update();
         }
     }

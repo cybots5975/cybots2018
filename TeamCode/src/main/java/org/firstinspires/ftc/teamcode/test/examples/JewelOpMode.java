@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="DogeCV Jewel Detector", group="DogeCV")
-
 public class JewelOpMode extends OpMode
 {
     // Declare OpMode members.

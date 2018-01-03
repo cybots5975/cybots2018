@@ -12,17 +12,18 @@ import com.qualcomm.robotcore.util.Range;
 public class Module {
     //PID loop Variables
     private int integral = 0;
-    public int error;
+    private int error;
     private int previousError = 0;
+    double angleError;
+    double angleErrorOp;
+    int targetOp;
 
     private double zeroPosition;
-    public int reverse;
+    int reverse;
     private boolean zeroReset;
     private boolean efficiency = true;
 
     private int holdPosition;
-
-    private boolean hold = false;
 
     //define the motor, servo, and encoders
     private DcMotor motor;
@@ -64,7 +65,7 @@ public class Module {
         return (int)angle;
     }
 
-    public void holdAngle (int angle) {
+    void holdAngle(int angle) {
         holdPosition = angle;
         setAngle(holdPosition);
     }
@@ -83,11 +84,6 @@ public class Module {
     void setEfficiency(boolean efficiency){
         this.efficiency = efficiency;
     }
-
-
-    double angleError;
-    double angleErrorOp;
-    int targetOp;
 
     //reverse180 calculates the error (difference) from the current angle to the the target angle...
     //...it also finds the opposite angle (180° offset) to see if it is colser for the module to rotate to
@@ -124,7 +120,7 @@ public class Module {
     //PID (Proportional Integral Derivative) loop is used to take the error from target and...
     //...proportionally calculate what speed it needs `to rotate to reach the target value
     private double swivelPID(int angle, int targetAngle) {
-        final double Kp = .02; //.03
+        final double Kp = .02;
         final double Ki = 0;
         final double Kd = .02;
         int dt = 20;
@@ -137,10 +133,8 @@ public class Module {
 
         previousError = error;
 
-        double PIDpower = u;
-
-        //convert to servo power range from 0-1
-        double powerOut = PIDpower;
+        //convert to servo power range from (-1) to 1
+        double powerOut = u;
 
         powerOut = Range.clip(powerOut,-.88,.88);
 
