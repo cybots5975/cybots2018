@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.util.ClosableVuforiaLocalizer;
  * Created by kskrueger on 11/11/17.
  */
 
-public class KarterVuMark1 {
+public class CybotVuMark {
     public static final String TAG = "Vuforia VuMark Sample";
     OpenGLMatrix lastLocation = null;
 
@@ -25,7 +25,7 @@ public class KarterVuMark1 {
     VuforiaTrackable relicTemplate;
     OpenGLMatrix pose;
 
-    public KarterVuMark1 (HardwareMap hardwareMap, VuforiaLocalizer.CameraDirection direction, boolean showCamera) {
+    public CybotVuMark(HardwareMap hardwareMap, VuforiaLocalizer.CameraDirection direction, boolean showCamera) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters;
 
