@@ -43,7 +43,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
     // This is called every camera frame.
     @Override
-    public Mat[] processFrame(Mat frame, Mat gray) {
+    public Mat processFrame(Mat frame, Mat gray) {
         // First, we change the colorspace from RGBA to HSV, which is usually better for color
         //Imgproc.cvtColor(rgba, hsv, Imgproc.COLOR_RGB2HSV, 3);
         // Then, we threshold our hsv image so that we get a black/white binary image where white
@@ -74,7 +74,7 @@ public class ExampleBlueVision extends OpenCVPipeline {
 
         output = processFrame2(frame);
 
-        return new Mat[]{output};
+        return output;
     }
 
     /*private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val,

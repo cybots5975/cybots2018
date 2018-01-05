@@ -34,10 +34,10 @@ public class CybotJewelsV1 extends OpenCVPipeline {
 
     // This is called every camera frame.
     @Override
-    public Mat[] processFrame(Mat frame, Mat gray) {
+    public Mat processFrame(Mat frame, Mat gray) {
         Mat output = process(frame);
 
-        return new Mat[]{output};
+        return output;
     }
 
     public Mat process(Mat frame)
