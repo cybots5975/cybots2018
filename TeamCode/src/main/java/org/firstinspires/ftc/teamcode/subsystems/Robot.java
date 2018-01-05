@@ -38,7 +38,7 @@ public class Robot{
     public ReadPrefs prefs;
 
     public final double kickLeft   = 0,   kickCenter = .45, kickRight = 1;
-    public final double raisedArm  = .02, middleArm = .5,   loweredArm = 1;
+    public final double raisedArm  = .02, middleArm = .9,   loweredArm = 1;
 
     public LinearOpMode opMode;
     public HardwareMap hwMap;
@@ -105,7 +105,7 @@ public class Robot{
         PServo2.setPower(0); //Set Pass Servo Back(2) to 0 power
 
         JewelArm.setPosition(raisedArm);
-        JewelKick.setPosition(kickCenter);
+        JewelKick.setPosition(kickRight);
 
         DMotor1.setDirection(DcMotor.Direction.FORWARD);
         DMotor2.setDirection(DcMotor.Direction.FORWARD);

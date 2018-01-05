@@ -39,8 +39,8 @@ public class MasterAuto extends LinearOpMode{
             } else {
                 VuMark = robot.VuMark1.scan();
             }
-            telemetry.addData("Status", "Initialized");
-            telemetry.addData("Position", robot.prefs.read("position"));
+            telemetry.addData("Status","Initialized");
+            telemetry.addData("Position",robot.prefs.read("position"));
             telemetry.addData("Mode",robot.prefs.read("testMode"));
             telemetry.update();
         }
@@ -57,25 +57,20 @@ public class MasterAuto extends LinearOpMode{
         while (opModeIsActive()&&loop&&!isStopRequested()) {
             telemetry.addData("Position:", robot.prefs.read("postion"));
             telemetry.update();
-            robot.intake.init(); //initialize robot
-            robot.JewelArm.setPosition(robot.raisedArm); //set jewel arm to start position
-            robot.pause(5);
+            robot.JewelKick.setPosition(robot.kickRight);
+            robot.pause(4);
             robot.jewelOrder = robot.jewelVision.jewelOrder(); //set the current order to the jewelOrder enum
             robot.jewelVision.disable(); //disable the jewel detector after
 
-            robot.pause(.5); //wait .5 seconds to disable, then score the jewel
-
             scoreJewel(robot.jewelOrder);
 
-            robot.pause(1.5);
-
-            position();
+            scorePosition();
 
             loop = false;
         }
     }
 
-    private void position() {
+    private void scorePosition() {
         switch (robot.prefs.read("position")) {
             case "RED CLOSE":
                 redClose();
@@ -93,7 +88,7 @@ public class MasterAuto extends LinearOpMode{
     }
 
     private void redClose(){
-        setVuMarkColumn(-1785,-1460,-1060);
+        setVuMarkColumn(-1785,-1400,-1160);
 
         robot.drive.encoderStrafe(-.25,encoderCounts);
         robot.pause(1);
@@ -107,7 +102,7 @@ public class MasterAuto extends LinearOpMode{
     }
 
     private void redFar(){
-        setVuMarkColumn(1025,700,325);
+        setVuMarkColumn(325,700,1025);
 
         robot.drive.encoderFwd(-.25,-960); //drive backwards off stone
 
@@ -167,31 +162,30 @@ public class MasterAuto extends LinearOpMode{
     }
 
     private void scoreJewel(JewelDetector.JewelOrder jewelOrder){
+        robot.JewelArm.setPosition(robot.middleArm);
+        robot.pause(2);
+        robot.JewelKick.setPosition(robot.kickCenter);
+        robot.pause(1.5);
+        robot.JewelArm.setPosition(robot.loweredArm);
+        robot.pause(2);
         switch (jewelOrder) {
             case RED_BLUE:
-                robot.runtime.reset();
-                while (robot.runtime.seconds() < 2&&!isStopRequested()) {
-                    robot.JewelKick.setPosition(robot.kickLeft);
-                    telemetry.addData("Red jewel","stop");
-                    telemetry.update();
-                }
-                robot.JewelKick.setPosition(robot.kickCenter);
-                robot.JewelArm.setPosition(robot.raisedArm);
+                robot.JewelKick.setPosition(robot.kickRight);
+                robot.pause(1.5);
                 break;
             case BLUE_RED:
-                robot.runtime.reset();
-                while (robot.runtime.seconds() < 2&&isStopRequested()) {
-                    robot.JewelKick.setPosition(robot.kickRight);
-                    telemetry.addData("Blue jewel","stop");
-                    telemetry.update();
-                }
-                robot.JewelKick.setPosition(robot.kickCenter);
-                robot.JewelArm.setPosition(robot.raisedArm);
+                robot.JewelKick.setPosition(robot.kickLeft);
+                robot.pause(1.5);
+                robot.JewelKick.setPosition(robot.kickRight);
+                robot.pause(.75);
                 break;
             case UNKNOWN:
-
+                //nothing
+                //better be safe than sorry
                 break;
         }
+        robot.JewelArm.setPosition(robot.raisedArm);
+        robot.pause(1.5);
     }
 
     private void setVuMarkColumn(int left, int center, int right){

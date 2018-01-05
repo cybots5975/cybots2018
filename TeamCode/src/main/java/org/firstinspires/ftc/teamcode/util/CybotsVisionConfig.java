@@ -35,7 +35,7 @@ public class CybotsVisionConfig {
     }
 
     public JewelDetector.JewelOrder jewelOrder() {
-        return jewelDetector.getLastOrder();
+        return jewelDetector.getCurrentOrder();
         //return jewelDetector.getCurrentOrder(); todo switch to current position?
     }
 }
