@@ -1,14 +1,11 @@
 package com.disnodeteam.dogecv.detectors;
 
 
-import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.OpenCVPipeline;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
 import com.disnodeteam.dogecv.filters.HSVColorFilter;
-import com.disnodeteam.dogecv.filters.LeviColorFilter;
 
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
@@ -34,7 +31,6 @@ public class GenericDetector extends OpenCVPipeline {
     public enum GenericDetectionSpeed {
         VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
     }
-
 
     public GenericDetectionMode detectionMode = GenericDetectionMode.MAX_AREA;
     public double downScaleFactor = 0.4;

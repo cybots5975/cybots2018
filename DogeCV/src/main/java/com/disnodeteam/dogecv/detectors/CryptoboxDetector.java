@@ -2,7 +2,6 @@ package com.disnodeteam.dogecv.detectors;
 
 import android.util.Log;
 
-
 import com.disnodeteam.dogecv.OpenCVPipeline;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
 import com.disnodeteam.dogecv.filters.LeviColorFilter;
@@ -10,10 +9,9 @@ import com.disnodeteam.dogecv.math.Line;
 import com.disnodeteam.dogecv.math.Lines;
 import com.disnodeteam.dogecv.math.MathFTC;
 import com.disnodeteam.dogecv.math.Points;
+
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 
 public class CryptoboxDetector extends OpenCVPipeline {
 
@@ -242,8 +239,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
             return rgba;
         }
 
-
-
         for(int i=0;i<columns.size() - 1; i++) {
 
             Line conec = Lines.getPerpindicularConnector(columns.get(i), columns.get(i+1), rgba.size());
@@ -297,18 +292,10 @@ public class CryptoboxDetector extends OpenCVPipeline {
         fullAvgPoint = newFull;
         //  Imgproc.cvtColor(white, white, Imgproc.COLOR_RGB2HSV);
 
-
         Imgproc.putText(rgba,"DogeCV 1.1 Crypto: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString() ,new Point(5,30),0,1.2,new Scalar(0,255,255),2);
 
-
-
         return rgba;
-
-
-
     }
-
-
 
     public Point drawSlot(int slot, List<Rect> boxes){
         Rect leftColumn = boxes.get(slot); //Get the pillar to the left
@@ -322,7 +309,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
 
         return new Point(drawX, drawY);
     }
-
 
     public static double[] getPosition(Line left, Line right, Size size, double f, double x0, double y0) {
         Line connector = Lines.getPerpindicularConnector(left, right, size);
@@ -363,7 +349,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
     public boolean isColumnDetected() {
         return ColumnDetected;
     }
-
 
     public Size getFrameSize() {
         return newSize;

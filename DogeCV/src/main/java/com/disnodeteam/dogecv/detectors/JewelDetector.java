@@ -1,6 +1,5 @@
 package com.disnodeteam.dogecv.detectors;
 
-
 import com.disnodeteam.dogecv.OpenCVPipeline;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
 import com.disnodeteam.dogecv.filters.LeviColorFilter;
@@ -18,9 +17,9 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Victo on 11/5/2017.
- */
+//this code was developed based on DogeCV
+//DogeCV is an Open-Source computer vision platform based on OpenCV
+//this class will detect the position of the two jewels based on color
 
 public class JewelDetector extends OpenCVPipeline {
 
@@ -30,9 +29,6 @@ public class JewelDetector extends OpenCVPipeline {
         UNKNOWN
     }
 
-
-
-
     public enum JewelDetectionMode {
         PERFECT_AREA, MAX_AREA
     }
@@ -41,32 +37,28 @@ public class JewelDetector extends OpenCVPipeline {
         VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
     }
 
-
     public JewelDetectionMode  detectionMode    = JewelDetectionMode.MAX_AREA;
     public double              downScaleFactor  = 0.4;
     public double              perfectRatio     = 1;
     public boolean             rotateMat        = false;
     public JewelDetectionSpeed speed            = JewelDetectionSpeed.BALANCED;
     public double              perfectArea      = 6500;
-    public double              areaWeight       = 0.05; // Since we're dealing with 100's of pixels
+    public double              areaWeight       = 0.05; //Since we're dealing with 100's of pixels
     public double              minArea          = 700;
-    public double              ratioWeight      = 15; // Since most of the time the area diffrence is a decimal place
-    public double              maxDiffrence     = 10; // Since most of the time the area diffrence is a decimal place
+    public double              ratioWeight      = 1; // was 15.... Since most of the time the area diffrence is a decimal place
+    public double              maxDiffrence     = 200; //was 10 .....Since most of the time the area diffrence is a decimal place
     public boolean             debugContours    = false;
     public DogeCVColorFilter   colorFilterRed   = new LeviColorFilter(LeviColorFilter.ColorPreset.RED);
     public DogeCVColorFilter   colorFilterBlue  = new LeviColorFilter(LeviColorFilter.ColorPreset.BLUE);
 
-
     private JewelOrder currentOrder = JewelOrder.UNKNOWN;
     private JewelOrder lastOrder    = JewelOrder.UNKNOWN;
-
 
     private Mat workingMat = new Mat();
     private Mat blurredMat  = new Mat();
     private Mat maskRed  = new Mat();
     private Mat maskBlue  = new Mat();
     private Mat hiarchy  = new Mat();
-
 
     private Size newSize = new Size();
 
@@ -115,10 +107,9 @@ public class JewelDetector extends OpenCVPipeline {
             // Get bounding rect of contour
             Rect rect = Imgproc.boundingRect(points);
 
-            // You can find this by printing the area of each found rect, then looking and finding what u deem to be perfect.
+            // You can find this by printing the area of each found rect, then looking and finding what you deem to be perfect.
             // Run this with the bot, on a balance board, with jewels in their desired location. Since jewels should mostly be
             // in the same position, this hack could work nicely.
-
 
             double area = Imgproc.contourArea(c);
             double areaDiffrence = 0;
@@ -139,20 +130,16 @@ public class JewelDetector extends OpenCVPipeline {
             double h = rect.height;
             Point centerPoint = new Point(x + ( w/2), y + (h/2));
 
-
-
             double cubeRatio = Math.max(Math.abs(h/w), Math.abs(w/h)); // Get the ratio. We use max in case h and w get swapped??? it happens when u account for rotation
             double ratioDiffrence = Math.abs(cubeRatio - perfectRatio);
-
-
+            
             double finalDiffrence = (ratioDiffrence * ratioWeight) + (areaDiffrence * areaWeight);
-
 
             // Optional to ALWAYS return a result.
 
-            // Update the chosen rect if the diffrence is lower then the curreny chosen
-            // Also can add a condition for min diffrence to filter out VERY wrong answers
-            // Think of diffrence as score. 0 = perfect
+            // Update the chosen rect if the difference is lower then the curreny chosen
+            // Also can add a condition for min difference to filter out VERY wrong answers
+            // Think of difference as score. 0 = perfect
             if(finalDiffrence < chosenRedScore && finalDiffrence < maxDiffrence && area > minArea){
                 chosenRedScore = finalDiffrence;
                 chosenRedRect = rect;
