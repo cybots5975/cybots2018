@@ -23,7 +23,6 @@ public class CybotVuMark {
 
     VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
-    OpenGLMatrix pose;
 
     public CybotVuMark(HardwareMap hardwareMap, VuforiaLocalizer.CameraDirection direction, boolean showCamera) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
