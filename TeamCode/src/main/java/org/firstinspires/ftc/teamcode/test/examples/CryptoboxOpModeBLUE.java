@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="DogeCV Red Cryptobox Detector", group="DogeCV")
+@TeleOp(name="DogeCV BLUE Cryptobox Detector", group="DogeCV")
 //@Disabled
-public class CryptoboxOpMode extends OpMode
+public class CryptoboxOpModeBLUE extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -24,7 +24,7 @@ public class CryptoboxOpMode extends OpMode
         cryptoboxDetector = new CryptoboxDetector();
         cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         cryptoboxDetector.rotateMat = false;
-
+        cryptoboxDetector.detectionMode = CryptoboxDetector.CryptoboxDetectionMode.BLUE;
         //Optional Test Code to load images via Drawables
         //cryptoboxDetector.useImportedImage = true;
         //cryptoboxDetector.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv4);
