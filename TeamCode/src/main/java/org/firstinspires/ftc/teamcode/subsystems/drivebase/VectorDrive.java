@@ -69,6 +69,18 @@ public class VectorDrive {
         robotCentric(0,0,0);
     }
 
+    public void gyroTurnBlue(double turnSpeed, int targetAngle, int allowedError) {
+        turnPID.setVariables(.1,0,.08);
+        while (Math.abs(getAvgHeading()-targetAngle)>allowedError&&!opMode.isStopRequested()) {
+            double pidOffset = turnPID.run(targetAngle,(int)getAvgHeading());
+            double power = -pidOffset * turnSpeed;
+            robotCentric(0, 0, -power);
+            opMode.telemetry.addData("Angle",getAvgHeading());
+            opMode.telemetry.update();
+        }
+        robotCentric(0,0,0);
+    }
+
     public void gyroDrive(double ySpeed, double xSpeed, double heading) {
         turnPID.setVariables(.0007,0,.12);
         double offset = turnPID.run((int)heading,(int)getAvgHeading());

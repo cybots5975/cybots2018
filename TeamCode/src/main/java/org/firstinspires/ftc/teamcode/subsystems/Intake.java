@@ -19,8 +19,8 @@ public class Intake{
 
     public void init() {
         intakeMotor.setPower(0);
-        leftServo.setPosition(0);
-        rightServo.setPosition(0);
+        leftServo.setPosition(1);
+        rightServo.setPosition(1);
     }
 
     public void store() {
@@ -32,9 +32,14 @@ public class Intake{
     }
 
     public void open() {
-
+        leftServo.setPosition(.93);
+        rightServo.setPosition(.3);
     }
 
+    public void pinch() {
+        leftServo.setPosition(.1);
+        rightServo.setPosition(.5);
+    }
 
 
     public void setAngle(int angle, Servo servo) {
