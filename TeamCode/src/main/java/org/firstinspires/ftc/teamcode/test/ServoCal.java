@@ -42,8 +42,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
 public class ServoCal extends LinearOpMode {
     Robot robot = new Robot(this);
 
-    double position = 0;
-    boolean d = true;
+    double leftPosition = .5,rightPosition = .5;
 
     @Override
     public void runOpMode() {
@@ -55,27 +54,21 @@ public class ServoCal extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            robot.intake.open();
-
             if (gamepad1.dpad_up) {
-                position += .001;
+                rightPosition += .001;
             } else if (gamepad1.dpad_down) {
-                position -= .001;
+                rightPosition -= .001;
+            } else if (gamepad1.dpad_left) {
+                leftPosition += .001;
+            } else if (gamepad1.dpad_right) {
+                leftPosition -= .001;
             }
 
-            if (gamepad1.x) {
-                d = true;
-            } else if (gamepad1.y) {
-                d = false;
-            }
+            robot.JewelArm.setPosition(leftPosition);
+            robot.JewelKick.setPosition(rightPosition);
 
-            if (d) {
-                robot.glyphMech.DPinch.setPosition(position);
-            } else {
-                robot.glyphMech.PPinch.setPosition(position);
-            }
-
-            telemetry.addData("Position",position);
+            telemetry.addData("Arm Position",leftPosition);
+            telemetry.addData("Kick Position",rightPosition);
             telemetry.update();
         }
     }
