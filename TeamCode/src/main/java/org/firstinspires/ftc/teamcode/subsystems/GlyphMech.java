@@ -15,6 +15,7 @@ public class GlyphMech {
     CRServo BoxBelt;
     public Servo DPinch, PPinch;
     int position;
+    double dumpSpeed = .9;
 
     ElapsedTime runtime  = new ElapsedTime();
     boolean run = false;
@@ -61,7 +62,7 @@ public class GlyphMech {
     public void setPosition(height height){
         switch (height) {
             case HIGH:
-                position = -1400;
+                position = -1475;
                 break;
             case MID:
                 position = -1400-325;
@@ -73,7 +74,7 @@ public class GlyphMech {
                 position = 10;
                 break;
         }
-        setAngle(position,.9);
+        setAngle(position,dumpSpeed);
     }
 
     public void runProcess(height height) {
@@ -91,6 +92,10 @@ public class GlyphMech {
         if (runtime.seconds()>1) {
             setPosition(height);
         }
+    }
+
+    public void setDumpSpeed(double dumpSpeed) {
+        this.dumpSpeed = dumpSpeed;
     }
 
 }

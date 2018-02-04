@@ -32,8 +32,8 @@ public class Intake{
     }
 
     public void open() {
-        leftServo.setPosition(.93);
-        rightServo.setPosition(.3);
+        leftServo.setPosition(.156);
+        rightServo.setPosition(.978);
     }
 
     public void pinch() {
@@ -42,8 +42,9 @@ public class Intake{
     }
 
 
-    public void setAngle(int angle, Servo servo) {
-
+    public void setAngle(double leftPosition, double rightPosition) {
+        leftServo.setPosition(leftPosition);
+        rightServo.setPosition(rightPosition);
     }
 
     private void setSideAngle(double side, int angle) {
