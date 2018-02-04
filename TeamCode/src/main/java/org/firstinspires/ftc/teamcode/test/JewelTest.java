@@ -32,21 +32,45 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.test;
 
+import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
-@TeleOp(name="Servo", group="Test")
+import java.util.Objects;
+
+@TeleOp(name="Jewel Test", group="Test")
 //@Disabled
-public class ServoCal extends LinearOpMode {
+public class JewelTest extends LinearOpMode {
     Robot robot = new Robot(this);
 
-    double leftPosition = .5,rightPosition = .5;
+    double armInit = .830,kickInit = .005;
+    double armMid = .179, kickMid = .018;
+    double armLow = .122, kickLow = .639;
+    double kickLeft = .05, kickRight = .99;
+
+    JewelDetector.JewelOrder jewelOrder = JewelDetector.JewelOrder.UNKNOWN;
 
     @Override
     public void runOpMode() {
         robot.init();
+
+        robot.JewelArm.setPosition(armInit);
+        robot.JewelKick.setPosition(kickInit);
+
+        while (!isStarted()) {
+            telemetry.addData("Select color on the left","");
+
+            if (gamepad1.x) {
+                jewelOrder = JewelDetector.JewelOrder.BLUE_RED;
+            } else if (gamepad1.b) {
+                jewelOrder = JewelDetector.JewelOrder.RED_BLUE;
+            }
+
+            telemetry.addData("Color",jewelOrder.toString());
+            telemetry.update();
+        }
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -54,22 +78,53 @@ public class ServoCal extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            if (gamepad1.dpad_up) {
-                rightPosition += .001;
-            } else if (gamepad1.dpad_down) {
-                rightPosition -= .001;
-            } else if (gamepad1.dpad_left) {
-                leftPosition += .001;
-            } else if (gamepad1.dpad_right) {
-                leftPosition -= .001;
+            flipBallColor(jewelOrder);
+
+            robot.JewelArm.setPosition(armInit);
+            robot.JewelKick.setPosition(kickInit);
+            robot.pause(.5);
+            robot.JewelArm.setPosition(armMid);
+            robot.JewelKick.setPosition(kickMid);
+            robot.pause(1);
+            robot.JewelKick.setPosition(kickLow);
+            robot.pause(.5);
+            robot.JewelArm.setPosition(armLow);
+            robot.pause(.5);
+            switch (jewelOrder) {
+                case BLUE_RED:
+                    robot.JewelKick.setPosition(kickRight);
+                    robot.pause(.5);
+                    robot.JewelArm.setPosition(armMid);
+                    robot.pause(.5);
+                    robot.JewelKick.setPosition(kickMid);
+                    robot.pause(.25);
+                    break;
+                case RED_BLUE:
+                    robot.JewelKick.setPosition(kickLeft);
+                    robot.pause(1);
+                    break;
+                case UNKNOWN:
+                    //nothing
+                    //better safe than sorry
+                    break;
             }
+            robot.JewelArm.setPosition(armInit);
+            robot.pause(1.5);
+        }
+    }
 
-            robot.JewelArm.setPosition(leftPosition);
-            robot.JewelKick.setPosition(rightPosition);
-
-            telemetry.addData("Arm Position",leftPosition);
-            telemetry.addData("Kick Position",rightPosition);
-            telemetry.update();
+    private void flipBallColor (JewelDetector.JewelOrder jewelOrder) {
+        if (Objects.equals(robot.prefs.read("color"), "blue")) {
+            switch (jewelOrder) {
+                case RED_BLUE:
+                    robot.jewelOrder = JewelDetector.JewelOrder.BLUE_RED;
+                    robot.speak("LEFT BALL OFF!");
+                    break;
+                case BLUE_RED:
+                    robot.jewelOrder = JewelDetector.JewelOrder.RED_BLUE;
+                    robot.speak("RIGHT BALL OFF!");
+                    break;
+            }
         }
     }
 }

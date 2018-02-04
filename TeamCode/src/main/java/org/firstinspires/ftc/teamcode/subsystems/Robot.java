@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -38,7 +39,8 @@ public class Robot{
     public DcMotor DMotor1, DMotor2, PMotor1, PMotor2, IntakeMotor;
     public DcMotorEx ArmMotor;
     public CRServo DServo1, DServo2, PServo1, PServo2, BoxBelt;
-    public Servo DSIntakeServo, PSIntakeServo, JewelArm, JewelKick, DPinch, PPinch;
+    public Servo DSIntakeServo, PSIntakeServo, JewelKick, DPinch, PPinch;
+    public ServoImplEx JewelArm;
     //public VexMotor DSwervo1, DSwervo2, PSwervo1, PSwervo2;
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
     public Intake intake;
@@ -48,8 +50,14 @@ public class Robot{
     public IMU imu, imu2;
     public ReadPrefs prefs;
 
-    public final double kickLeft   = 0,   kickCenter = .375, kickRight = 1;
+    //old
+    public final double kickCenter = .375/*, kickLeft   = 0, kickRight = 1*/;
     public final double raisedArm  = .02, middleArm = .9,   loweredArm = 1;
+
+
+    public final double armInit = .830,kickInit = .005;
+    public final double armLow = .132, kickLow = .6;
+    public final double kickLeft = .05, kickRight = .85;
 
     public LinearOpMode opMode;
     public HardwareMap hwMap;
@@ -57,6 +65,7 @@ public class Robot{
     public CybotsVisionConfig jewelVision;
     public boolean Vuforia = false;
     public boolean JewelVision = false;
+    public boolean JewelHybridFrames = true;
     public boolean BoxVision = false;
     public JewelDetector.JewelOrder jewelOrder;
 
@@ -90,7 +99,7 @@ public class Robot{
         DPinch = hwMap.servo.get("DPinch");
         PPinch = hwMap.servo.get("PPinch");
 
-        JewelArm = hwMap.servo.get("Arm");
+        JewelArm = (ServoImplEx) hwMap.servo.get("Arm");
         //.02 is back
         //1 is down
 
@@ -135,8 +144,8 @@ public class Robot{
         PServo1.setPower(0); //Set Pass Servo Front(1) to 0 power
         PServo2.setPower(0); //Set Pass Servo Back(2) to 0 power
 
-        JewelArm.setPosition(raisedArm);
-        JewelKick.setPosition(kickRight);
+        JewelArm.setPosition(armInit);
+        JewelKick.setPosition(kickInit);
 
         PPinch.setDirection(Servo.Direction.REVERSE);
 
@@ -181,7 +190,7 @@ public class Robot{
         }
 
         if (JewelVision) {
-            this.jewelVision = new CybotsVisionConfig(hwMap);
+            this.jewelVision = new CybotsVisionConfig(hwMap,JewelHybridFrames);
         }
 
         if (BoxVision) {
