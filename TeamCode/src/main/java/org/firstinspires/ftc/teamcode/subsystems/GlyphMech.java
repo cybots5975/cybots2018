@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,25 +11,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class GlyphMech {
     DcMotorEx ArmMotor;
-    CRServo BoxBelt;
-    public Servo DPinch, PPinch;
+    public Servo PPinch;
     int position;
     double dumpSpeed = .9;
 
     ElapsedTime runtime  = new ElapsedTime();
     boolean run = false;
 
-    public enum height {HIGH, MID, LOW, STORE}
+    public enum height {HIGH, MID, LOW, STONE, STORE}
 
     double DGrab = .390;
     double DDrop = .309;
     double PGrab = .9; //was .832
     double PDrop = .754;
 
-    public GlyphMech(DcMotorEx ArmMotor, CRServo BoxBelt, Servo DPinch, Servo PPinch) {
+    public GlyphMech(DcMotorEx ArmMotor, Servo PPinch) {
         this.ArmMotor = ArmMotor;
-        this.BoxBelt = BoxBelt;
-        this.DPinch = DPinch;
         this.PPinch = PPinch;
     }
 
@@ -38,8 +34,7 @@ public class GlyphMech {
         ArmMotor.setPower(0);
         ArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BoxBelt.setPower(0);
-        DPinch.setPosition(DDrop);
+        //DPinch.setPosition(DDrop);
         PPinch.setPosition(PDrop);
     }
 
@@ -50,12 +45,12 @@ public class GlyphMech {
     }
 
     public void grab() {
-        DPinch.setPosition(DGrab);
+        //DPinch.setPosition(DGrab);
         PPinch.setPosition(PGrab);
     }
 
     public void drop() {
-        DPinch.setPosition(DDrop);
+        //DPinch.setPosition(DDrop);
         PPinch.setPosition(PDrop);
     }
 
@@ -69,6 +64,9 @@ public class GlyphMech {
                 break;
             case LOW:
                 position = -1400-325-325;
+                break;
+            case STONE:
+                position = -300;
                 break;
             case STORE:
                 position = 10;
@@ -96,6 +94,10 @@ public class GlyphMech {
 
     public void setDumpSpeed(double dumpSpeed) {
         this.dumpSpeed = dumpSpeed;
+    }
+
+    public void disable() {
+        ArmMotor.setPower(0);
     }
 
 }

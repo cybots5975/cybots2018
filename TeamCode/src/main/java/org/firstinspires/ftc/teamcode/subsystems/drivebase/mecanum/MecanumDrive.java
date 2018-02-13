@@ -66,7 +66,7 @@ public class MecanumDrive extends VectorDrive{
         double BL = -BLMotor.getCurrentPosition();
         double BR = -BRMotor.getCurrentPosition();
 
-        return (int)(FL+FR+BL+BR)/4;
+        return (int)(FL/*+FR*/+BL+BR)/3; //was 4
     }
 
     @Override
@@ -76,7 +76,7 @@ public class MecanumDrive extends VectorDrive{
         double BL = BLMotor.getCurrentPosition();
         double BR = BRMotor.getCurrentPosition();
 
-        return (int)(FL+FR+BL+BR)/4;
+        return (int)(FL/*+FR*/+BL+BR)/3; //was 4
     }
 
     @Override
@@ -88,6 +88,20 @@ public class MecanumDrive extends VectorDrive{
         } else {
             while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
                 robotCentric(0,-power,0);
+            }
+        }
+        robotCentric(0,0,0);
+    }
+
+    @Override
+    public void encoderStrafe(double power, int encoder, int heading) {
+        if (encoder>0) {
+            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+                gyroDrivePID(0,-power,heading);
+            }
+        } else {
+            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+                gyroDrivePID(0,-power,heading);
             }
         }
         robotCentric(0,0,0);

@@ -81,9 +81,15 @@ public class VectorDrive {
         robotCentric(0,0,0);
     }
 
-    public void gyroDrive(double ySpeed, double xSpeed, double heading) {
-        turnPID.setVariables(.0007,0,.12);
+    public void gyroDrivePID(double ySpeed, double xSpeed, double heading) {
+        turnPID.setVariables(.08,0,.1);
         double offset = turnPID.run((int)heading,(int)getAvgHeading());
+        robotCentric(ySpeed,xSpeed,-offset*.05);
+    }
+
+    public void gyroDrive(double ySpeed, double xSpeed, double heading) {
+        //turnPID.setVariables(.0007,0,.12);
+        double offset = ((getAvgHeading() - heading) / 25);
         robotCentric(ySpeed,xSpeed,offset);
     }
 
@@ -166,7 +172,7 @@ public class VectorDrive {
     }
 
     public void encoderStrafe(double power, int encoder){
-        if (encoder>0) {
+        /*if (encoder>0) {
             while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
                 robotCentric(0,-power,0);
             }
@@ -175,11 +181,24 @@ public class VectorDrive {
                 robotCentric(0,-power,0);
             }
         }
-        robotCentric(0,0,0);
+        robotCentric(0,0,0);*/
+    }
+
+    public void encoderStrafe(double power, int encoder, int heading) {
+        /*if (encoder>0) {
+            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+                gyroDrive(0,-power,heading);
+            }
+        } else {
+            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+                gyroDrive(0,-power,heading);
+            }
+        }
+        robotCentric(0,0,0);*/
     }
 
     public void encoderFwd(double power, int encoder) {
-        if (encoder>0) {
+        /*if (encoder>0) {
             while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()) {
                 robotCentric(power,0,0);
             }
@@ -188,7 +207,7 @@ public class VectorDrive {
                 robotCentric(power,0,0);
             }
         }
-        robotCentric(0,0,0);
+        robotCentric(0,0,0);*/
     }
 
     public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {

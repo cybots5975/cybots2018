@@ -36,27 +36,30 @@ public class Robot{
     //define hardware devices
     public driveType driveType = MECANUM;
     public VectorDrive drive;
-    public DcMotor DMotor1, DMotor2, PMotor1, PMotor2, IntakeMotor;
+    public DcMotorEx DMotor1, DMotor2, PMotor1, PMotor2;
+    public DcMotor IntakeMotor, RelicMotor;
     public DcMotorEx ArmMotor;
-    public CRServo DServo1, DServo2, PServo1, PServo2, BoxBelt;
-    public Servo DSIntakeServo, PSIntakeServo, JewelKick, DPinch, PPinch;
-    public ServoImplEx JewelArm;
+    public CRServo DServo1, DServo2, PServo1, PServo2;
+    public Servo PPinch;
+    public ServoImplEx DSIntakeServo, PSIntakeServo, JewelKick, JewelArm, RelicGrab, RelicPivot;
     //public VexMotor DSwervo1, DSwervo2, PSwervo1, PSwervo2;
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
     public Intake intake;
 
     public GlyphMech glyphMech;
 
+    public RelicArm relicArm;
+
     public IMU imu, imu2;
     public ReadPrefs prefs;
 
     //old
-    public final double kickCenter = .375/*, kickLeft   = 0, kickRight = 1*/;
+    public final double kickCenter = .375;
     public final double raisedArm  = .02, middleArm = .9,   loweredArm = 1;
 
 
     public final double armInit = .830,kickInit = .005;
-    public final double armLow = .132, kickLow = .6;
+    public final double armLow = .127, kickLow = .5;
     public final double kickLeft = .05, kickRight = .85;
 
     public LinearOpMode opMode;
@@ -92,30 +95,33 @@ public class Robot{
         PServo1 = hwMap.crservo.get("PS1"); //Pass Servo Front(1)
         PServo2 = hwMap.crservo.get("PS2"); //Pass Servo Back(2)*/
 
-        DSIntakeServo = hwMap.servo.get("DIn");
-        PSIntakeServo = hwMap.servo.get("PIn");
+        DSIntakeServo = (ServoImplEx) hwMap.servo.get("DIn");
+        PSIntakeServo = (ServoImplEx) hwMap.servo.get("PIn");
 
-        BoxBelt = hwMap.crservo.get("Belt");
-        DPinch = hwMap.servo.get("DPinch");
         PPinch = hwMap.servo.get("PPinch");
 
         JewelArm = (ServoImplEx) hwMap.servo.get("Arm");
         //.02 is back
         //1 is down
 
-        JewelKick = hwMap.servo.get("Kick");
+        JewelKick = (ServoImplEx) hwMap.servo.get("Kick");
         //.45 is centered
         //0 kicks left, 1 kicks right
 
+        RelicGrab = (ServoImplEx) hwMap.servo.get("RelicGrab");
+        RelicPivot = (ServoImplEx) hwMap.servo.get("RelicPivot");
+
         //Define and Initialize Motors
-        DMotor1 = hwMap.dcMotor.get("DM1"); //Driver Motor Front(1)
-        DMotor2 = hwMap.dcMotor.get("DM2"); //Driver Motor Back(2)
-        PMotor1 = hwMap.dcMotor.get("PM1"); //Passenger Motor Front(1)
-        PMotor2 = hwMap.dcMotor.get("PM2"); //Passenger Motor Back(2)
+        DMotor1 = (DcMotorEx) hwMap.dcMotor.get("DM1"); //Driver Motor Front(1)
+        DMotor2 = (DcMotorEx) hwMap.dcMotor.get("DM2"); //Driver Motor Back(2)
+        PMotor1 = (DcMotorEx) hwMap.dcMotor.get("PM1"); //Passenger Motor Front(1)
+        PMotor2 = (DcMotorEx) hwMap.dcMotor.get("PM2"); //Passenger Motor Back(2)
 
         IntakeMotor = hwMap.dcMotor.get("InM");
 
         ArmMotor = (DcMotorEx) hwMap.dcMotor.get("Glyph");
+
+        RelicMotor = hwMap.dcMotor.get("RM");
 
         DSensor1 = hwMap.analogInput.get("DSe1");
         DSensor2 = hwMap.analogInput.get("DSe2");
@@ -173,17 +179,22 @@ public class Robot{
         PMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         PMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        RelicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         Intake intake = new Intake(IntakeMotor,DSIntakeServo,PSIntakeServo);
         this.intake = intake;
 
         intake.store();
 
 
-        GlyphMech glyphMech = new GlyphMech(ArmMotor,BoxBelt,DPinch,PPinch);
+        GlyphMech glyphMech = new GlyphMech(ArmMotor,PPinch);
         this.glyphMech = glyphMech;
 
         glyphMech.init();
 
+        RelicArm relicArm = new RelicArm(RelicMotor,RelicGrab,RelicPivot);
+        this.relicArm = relicArm;
+        relicArm.init();
 
         if (Vuforia) {
             this.VuMark1 = new CybotVuMark(hwMap,VuforiaLocalizer.CameraDirection.BACK,true);

@@ -163,7 +163,7 @@ public class SwerveDrive extends VectorDrive{
         log(forward,strafe,theta,ws,wa);
 
         if (doa&&!done) {
-            log.log();
+            log.log("swervelog2");
             done = true;
         }
     }

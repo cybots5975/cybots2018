@@ -4,7 +4,6 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
 /**
@@ -13,7 +12,7 @@ import org.opencv.core.Mat;
 
 public class CybotsVisionConfig {
     private JewelDetector jewelDetector = null;
-    private JewelDetector.JewelOrder jewelOrder;
+    //private JewelDetector.JewelOrder jewelOrder;
 
     public CybotsVisionConfig(HardwareMap hardwareMap, boolean vuforiaFrames) {
         jewelDetector = new JewelDetector();
@@ -22,17 +21,18 @@ public class CybotsVisionConfig {
         }
 
         //Jewel Detector Settings
-        jewelDetector.areaWeight = 0.02;
-        jewelDetector.detectionMode = JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
-        //jewelDetector.perfectArea = 6500; <- Needed for PERFECT_AREA
-        jewelDetector.debugContours = true;
-        jewelDetector.maxDiffrence = 200; //old 15
-        jewelDetector.ratioWeight = 30; //old 15
-        jewelDetector.minArea = 700;
+        jewelDetector.areaWeight       = 0.02;
+        jewelDetector.detectionMode    = JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
+        jewelDetector.perfectRatio     = 2;
+        jewelDetector.perfectArea      = 2800;
+        jewelDetector.areaWeight       = 0.05; // Since we're dealing with 100's of pixels
+        jewelDetector.minArea          = 1100;
+        jewelDetector.ratioWeight      = 30; // Since most of the time the area diffrence is a decimal place
+        jewelDetector.maxDiffrence     = 100; // Since most of the time the area diffrence is a decimal place
     }
 
     public void vumarkFrames (Mat frame) {
-        Core.flip(frame,frame,+1);
+        //Core.flip(frame,frame,+1);
         jewelDetector.processFrame(frame,frame);
     }
 
@@ -45,7 +45,7 @@ public class CybotsVisionConfig {
     }
 
     public JewelDetector.JewelOrder jewelOrder() {
-        return jewelDetector.getLastOrder();
-        //return jewelDetector.getCurrentOrder(); todo switch to current position?
+        return jewelDetector.getCurrentOrder();
+        //return jewelDetector.getLastOrder(); should do last or current position? hmm
     }
 }

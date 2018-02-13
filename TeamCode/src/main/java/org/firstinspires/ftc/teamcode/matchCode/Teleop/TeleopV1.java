@@ -26,6 +26,8 @@ public class TeleopV1 extends  LinearOpMode {
     GlyphMech.height height = STORE;
 
     boolean intakereverse = false;
+    boolean positionMode = true;
+    boolean relicClaw = false;
 
     Robot robot = new Robot(this);
 
@@ -58,10 +60,11 @@ public class TeleopV1 extends  LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 leftX = leftX/2;
+                rightX = rightX/2.5;
             }
 
-            if (gamepad1.right_bumper) {
-                rightX = rightX/2;
+            if (gamepad1.left_bumper) {
+                leftY = leftY/2;
             }
 
             robot.drive.setEfficiency(true); //used for swerve
@@ -71,6 +74,8 @@ public class TeleopV1 extends  LinearOpMode {
             glyph();
 
             intake();
+
+            relic();
 
             telemetry.addData("Left Intake",leftPosition);
             telemetry.addData("Right Intake",rightPosition);
@@ -127,6 +132,43 @@ public class TeleopV1 extends  LinearOpMode {
             leftPosition -= .001;
         }
 
-        robot.intake.setAngle(leftPosition,rightPosition);
+        if (gamepad1.right_stick_button) {
+            positionMode = false;
+        } else if (gamepad1.left_stick_button) {
+            positionMode = true;
+        }
+        if (positionMode) {
+            robot.intake.setAngle(leftPosition,rightPosition);
+        } else {
+            robot.intake.auton();
+        }
+    }
+
+    private void relic() {
+        /*if (gamepad2.dpad_up) {
+            robot.relicArm.pivotUp();
+        } else if (gamepad2.dpad_down) {
+            robot.relicArm.pivotDown();
+        }*/
+        if (gamepad2.left_bumper) {
+            robot.relicArm.pivotUp();
+        } else {
+            robot.relicArm.pivotDown();
+        }
+
+        if (gamepad2.right_bumper) {
+            robot.relicArm.grab();
+            relicClaw = true;
+        } /*else if (gamepad2.left_bumper) {
+            robot.relicArm.release();
+        } */else {
+            if (relicClaw) {
+                robot.relicArm.release();
+            } else {
+                robot.relicArm.clawInit();
+            }
+        }
+
+        robot.relicArm.extendArm(-gamepad2.right_stick_y);
     }
 }
