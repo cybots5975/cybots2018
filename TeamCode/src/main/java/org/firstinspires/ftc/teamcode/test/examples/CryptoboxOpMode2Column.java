@@ -1,20 +1,19 @@
 package org.firstinspires.ftc.teamcode.test.examples;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.disnodeteam.dogecv.detectors.box2column;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="DogeCV Red Cryptobox Detector", group="DogeCV")
-@Disabled
-public class CryptoboxOpMode extends OpMode
+@TeleOp(name="DogeCV Red Cryptobox Detector 2 Col", group="DogeCV")
+//@Disabled
+public class CryptoboxOpMode2Column extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private CryptoboxDetector cryptoboxDetector = null;
+    private box2column cryptoboxDetector = null;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -22,7 +21,7 @@ public class CryptoboxOpMode extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        cryptoboxDetector = new CryptoboxDetector();
+        cryptoboxDetector = new box2column();
         cryptoboxDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         cryptoboxDetector.rotateMat = false;
 
@@ -31,6 +30,7 @@ public class CryptoboxOpMode extends OpMode
         //cryptoboxDetector.SetTestMat(com.qualcomm.ftcrobotcontroller.R.drawable.test_cv4);
 
         cryptoboxDetector.enable();
+        //
     }
 
     @Override

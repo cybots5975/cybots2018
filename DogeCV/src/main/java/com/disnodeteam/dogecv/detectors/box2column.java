@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class CryptoboxDetector extends OpenCVPipeline {
+public class box2column extends OpenCVPipeline {
 
     public enum CryptoboxDetectionMode {
         RED, BLUE
@@ -335,11 +335,11 @@ public class CryptoboxDetector extends OpenCVPipeline {
     }
 
     public int getCryptoBoxCenterPosition() {
-        return CryptoBoxPositions[1];
+        return CryptoBoxPositions[0];
     }
 
     public int getCryptoBoxRightPosition() {
-        return CryptoBoxPositions[2];
+        return CryptoBoxPositions[0]; //2
     }
 
     public boolean isCryptoBoxDetected() {
