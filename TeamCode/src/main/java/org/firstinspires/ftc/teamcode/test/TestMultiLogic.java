@@ -34,14 +34,14 @@ public class TestMultiLogic extends LinearOpMode{
             telemetry.update();
             robot.intake.setSpeed(1);
             robot.intake.multiGlyph();
-            while (!(robot.glyphDistance1.getDistance(DistanceUnit.CM)<13&&robot.glyphDistance1.getDistance(DistanceUnit.CM)>2)) {
+            while (!(robot.glyphDistance1.getDistance(DistanceUnit.CM)<13&&robot.glyphDistance1.getDistance(DistanceUnit.CM)>2)&&robot.IntakeMotor.getCurrentDraw()<1000) {
                 robot.drive.encoderFwd(.3, distanceCounts);
                 robot.drive.encoderFwd(-.3, 0);
                 angle += 5;
                 distanceCounts += 50;
                 robot.drive.gyroTurn(.2,angle,2);
             }
-            while (!(robot.glyphDistance2.getDistance(DistanceUnit.CM)<13&&robot.glyphDistance2.getDistance(DistanceUnit.CM)>2)) {
+            while (!(robot.glyphDistance2.getDistance(DistanceUnit.CM)<13&&robot.glyphDistance2.getDistance(DistanceUnit.CM)>2)&&robot.IntakeMotor.getCurrentDraw()<1000) {
                 robot.drive.encoderFwd(.3, distanceCounts);
                 robot.drive.encoderFwd(-.3, 0);
                 angle += 5;

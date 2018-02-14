@@ -29,6 +29,7 @@ import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
 import org.firstinspires.ftc.teamcode.util.CybotsVisionConfig;
 import org.firstinspires.ftc.teamcode.util.ReadPrefs;
 import org.firstinspires.ftc.teamcode.util.vuforia.CybotVuMark;
+import org.openftc.hardware.rev.OpenRevDcMotorImplEx;
 
 import java.util.Locale;
 
@@ -39,7 +40,7 @@ public class Robot{
     public driveType driveType = MECANUM;
     public VectorDrive drive;
     public DcMotorEx DMotor1, DMotor2, PMotor1, PMotor2;
-    public DcMotor IntakeMotor, RelicMotor;
+    public OpenRevDcMotorImplEx IntakeMotor, RelicMotor;
     public DcMotorEx ArmMotor;
     public CRServo DServo1, DServo2, PServo1, PServo2;
     public Servo PPinch;
@@ -121,11 +122,11 @@ public class Robot{
         PMotor1 = (DcMotorEx) hwMap.dcMotor.get("PM1"); //Passenger Motor Front(1)
         PMotor2 = (DcMotorEx) hwMap.dcMotor.get("PM2"); //Passenger Motor Back(2)
 
-        IntakeMotor = hwMap.dcMotor.get("InM");
+        IntakeMotor = (OpenRevDcMotorImplEx) hwMap.dcMotor.get("InM");
 
         ArmMotor = (DcMotorEx) hwMap.dcMotor.get("Glyph");
 
-        RelicMotor = hwMap.dcMotor.get("RM");
+        RelicMotor = (OpenRevDcMotorImplEx) hwMap.dcMotor.get("RM");
 
         DSensor1 = hwMap.analogInput.get("DSe1");
         DSensor2 = hwMap.analogInput.get("DSe2");
