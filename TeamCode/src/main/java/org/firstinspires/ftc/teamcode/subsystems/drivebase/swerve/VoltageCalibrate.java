@@ -32,13 +32,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.subsystems.drivebase.swerve;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
 @TeleOp(name="Voltage Calibrate", group="Swerve")
-//@Disabled
+@Disabled
 public class VoltageCalibrate extends LinearOpMode {
 
     Robot robot = new Robot(this);

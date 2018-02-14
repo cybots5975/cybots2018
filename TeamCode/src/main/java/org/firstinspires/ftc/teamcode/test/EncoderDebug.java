@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
-@TeleOp(name="Encoder Debut", group="Testing")
+@TeleOp(name="Encoder Debug", group="Testing")
 //@Disabled
 public class EncoderDebug extends LinearOpMode {
     private Robot robot = new Robot(this);
@@ -56,7 +56,21 @@ public class EncoderDebug extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            telemetry.addData("Encoders average",robot.drive.getStrafeEncoderAverage());
+            if (gamepad1.right_bumper) {
+                robot.drive.robotCentric(gamepad1.left_stick_y/2,gamepad1.left_stick_x/2,gamepad1.right_stick_x/2);
+            }
+
+            if (gamepad1.a) {
+                robot.drive.zeroEncoders();
+            }
+
+            telemetry.addData("Encoders Strafe Average",robot.drive.getStrafeEncoderAverage());
+            telemetry.addData("Encoders Fwd Average",robot.drive.getFwdEncoderAverage());
+
+            telemetry.addData("Front Left",robot.DMotor1.getCurrentPosition());
+            telemetry.addData("Back Left",robot.DMotor2.getCurrentPosition());
+            telemetry.addData("Front Right",robot.PMotor1.getCurrentPosition());
+            telemetry.addData("Back Right",robot.PMotor2.getCurrentPosition());
 
             telemetry.update();
         }

@@ -33,6 +33,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode.test;
 
 import com.disnodeteam.dogecv.detectors.JewelDetector;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -41,7 +42,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import java.util.Objects;
 
 @TeleOp(name="Jewel Test", group="Test")
-//@Disabled
+@Disabled
 public class JewelTest extends LinearOpMode {
     Robot robot = new Robot(this);
 

@@ -30,19 +30,19 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode.test;
+package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
-@TeleOp(name="Servo", group="Test")
-//@Disabled
-public class ServoCal extends LinearOpMode {
+@TeleOp(name="Relic Test", group="Testing")
+@Disabled
+public class RelicTest extends LinearOpMode {
     Robot robot = new Robot(this);
-
-    double leftPosition = .5,rightPosition = .5;
 
     @Override
     public void runOpMode() {
@@ -54,21 +54,21 @@ public class ServoCal extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            if (gamepad1.dpad_up) {
-                rightPosition += .001;
-            } else if (gamepad1.dpad_down) {
-                rightPosition -= .001;
-            } else if (gamepad1.dpad_left) {
-                leftPosition += .001;
-            } else if (gamepad1.dpad_right) {
-                leftPosition -= .001;
+            if (gamepad1.left_bumper) {
+                robot.RelicMotor.setPower(gamepad1.right_stick_y/2);
+            } else {
+                robot.RelicMotor.setPower(gamepad1.right_stick_y);
             }
 
-            robot.RelicGrab.setPosition(leftPosition);
-            robot.RelicPivot.setPosition(rightPosition);
+            if (gamepad1.a) {
+                robot.RelicMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+                telemetry.addData("Direction","Reverse");
+            } else if (gamepad1.b) {
+                robot.RelicMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+                telemetry.addData("Direction","Forward");
+            }
 
-            telemetry.addData("Grab Position",leftPosition);
-            telemetry.addData("Pivot Position",rightPosition);
+            telemetry.addData("Power",robot.RelicMotor.getPower());
             telemetry.update();
         }
     }

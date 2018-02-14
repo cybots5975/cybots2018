@@ -32,6 +32,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -45,7 +46,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.MID;
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.STORE;
 
 @TeleOp(name="GLYPH", group="Test")
-//@Disabled
+@Disabled
 public class GlyphTest extends LinearOpMode {
     Robot robot = new Robot(this);
     int position = 0;

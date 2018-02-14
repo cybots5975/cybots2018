@@ -32,43 +32,33 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.I2CXL;
 
-@TeleOp(name="Servo", group="Test")
-//@Disabled
-public class ServoCal extends LinearOpMode {
+@TeleOp(name="Ultrasonic", group="Test")
+@Disabled
+public class TestUltrasonic extends LinearOpMode {
     Robot robot = new Robot(this);
 
-    double leftPosition = .5,rightPosition = .5;
+    I2CXL rearUS;
 
     @Override
     public void runOpMode() {
         robot.init();
+
+        rearUS = (I2CXL) hardwareMap.get(I2CXL.class,"rear");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            telemetry.addData("Distance",rearUS.getDistance());
 
-            if (gamepad1.dpad_up) {
-                rightPosition += .001;
-            } else if (gamepad1.dpad_down) {
-                rightPosition -= .001;
-            } else if (gamepad1.dpad_left) {
-                leftPosition += .001;
-            } else if (gamepad1.dpad_right) {
-                leftPosition -= .001;
-            }
-
-            robot.RelicGrab.setPosition(leftPosition);
-            robot.RelicPivot.setPosition(rightPosition);
-
-            telemetry.addData("Grab Position",leftPosition);
-            telemetry.addData("Pivot Position",rightPosition);
             telemetry.update();
         }
     }
