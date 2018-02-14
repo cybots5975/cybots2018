@@ -97,7 +97,10 @@ public class VectorDrive {
         //Calculate the average heading of the 2 IMUs on the robot
         imu.setHeadingOffset(0);
         imu2.setHeadingOffset(0);
-        return ((imu.getHeading()+imu2.getHeading())/2)%360;
+        //return ((imu.getHeading()+imu2.getHeading())/2)%360; OLD BROKEN, DON'T USE BADDDDD
+        return ((imu.getHeading()+360)%360);
+        //try this if wanna mess with averaging again... not worth it
+        //return ((((imu.getHeading()+360)%360)+((imu2.getHeading()+360)%360))/2)%360;
     }
 
     public void zeroEncoders(){
