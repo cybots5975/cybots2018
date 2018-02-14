@@ -60,10 +60,10 @@ public class GlyphMech {
                 position = -1475;
                 break;
             case MID:
-                position = -1400-325;
+                position = -1800;
                 break;
             case LOW:
-                position = -1400-325-325;
+                position = -2200;
                 break;
             case STONE:
                 position = -300;

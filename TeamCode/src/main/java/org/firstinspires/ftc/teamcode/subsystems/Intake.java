@@ -40,6 +40,13 @@ public class Intake{
         rightServo.setPosition(.978);
     }
 
+    public void multiGlyph() {
+        leftServo.setPwmEnable();
+        rightServo.setPwmEnable();
+        leftServo.setPosition(.2);
+        rightServo.setPosition(.851);
+    }
+
     public void pinch() {
         leftServo.setPwmEnable();
         rightServo.setPwmEnable();

@@ -110,8 +110,8 @@ public class TeleopV1 extends  LinearOpMode {
         robot.glyphMech.runProcess(height);
     }
 
-    double leftPosition = .156;
-    double rightPosition = .978;
+    double leftPosition = .225; //.156 old
+    double rightPosition = 1; //.978 old
 
     private void intake(){
         if (intakereverse) {
@@ -123,13 +123,22 @@ public class TeleopV1 extends  LinearOpMode {
         }
 
         if (gamepad1.dpad_up) {
-            rightPosition += .001;
+            rightPosition += .05;
+            //was .001
         } else if (gamepad1.dpad_down) {
-            rightPosition -= .001;
+            rightPosition -= .05;
         } else if (gamepad1.dpad_left) {
-            leftPosition += .001;
+            leftPosition += .05;
         } else if (gamepad1.dpad_right) {
-            leftPosition -= .001;
+            leftPosition -= .05;
+        }
+
+        if (gamepad1.left_bumper) {
+            rightPosition = .825;
+        } else if (gamepad1.start) {
+            rightPosition = 0;
+        } else {
+            rightPosition = 1;
         }
 
         if (gamepad1.right_stick_button) {

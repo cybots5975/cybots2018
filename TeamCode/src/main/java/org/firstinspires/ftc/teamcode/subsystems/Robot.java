@@ -11,8 +11,10 @@ import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -44,6 +46,8 @@ public class Robot{
     public ServoImplEx DSIntakeServo, PSIntakeServo, JewelKick, JewelArm, RelicGrab, RelicPivot;
     //public VexMotor DSwervo1, DSwervo2, PSwervo1, PSwervo2;
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
+    public ColorSensor glyphColor1, glyphColor2;
+    public DistanceSensor glyphDistance1, glyphDistance2;
     public Intake intake;
 
     public GlyphMech glyphMech;
@@ -127,6 +131,11 @@ public class Robot{
         DSensor2 = hwMap.analogInput.get("DSe2");
         PSensor1 = hwMap.analogInput.get("PSe1");
         PSensor2 = hwMap.analogInput.get("PSe2");
+
+        glyphColor1 = hwMap.get(ColorSensor.class, "glyph1");
+        glyphDistance1 = hwMap.get(DistanceSensor.class, "glyph1");
+        glyphColor2 = hwMap.get(ColorSensor.class, "glyph2");
+        glyphDistance2 = hwMap.get(DistanceSensor.class, "glyph2");
 
         opMode.telemetry.addData("Motors","Init Done");
         opMode.telemetry.update();
@@ -277,7 +286,7 @@ public class Robot{
         }).start();
     }
 
-    public void logging() {
+/*    public void logging() {
         new Thread(new Runnable()
         {
             @Override
@@ -286,5 +295,5 @@ public class Robot{
 
             }
         }).start();
-    }
+    }*/
 }

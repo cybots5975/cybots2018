@@ -57,7 +57,7 @@ public class MasterAuto extends LinearOpMode{
             /*if (robot.VuMark1.scan().equals(RelicRecoveryVuMark.UNKNOWN)) {
                 VuMark = RelicRecoveryVuMark.CENTER;
             }*/
-            robot.glyphMech.setDumpSpeed(.5);
+            robot.glyphMech.setDumpSpeed(.6);
             robot.glyphMech.grab();
             robot.pause(.1);
             robot.glyphMech.setPosition(GlyphMech.height.STONE);
@@ -111,7 +111,9 @@ public class MasterAuto extends LinearOpMode{
         setColumnAngle(30,30,360-30);
         robot.drive.gyroTurn(.07,turnAngle,1);
 
-        robot.pause(1);
+        placeGlyph();
+
+        /*robot.pause(1);
 
         robot.glyphMech.setPosition(GlyphMech.height.LOW);
         robot.pause(2);
@@ -125,7 +127,7 @@ public class MasterAuto extends LinearOpMode{
         robot.glyphMech.setPosition(GlyphMech.height.STORE);
         robot.pause(2);
 
-        robot.glyphMech.disable();
+        robot.glyphMech.disable();*/
     }
 
     private void redFar(){
@@ -145,7 +147,9 @@ public class MasterAuto extends LinearOpMode{
         setColumnAngle(120,120,60);
         robot.drive.gyroTurn(.07,turnAngle,1);
 
-        robot.pause(1);
+        placeGlyph();
+
+        /*robot.pause(1);
 
         robot.glyphMech.setPosition(GlyphMech.height.LOW);
         robot.pause(2);
@@ -158,7 +162,7 @@ public class MasterAuto extends LinearOpMode{
         robot.drive.encoderFwd(.1,100);
         robot.glyphMech.setPosition(GlyphMech.height.STORE);
         robot.pause(2);
-        robot.glyphMech.disable();
+        robot.glyphMech.disable();*/
     }
 
     private void blueClose(){
@@ -168,24 +172,31 @@ public class MasterAuto extends LinearOpMode{
         setVuMarkColumn(-1650,-1200,-1550);
         robot.drive.encoderStrafe(-.6,encoderCounts);
 
-        robot.pause(1);
-
         setColumnAngle(30,330,330);
-        robot.drive.gyroTurn(.07,turnAngle,1);
+        robot.drive.gyroTurn(.1,turnAngle,1);
 
-        robot.glyphMech.setPosition(GlyphMech.height.LOW);
-        robot.pause(2);
-        robot.glyphMech.drop();
-        robot.pause(1);
+        placeGlyph();
 
+        robot.intake.multiGlyph();
+
+        robot.drive.gyroTurn(.1,0,1);
+
+        robot.intake.setSpeed(1);
         robot.drive.zeroEncoders();
-        robot.drive.encoderFwd(-.1,-100);
-        robot.pause(.5);
-        robot.drive.encoderFwd(.1,100);
-        robot.glyphMech.setPosition(GlyphMech.height.STORE);
-        robot.pause(2);
-        robot.glyphMech.disable();
-        robot.pause(.5);
+        robot.drive.encoderFwd(.7,550);
+        robot.drive.zeroEncoders();
+        robot.drive.encoderFwd(.15,300); //goes 200 more than previously
+        robot.pause(1.5);
+        robot.drive.encoderFwd(-.5,-200);
+        robot.drive.encoderFwd(.2,200);
+        robot.pause(1.5);
+        robot.drive.encoderFwd(-.6,-475);
+
+        robot.drive.gyroTurn(.1,20,1);
+        placeGlyph2();
+        robot.drive.zeroEncoders();
+        robot.drive.encoderFwd(-.3,-200);
+        robot.drive.encoderFwd(.2,100);
     }
 
     private void blueFar() {
@@ -204,9 +215,11 @@ public class MasterAuto extends LinearOpMode{
         robot.pause(1);
 
         setColumnAngle(360-60, 360-120, 360-120);
-        robot.drive.gyroTurn(.07, turnAngle, 1);
+        robot.drive.gyroTurn(.1, turnAngle, 1);
 
-        robot.pause(1);
+        placeGlyph();
+
+        /*robot.pause(1);
 
         robot.glyphMech.setPosition(GlyphMech.height.LOW);
         robot.pause(2);
@@ -219,7 +232,7 @@ public class MasterAuto extends LinearOpMode{
         robot.drive.encoderFwd(.1, 100);
         robot.glyphMech.setPosition(GlyphMech.height.STORE);
         robot.pause(2);
-        robot.glyphMech.disable();
+        robot.glyphMech.disable();*/
     }
 
     private void scoreJewel(JewelDetector.JewelOrder jewelOrder){
@@ -316,5 +329,38 @@ public class MasterAuto extends LinearOpMode{
                 turnAngle = right;
                 break;
         }
+    }
+
+    private void placeGlyph(){
+        robot.pause(.1);
+        robot.glyphMech.setPosition(GlyphMech.height.LOW);
+        robot.pause(1.5);
+        robot.glyphMech.drop();
+        robot.pause(.1);
+
+        robot.drive.zeroEncoders();
+        robot.drive.encoderFwd(-.2,-100);
+        robot.pause(.25);
+        robot.drive.encoderFwd(.2,100);
+        robot.glyphMech.setPosition(GlyphMech.height.STORE);
+        robot.pause(.75);
+        //robot.glyphMech.disable();
+    }
+
+    private void placeGlyph2(){
+        robot.glyphMech.grab();
+        robot.pause(.1);
+        robot.glyphMech.setPosition(GlyphMech.height.LOW);
+        robot.pause(1.5);
+        robot.glyphMech.drop();
+        robot.pause(.1);
+
+        robot.drive.zeroEncoders();
+        robot.drive.encoderFwd(-.2,-100);
+        robot.pause(.25);
+        robot.drive.encoderFwd(.2,100);
+        robot.glyphMech.setPosition(GlyphMech.height.STORE);
+        robot.pause(.75);
+        //robot.glyphMech.disable();
     }
 }

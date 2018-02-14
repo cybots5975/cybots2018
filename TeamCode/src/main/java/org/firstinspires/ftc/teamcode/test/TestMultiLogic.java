@@ -5,10 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
-import org.firstinspires.ftc.teamcode.util.AutoTransitioner;
-
-import java.util.Objects;
 
 /**
  * Created by kskrueger on 10/22/17.
@@ -18,6 +16,9 @@ import java.util.Objects;
 public class TestMultiLogic extends LinearOpMode{
     private Robot robot = new Robot(this);
     private boolean loop = true;
+    private int glyphCount = 0;
+    private int angle = 0;
+    private int distanceCounts = 200;
 
     @Override
     public void runOpMode() {
@@ -25,16 +26,31 @@ public class TestMultiLogic extends LinearOpMode{
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drive.zeroEncoders();
 
-        if (Objects.equals(robot.prefs.read("testMode"), "false")) {
-            AutoTransitioner.transitionOnStop(this, "Teleop V1");
-        }
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()&&loop&&!isStopRequested()) {
             telemetry.addData("Position:", robot.prefs.read("postion"));
             telemetry.update();
-
+            robot.intake.setSpeed(1);
+            robot.intake.multiGlyph();
+            while (!(robot.glyphDistance1.getDistance(DistanceUnit.CM)<13&&robot.glyphDistance1.getDistance(DistanceUnit.CM)>2)) {
+                robot.drive.encoderFwd(.3, distanceCounts);
+                robot.drive.encoderFwd(-.3, 0);
+                angle += 5;
+                distanceCounts += 50;
+                robot.drive.gyroTurn(.2,angle,2);
+            }
+            while (!(robot.glyphDistance2.getDistance(DistanceUnit.CM)<13&&robot.glyphDistance2.getDistance(DistanceUnit.CM)>2)) {
+                robot.drive.encoderFwd(.3, distanceCounts);
+                robot.drive.encoderFwd(-.3, 0);
+                angle += 5;
+                distanceCounts += 50;
+                robot.drive.gyroTurn(.2,angle,2);
+            }
+            robot.pause(.5);
+            robot.intake.setSpeed(0);
+            robot.drive.gyroTurn(.2,0,1);
 
             loop = false;
         }
