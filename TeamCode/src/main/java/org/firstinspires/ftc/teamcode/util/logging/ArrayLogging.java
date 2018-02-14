@@ -38,8 +38,8 @@ public class ArrayLogging {
         return array[yPos][xPos];
     }
 
-    public void log () throws IOException {
-        save("swervelog2");
+    public void log (String name) throws IOException {
+        save(name);
     }
 
     public void save(String fileName) throws IOException {
