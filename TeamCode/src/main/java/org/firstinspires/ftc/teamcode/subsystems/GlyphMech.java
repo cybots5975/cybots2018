@@ -123,8 +123,8 @@ public class GlyphMech {
                     DcMotor.RunMode mode = ArmMotor.getMode();
                     ArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-                    while(!stopRequest&&(boxLimit.getVoltage()>.5)) {
-                        ArmMotor.setPower(-.2);
+                    while(!stopRequest&&!(boxLimit.getVoltage()>.5)) {
+                        ArmMotor.setPower(.2);
                     }
                     ArmMotor.setPower(0);
                     ArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
