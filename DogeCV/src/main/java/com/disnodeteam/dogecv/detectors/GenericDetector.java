@@ -3,7 +3,7 @@ package com.disnodeteam.dogecv.detectors;
 
 import com.disnodeteam.dogecv.OpenCVPipeline;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
-import com.disnodeteam.dogecv.filters.HSVColorFilter;
+import com.disnodeteam.dogecv.filters.LeviColorFilter;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -38,7 +38,8 @@ public class GenericDetector extends OpenCVPipeline {
     public boolean rotateMat = false;
     public GenericDetectionSpeed speed = GenericDetectionSpeed.BALANCED;
 
-    public DogeCVColorFilter colorFilter = new HSVColorFilter(new Scalar(50,50,50), new Scalar(50,50,50));
+    //public DogeCVColorFilter colorFilter = new HSVColorFilter(new Scalar(50,50,50), new Scalar(50,50,50));
+    public DogeCVColorFilter colorFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW);
 
     public double perfectArea = 6500;
     public double areaWeight = 0.05; // Since we're dealing with 100's of pixels
@@ -180,7 +181,7 @@ public class GenericDetector extends OpenCVPipeline {
         Imgproc.resize(workingMat, workingMat, initSize);
 
         preConvert.release();
-        Imgproc.putText(workingMat, "DogeCV v1.1 Generic: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString(), new Point(5, 30), 0, 1.2, new Scalar(0, 255, 255), 2);
+        Imgproc.putText(workingMat, "Relic: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString(), new Point(5, 30), 0, 1.2, new Scalar(0, 255, 255), 2);
 
         return workingMat;
     }
@@ -192,6 +193,15 @@ public class GenericDetector extends OpenCVPipeline {
     public Point getLocation(){
         return resultLocation;
     }
+
+    public double getPosX(){
+        return resultLocation.x;
+    }
+
+    public double getPosY(){
+        return resultLocation.y;
+    }
+
     public boolean getFound(){
         return resultFound;
     }
