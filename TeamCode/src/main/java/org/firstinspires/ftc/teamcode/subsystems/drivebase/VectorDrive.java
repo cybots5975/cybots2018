@@ -36,6 +36,8 @@ public class VectorDrive {
 
         this.imu = imu;
         this.imu2 = imu2;
+
+        turnPID.setVariables(.1,0,.08);
     }
 
     ///////////UNIQUE TO EACH DRIVETYPE///////////
@@ -60,7 +62,6 @@ public class VectorDrive {
     }
 
     public void gyroTurn(double turnSpeed, int targetAngle, int allowedError) {
-        turnPID.setVariables(.1,0,.08);
         while (Math.abs(getAvgHeading()-targetAngle)>allowedError&&!opMode.isStopRequested()) {
             double pidOffset = turnPID.run(targetAngle,(int)getAvgHeading());
             double power = -pidOffset * turnSpeed;
@@ -69,22 +70,15 @@ public class VectorDrive {
         robotCentric(0,0,0);
     }
 
-    public void gyroTurnBlue(double turnSpeed, int targetAngle, int allowedError) {
-        turnPID.setVariables(.1,0,.08);
-        while (Math.abs(getAvgHeading()-targetAngle)>allowedError&&!opMode.isStopRequested()) {
-            double pidOffset = turnPID.run(targetAngle,(int)getAvgHeading());
-            double power = -pidOffset * turnSpeed;
-            robotCentric(0, 0, -power);
-            opMode.telemetry.addData("Angle",getAvgHeading());
-            opMode.telemetry.update();
-        }
-        robotCentric(0,0,0);
+    public void gyroDrivePID(double ySpeed, double xSpeed, double heading) {
+        turnPID.setVariables(.08,0,.15);
+        double offset = turnPID.run((int)heading,(int)getAvgHeading());
+        robotCentric(ySpeed,xSpeed,-offset*.2);
     }
 
-    public void gyroDrivePID(double ySpeed, double xSpeed, double heading) {
-        turnPID.setVariables(.08,0,.1);
-        double offset = turnPID.run((int)heading,(int)getAvgHeading());
-        robotCentric(ySpeed,xSpeed,-offset*.05);
+    public void turnDrivePID(double ySpeed, double xSpeed, int position, int target, double multiplier) {
+        double offset = turnPID.run(target,position);
+        robotCentric(ySpeed,xSpeed,-offset*multiplier);
     }
 
     public void gyroDrive(double ySpeed, double xSpeed, double heading) {
@@ -94,12 +88,11 @@ public class VectorDrive {
     }
 
     public double getAvgHeading() {
-        //Calculate the average heading of the 2 IMUs on the robot
         imu.setHeadingOffset(0);
         imu2.setHeadingOffset(0);
-        //return ((imu.getHeading()+imu2.getHeading())/2)%360; OLD BROKEN, DON'T USE BADDDDD
         return ((imu.getHeading()+360)%360);
-        //try this if wanna mess with averaging again... not worth it
+        //Calculate the average heading of the 2 IMUs on the robot
+        //use this to average IMUS again...
         //return ((((imu.getHeading()+360)%360)+((imu2.getHeading()+360)%360))/2)%360;
     }
 
@@ -132,7 +125,7 @@ public class VectorDrive {
 
     ///////////SWERVE SPECIFIC MODES///////////
     public void holdModuleAngle(int angle) {
-        //swerve overides
+        //swerve overrides
     }
 
     public void zeroReset(boolean zeroReset){
@@ -148,75 +141,45 @@ public class VectorDrive {
     }
 
     public void robotCentricLog(double forward, double strafe, double theta) throws IOException {
-        //overide in SwerveDrive
+        //overrides in SwerveDrive
     }
 
     public void log (double forward,double strafe,double theta, double[] ws, double[] wa) {
-        //overide in SwerveDrive
+        //overrides in SwerveDrive
     }
 
     ///////////MECANUM SPECIFIC MODES///////////
     public int getStrafeEncoderAverage(){
-        double FL = FLMotor.getCurrentPosition();
-        double FR = FRMotor.getCurrentPosition();
-        double BL = -BLMotor.getCurrentPosition();
-        double BR = -BRMotor.getCurrentPosition();
-
-        return (int)(FL+FR+BL+BR)/4;
+        //overrides in MecanumDrive
+        return 0;
     }
 
     public int getFwdEncoderAverage(){
-        double FL = FLMotor.getCurrentPosition();
-        double FR = FRMotor.getCurrentPosition();
-        double BL = BLMotor.getCurrentPosition();
-        double BR = BRMotor.getCurrentPosition();
-
-        return (int)(FL+FR+BL+BR)/4;
+        //overrides in MecanumDrive
+        return 0;
     }
 
     public void encoderStrafe(double power, int encoder){
-        /*if (encoder>0) {
-            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
-                robotCentric(0,-power,0);
-            }
-        } else {
-            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
-                robotCentric(0,-power,0);
-            }
-        }
-        robotCentric(0,0,0);*/
+        //overrides in MecanumDrive
     }
 
     public void encoderStrafe(double power, int encoder, int heading) {
-        /*if (encoder>0) {
-            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
-                gyroDrive(0,-power,heading);
-            }
-        } else {
-            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
-                gyroDrive(0,-power,heading);
-            }
-        }
-        robotCentric(0,0,0);*/
+        //overrides in MecanumDrive
     }
 
     public void encoderFwd(double power, int encoder) {
-        /*if (encoder>0) {
-            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()) {
-                robotCentric(power,0,0);
-            }
-        } else {
-            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()) {
-                robotCentric(power,0,0);
-            }
-        }
-        robotCentric(0,0,0);*/
+        //overrides in MecanumDrive
+    }
+
+    public void encoderFwd(double power, int encoder, int heading) {
+        //overrides in MecanumDrive
     }
 
     public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {
-
+        //overrides in MecanumDrive
     }
 
+    //enum for driveType, this is used when selecting Mecanum or Swerve drivebase
     public enum driveType {
         MECANUM,
         SWERVE

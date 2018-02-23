@@ -7,6 +7,7 @@ import android.speech.tts.TextToSpeech;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
+import com.disnodeteam.dogecv.detectors.GenericDetector;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -14,6 +15,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -27,11 +30,13 @@ import org.firstinspires.ftc.teamcode.subsystems.drivebase.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.swerve.SwerveDrive;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
 import org.firstinspires.ftc.teamcode.util.CybotsVisionConfig;
+import org.firstinspires.ftc.teamcode.util.DotStar;
 import org.firstinspires.ftc.teamcode.util.ReadPrefs;
 import org.firstinspires.ftc.teamcode.util.vuforia.CybotVuMark;
 import org.openftc.hardware.rev.OpenRevDcMotorImplEx;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import static org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive.driveType.MECANUM;
 
@@ -43,10 +48,11 @@ public class Robot{
     public OpenRevDcMotorImplEx IntakeMotor, RelicMotor;
     public DcMotorEx ArmMotor;
     public CRServo DServo1, DServo2, PServo1, PServo2;
-    public Servo PPinch;
-    public ServoImplEx DSIntakeServo, PSIntakeServo, JewelKick, JewelArm, RelicGrab, RelicPivot;
+    public Servo PPinch, DPinch, DSIntakeServo, PSIntakeServo;
+    public ServoImplEx JewelKick, JewelArm, RelicGrab, RelicPivot;
     //public VexMotor DSwervo1, DSwervo2, PSwervo1, PSwervo2;
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
+    public AnalogInput boxLimit;
     public ColorSensor glyphColor1, glyphColor2;
     public DistanceSensor glyphDistance1, glyphDistance2;
     public Intake intake;
@@ -57,6 +63,8 @@ public class Robot{
 
     public IMU imu, imu2;
     public ReadPrefs prefs;
+
+    DotStar dotStar;
 
     //old
     public final double kickCenter = .375;
@@ -75,11 +83,14 @@ public class Robot{
     public boolean JewelVision = false;
     public boolean JewelHybridFrames = true;
     public boolean BoxVision = false;
+    public boolean isTeleop = false;
     public JewelDetector.JewelOrder jewelOrder;
 
     public TextToSpeech tts;
 
     public CryptoboxDetector.CryptoboxDetectionMode color;
+
+    public GenericDetector relicDetector = null;
 
     //experimental
     public CryptoboxDetector cryptoboxDetector = null;
@@ -94,6 +105,8 @@ public class Robot{
     //this is here for old opModes still
     public void init() {
         hwMap = opMode.hardwareMap;
+        prefs = new ReadPrefs(hwMap);
+        initLEDs();
         //Define and initialize ALL installed servos.
         DServo1 = hwMap.crservo.get("DS1"); //Driver Servo Front(1)
         DServo2 = hwMap.crservo.get("DS2"); //Driver Servo Back(2)
@@ -104,6 +117,7 @@ public class Robot{
         PSIntakeServo = (ServoImplEx) hwMap.servo.get("PIn");
 
         PPinch = hwMap.servo.get("PPinch");
+        DPinch = hwMap.servo.get("DPinch");
 
         JewelArm = (ServoImplEx) hwMap.servo.get("Arm");
         //.02 is back
@@ -122,16 +136,18 @@ public class Robot{
         PMotor1 = (DcMotorEx) hwMap.dcMotor.get("PM1"); //Passenger Motor Front(1)
         PMotor2 = (DcMotorEx) hwMap.dcMotor.get("PM2"); //Passenger Motor Back(2)
 
-        IntakeMotor = (OpenRevDcMotorImplEx) hwMap.dcMotor.get("InM");
+        IntakeMotor = new OpenRevDcMotorImplEx((DcMotorImplEx) hwMap.dcMotor.get("InM"));
 
         ArmMotor = (DcMotorEx) hwMap.dcMotor.get("Glyph");
 
-        RelicMotor = (OpenRevDcMotorImplEx) hwMap.dcMotor.get("RM");
+        RelicMotor = new OpenRevDcMotorImplEx((DcMotorImplEx) hwMap.dcMotor.get("RM"));
 
         DSensor1 = hwMap.analogInput.get("DSe1");
         DSensor2 = hwMap.analogInput.get("DSe2");
         PSensor1 = hwMap.analogInput.get("PSe1");
         PSensor2 = hwMap.analogInput.get("PSe2");
+
+        boxLimit = hwMap.analogInput.get("box");
 
         glyphColor1 = hwMap.get(ColorSensor.class, "glyph1");
         glyphDistance1 = hwMap.get(DistanceSensor.class, "glyph1");
@@ -160,8 +176,15 @@ public class Robot{
         PServo1.setPower(0); //Set Pass Servo Front(1) to 0 power
         PServo2.setPower(0); //Set Pass Servo Back(2) to 0 power
 
-        JewelArm.setPosition(armInit);
-        JewelKick.setPosition(kickInit);
+        if (isTeleop) {
+            JewelArm.setPwmDisable();
+            JewelKick.setPwmDisable();
+        } else {
+            JewelArm.setPwmEnable();
+            JewelKick.setPwmEnable();
+            JewelArm.setPosition(armInit);
+            JewelKick.setPosition(kickInit);
+        }
 
         PPinch.setDirection(Servo.Direction.REVERSE);
 
@@ -191,13 +214,15 @@ public class Robot{
 
         RelicMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        ArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         Intake intake = new Intake(IntakeMotor,DSIntakeServo,PSIntakeServo);
         this.intake = intake;
 
         intake.store();
 
 
-        GlyphMech glyphMech = new GlyphMech(ArmMotor,PPinch);
+        GlyphMech glyphMech = new GlyphMech(ArmMotor,PPinch,DPinch,boxLimit,opMode.isStopRequested());
         this.glyphMech = glyphMech;
 
         glyphMech.init();
@@ -237,12 +262,13 @@ public class Robot{
                     PMotor2, PServo2, PSensor2);
         }
 
-        prefs = new ReadPrefs(hwMap);
         initTTS();
         opMode.telemetry.addData("TTS:","Init Done");
 
         opMode.telemetry.addData("INIT WHOLE:","Init Done");
         opMode.telemetry.update();
+
+        opMode.telemetry.clearAll();
     }
 
     //stop all robot movements
@@ -260,6 +286,15 @@ public class Robot{
     }
 
     public void pause(double seconds){
+        runtime.reset();
+        while (runtime.seconds()<seconds&&!opMode.isStopRequested()) {
+            //opMode.telemetry.addData("Waiting",seconds-runtime.seconds());
+            //opMode.telemetry.update();
+            //waiting
+        }
+    }
+
+    public void pause(double seconds, boolean log){
         runtime.reset();
         while (runtime.seconds()<seconds&&!opMode.isStopRequested()) {
             opMode.telemetry.addData("Waiting",seconds-runtime.seconds());
@@ -285,6 +320,69 @@ public class Robot{
                 tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
             }
         }).start();
+    }
+
+    public enum ledColor {red, blue, green}
+
+    public void setLedColor(ledColor color) {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                dotStar = new DotStar(opMode.hardwareMap,"ci","di");
+                boolean loop = true;
+                while(loop&&!opMode.isStopRequested()) {
+                    switch (color) {
+                        case red:
+                            dotStar.setEntireStrip((byte)255, (byte)0, (byte)0);
+                            break;
+                        case blue:
+                            dotStar.setEntireStrip((byte)0, (byte)0, (byte)200);
+                            break;
+                        case green:
+                            dotStar.setEntireStrip((byte)0, (byte)255, (byte)0);
+                            break;
+                    }
+
+                    loop = false;
+                }
+            }
+        }).start();
+    }
+
+    public void initRelicVision() {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                boolean loop = true;
+                while(loop&&!opMode.isStopRequested()) {
+                    relicDetector = new GenericDetector();
+                    relicDetector.init(opMode.hardwareMap.appContext, CameraViewDisplay.getInstance());
+                    relicDetector.enable();
+
+                    loop = false;
+                }
+            }
+        }).start();
+    }
+
+    public void disableRelicVision() {
+        relicDetector.disable();
+    }
+
+    public void initLEDs() {
+        String sideColor;
+        sideColor = prefs.read("color");
+        if (Objects.equals(sideColor,"red")) {
+            setLedColor(Robot.ledColor.red);
+        } else if (Objects.equals(sideColor,"blue")) {
+            setLedColor(Robot.ledColor.blue);
+        } else {
+            setLedColor(Robot.ledColor.green);
+        }
     }
 
 /*    public void logging() {

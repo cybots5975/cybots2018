@@ -20,4 +20,11 @@ public class ReadPrefs {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(hardwareMap.appContext);
         return preferences.getString(key, "");
     }
+
+    public void save(String title, String data) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(hardwareMap.appContext);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(title,data);
+        editor.apply();
+    }
 }

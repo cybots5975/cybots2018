@@ -122,6 +122,20 @@ public class MecanumDrive extends VectorDrive{
     }
 
     @Override
+    public void encoderFwd(double power, int encoder, int heading) {
+        if (encoder>0) {
+            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+                gyroDrivePID(power,0,heading);
+            }
+        } else {
+            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+                gyroDrivePID(power,0,heading);
+            }
+        }
+        robotCentric(0,0,0);
+    }
+
+    @Override
     public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {
         //work in progress
     }

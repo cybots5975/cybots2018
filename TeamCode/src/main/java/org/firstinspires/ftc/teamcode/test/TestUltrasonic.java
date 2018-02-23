@@ -32,34 +32,39 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.test;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.I2CXL;
 
-@TeleOp(name="Ultrasonic", group="Test")
-@Disabled
+@TeleOp(name="Rear Ultrasonic Testing", group="Test")
+//@Disabled
 public class TestUltrasonic extends LinearOpMode {
     Robot robot = new Robot(this);
 
     I2CXL rearUS;
+    boolean last = false;
 
     @Override
     public void runOpMode() {
         robot.init();
 
-        rearUS = (I2CXL) hardwareMap.get(I2CXL.class,"rear");
+        rearUS = hardwareMap.get(I2CXL.class,"rear");
+
+        rearUS.startAutoPing(40);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        rearUS.run();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            telemetry.addData("Distance",rearUS.getDistance());
+        while (opModeIsActive()&&!isStopRequested()) {
 
+            telemetry.addData("Distance",rearUS.getDistance());
             telemetry.update();
         }
+
+        rearUS.close();
     }
 }

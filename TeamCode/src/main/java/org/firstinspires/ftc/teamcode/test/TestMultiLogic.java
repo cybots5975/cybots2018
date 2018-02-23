@@ -16,15 +16,15 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
 public class TestMultiLogic extends LinearOpMode{
     private Robot robot = new Robot(this);
     private boolean loop = true;
-    private int glyphCount = 0;
     private int angle = 0;
-    private int distanceCounts = 200;
+    private int distanceCounts = 350;
 
     @Override
     public void runOpMode() {
         robot.init();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drive.zeroEncoders();
+        robot.intake.multiGlyph();
 
         waitForStart();
 
@@ -34,23 +34,45 @@ public class TestMultiLogic extends LinearOpMode{
             telemetry.update();
             robot.intake.setSpeed(1);
             robot.intake.multiGlyph();
-            while (!(robot.glyphDistance1.getDistance(DistanceUnit.CM)<13&&robot.glyphDistance1.getDistance(DistanceUnit.CM)>2)&&robot.IntakeMotor.getCurrentDraw()<1000) {
+            while ((!frontGlyph(2,20))
+                    &&!jammed(6000)
+                    &&!isStopRequested()) {
                 robot.drive.encoderFwd(.3, distanceCounts);
-                robot.drive.encoderFwd(-.3, 0);
-                angle += 5;
-                distanceCounts += 50;
-                robot.drive.gyroTurn(.2,angle,2);
+                robot.pause(.25);
+                robot.drive.encoderFwd(-.4, 0);
+                angle += 7;
+                distanceCounts += 100;
+                robot.drive.gyroTurn(.55,angle,1);
+                telemetry.addData("Back Sensor",robot.glyphDistance2.getDistance(DistanceUnit.CM));
+                telemetry.addData("Front Sensor",robot.glyphDistance1.getDistance(DistanceUnit.CM));
+                telemetry.addData("Intake Current Draw mA",robot.IntakeMotor.getCurrentDraw());
+                telemetry.update();
             }
-            while (!(robot.glyphDistance2.getDistance(DistanceUnit.CM)<13&&robot.glyphDistance2.getDistance(DistanceUnit.CM)>2)&&robot.IntakeMotor.getCurrentDraw()<1000) {
+            if (jammed(6000)) {
+                robot.intake.setSpeed(-1);
+                robot.pause(.5);
+                robot.intake.setSpeed(1);
+            }
+            while ((!((backGlyph(2,20))
+                    &&(frontGlyph(2,20))))
+                    &&!jammed(6000)
+                    &&!isStopRequested()) {
                 robot.drive.encoderFwd(.3, distanceCounts);
-                robot.drive.encoderFwd(-.3, 0);
-                angle += 5;
-                distanceCounts += 50;
-                robot.drive.gyroTurn(.2,angle,2);
+                robot.pause(.25);
+                robot.drive.encoderFwd(-.4, 0);
+                angle += 7;
+                distanceCounts += 100;
+                robot.drive.gyroTurn(.55,angle,1);
+                telemetry.addData("Intake Current Draw mA",robot.IntakeMotor.getCurrentDraw());
+                telemetry.update();
+            }if (jammed(6000)) {
+                robot.intake.setSpeed(-1);
+                robot.pause(.5);
             }
+            //CYCLE BACK TO REPEAT THIS STEP
             robot.pause(.5);
             robot.intake.setSpeed(0);
-            robot.drive.gyroTurn(.2,0,1);
+            robot.drive.gyroTurn(.3,0,1);
 
             loop = false;
         }
@@ -97,19 +119,19 @@ public class TestMultiLogic extends LinearOpMode{
         //run drive code to get to pile here
 
         while (glyphCount<2 && runtime.seconds()<26) {
-            if (jamDetected(1000)) {
+            if (jammed(5000)) {
                 stallTime.reset();
                 //switch state to jammed state
                 //or reverse intake and such right here
             } else {
                 //count number of glyphs
-                if (frontGlyph(5, 12) && backGlyph(5, 12)) {
+                if (frontGlyph(4, 20) && backGlyph(4, 20)) {
                     //do stuff for glyph count 2 here
                     //program will exit after the glyphCount is set to 2
                     glyphCount = 2;
 
                 } else {
-                    if (frontGlyph(5, 12) || backGlyph(5, 12)) {
+                    if (frontGlyph(4, 20) || backGlyph(4, 20)) {
                         //do glyph count 1 stuff here
                         glyphCount = 1;
 
@@ -126,17 +148,18 @@ public class TestMultiLogic extends LinearOpMode{
 
     private boolean frontGlyph(int minDistance, int maxDistance) {
         int sensorValueHere = 0;
-        return (sensorValueHere >= minDistance && sensorValueHere <= maxDistance);
+        return (robot.glyphDistance1.getDistance(DistanceUnit.CM) >= minDistance
+                && robot.glyphDistance1.getDistance(DistanceUnit.CM) <= maxDistance);
     }
 
     private boolean backGlyph(int minDistance, int maxDistance) {
         int sensorValueHere = 0;
-        return (sensorValueHere >= minDistance && sensorValueHere <= maxDistance);
+        return (robot.glyphDistance2.getDistance(DistanceUnit.CM) >= minDistance
+                && robot.glyphDistance2.getDistance(DistanceUnit.CM) <= maxDistance);
     }
 
-    private boolean jamDetected(int jamCurrentDraw) {
-        int currentSensorValueHere = 750; //750 mA when not jammed
-        return (currentSensorValueHere < jamCurrentDraw) && (currentSensorValueHere < jamCurrentDraw);
+    private boolean jammed(int jamCurrentDraw) {
+        return (robot.IntakeMotor.getCurrentDraw() > jamCurrentDraw);
     }
 
 }
