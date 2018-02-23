@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.sensors;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 @TeleOp(name = "LED Strip Test", group = "TeleOp")
-@Disabled
+//@Disabled
 public class LEDStripTest extends LinearOpMode
 {
     DigitalChannel scl;
@@ -37,6 +36,7 @@ public class LEDStripTest extends LinearOpMode
             startFrame();
             setLedsBlue();
             endFrame();
+
         }
 
         setPinsLow();

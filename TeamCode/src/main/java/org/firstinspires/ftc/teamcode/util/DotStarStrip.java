@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  *
  * @author Jaxon A Brown
  */
-
 public class DotStarStrip {
     private final DigitalChannel dataPin, clockPin;
     private final DotStarPixel[] pixels;
@@ -125,7 +124,6 @@ public class DotStarStrip {
     private void spiWrite(int out) {
         for(int i = 0; i < 8; i++) {
             digitalWrite(dataPin, ((out >> i) & 1) == 1);
-
             digitalWrite(clockPin, HIGH);
             digitalWrite(clockPin, LOW);
         }
