@@ -1,2 +1,3 @@
+include ':FtcRobotController', ':RobotCore', ':FtcCommon', ':Hardware', ':Inspection', ':OpenRC', ':Turbo'
 include ':FtcRobotController', ':RobotCore', ':FtcCommon', ':Hardware', ':Inspection', ':OpenFTC', ':openCVLibrary320', ':endercv', ':DogeCV'
 include ':TeamCode'
