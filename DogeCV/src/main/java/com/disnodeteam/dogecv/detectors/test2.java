@@ -23,15 +23,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class CryptoboxDetector extends OpenCVPipeline {
-
-
+public class test2 extends OpenCVPipeline {
 
     public enum CryptoboxDetectionMode {
         RED, BLUE
     }
+
     public enum CryptoboxSpeed {
-        VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW;
+        VERY_FAST, FAST, BALANCED, SLOW, VERY_SLOW
     }
 
     public CryptoboxDetectionMode detectionMode      = CryptoboxDetectionMode.RED;
@@ -333,14 +332,6 @@ public class CryptoboxDetector extends OpenCVPipeline {
 
     public int getCryptoBoxLeftPosition() {
         return CryptoBoxPositions[0];
-    }
-
-    public int getCryptoBoxCenterPosition() {
-        return CryptoBoxPositions[1];
-    }
-
-    public int getCryptoBoxRightPosition() {
-        return CryptoBoxPositions[2];
     }
 
     public boolean isCryptoBoxDetected() {
