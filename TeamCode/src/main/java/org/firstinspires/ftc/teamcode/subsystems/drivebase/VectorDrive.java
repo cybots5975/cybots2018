@@ -22,6 +22,7 @@ public class VectorDrive {
     private DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
     private IMU imu, imu2;
     public PID turnPID = new PID();
+    public PID distancePID = new PID();
 
     public VectorDrive(LinearOpMode opMode, IMU imu, IMU imu2,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
@@ -114,6 +115,8 @@ public class VectorDrive {
         FRMotor.setMode(FRMode);
         BLMotor.setMode(BLMode);
         BRMotor.setMode(BRMode);
+
+
     }
 
     public void setEncoderMode(DcMotor.RunMode mode){
@@ -177,6 +180,15 @@ public class VectorDrive {
 
     public void encoderPidStrafeDistance(double power, int encoder, boolean gyroOn) {
         //overrides in MecanumDrive
+    }
+
+    public void encoderPidFwdDistance(double power, int encoder, int tolerance) {
+        distancePID.setTolerance(tolerance);
+        distancePID.setVariables(.08,0,.12);
+        while (!distancePID.withinTolerance&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
+            robotCentric(power/5*distancePID.runDistance(encoder,getFwdEncoderAverage()),0,0);
+        }
+        robotCentric(0,0,0);
     }
 
     //enum for driveType, this is used when selecting Mecanum or Swerve drivebase

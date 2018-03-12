@@ -35,14 +35,15 @@ package org.firstinspires.ftc.teamcode.test;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
-@TeleOp(name="Servo", group="Test")
+@TeleOp(name="Position Track Test", group="Test")
 //@Disabled
 public class ServoCal extends LinearOpMode {
     Robot robot = new Robot(this);
 
-    double leftPosition = .5,rightPosition = .5;
+    double leftPosition = .5, rightPosition = .5;
 
     @Override
     public void runOpMode() {
@@ -51,8 +52,12 @@ public class ServoCal extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        robot.positionTracking.startTracking();
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+
 
             if (gamepad1.dpad_up) {
                 rightPosition += .001;
@@ -64,11 +69,26 @@ public class ServoCal extends LinearOpMode {
                 leftPosition -= .001;
             }
 
-            robot.RelicGrab.setPosition(leftPosition);
-            robot.RelicPivot.setPosition(rightPosition);
+            robot.positionTracking.xWheelDown = leftPosition;
+            robot.positionTracking.yWheelDown = rightPosition;
 
-            telemetry.addData("Grab Position",leftPosition);
-            telemetry.addData("Pivot Position",rightPosition);
+            robot.positionTracking.xWheelUp = leftPosition;
+            robot.positionTracking.yWheelUp = rightPosition;
+
+            if (gamepad1.a) {
+                robot.positionTracking.wheelsUp();
+            } else {
+                robot.positionTracking.wheelsDown();
+            }
+
+            telemetry.addData("X Position",leftPosition);
+            telemetry.addData("Y Position",rightPosition);
+            telemetry.addData("abs Y pos",robot.positionTracking.yPosition());
+            telemetry.addData("abs X pos",robot.positionTracking.xPosition());
+
+            telemetry.addData("x inch",robot.positionTracking.xPosition(DistanceUnit.INCH));
+            telemetry.addData("y inch",robot.positionTracking.yPosition(DistanceUnit.INCH));
+
             telemetry.update();
         }
     }

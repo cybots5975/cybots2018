@@ -9,6 +9,7 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.detectors.CryptoboxDetector;
 import com.disnodeteam.dogecv.detectors.GenericDetector;
 import com.disnodeteam.dogecv.detectors.JewelDetector;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -16,7 +17,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,11 +29,14 @@ import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive.driveType
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.swerve.SwerveDrive;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.MA3Encoder;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.PositionTracking;
 import org.firstinspires.ftc.teamcode.util.CybotsVisionConfig;
 import org.firstinspires.ftc.teamcode.util.DotStar;
 import org.firstinspires.ftc.teamcode.util.ReadPrefs;
+import org.firstinspires.ftc.teamcode.util.open.OpenRevDcMotorImplEx;
+import org.firstinspires.ftc.teamcode.util.open.OpenRevHub;
 import org.firstinspires.ftc.teamcode.util.vuforia.CybotVuMark;
-import org.openftc.hardware.rev.OpenRevDcMotorImplEx;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -43,6 +46,9 @@ import static org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive.dr
 public class Robot{
     //define hardware devices
     public driveType driveType = MECANUM;
+
+    public OpenRevHub revHubDS;
+
     public VectorDrive drive;
     public DcMotorEx DMotor1, DMotor2, PMotor1, PMotor2;
     public OpenRevDcMotorImplEx IntakeMotor, RelicMotor;
@@ -53,9 +59,15 @@ public class Robot{
     //public VexMotor DSwervo1, DSwervo2, PSwervo1, PSwervo2;
     public AnalogInput DSensor1, DSensor2, PSensor1, PSensor2;
     public AnalogInput boxLimit;
-    public ColorSensor glyphColor1, glyphColor2;
-    public DistanceSensor glyphDistance1, glyphDistance2;
+    public ColorSensor glyphColor1, glyphColor2, glyphColor3, glyphColor4;
+    public DistanceSensor glyphDistance1, glyphDistance2, glyphDistance3, glyphDistance4;
     public Intake intake;
+    public PositionTracking positionTracking;
+
+    public MA3Encoder xWheel;
+    public MA3Encoder yWheel;
+
+    public double xPosition, yPosition;
 
     public GlyphMech glyphMech;
 
@@ -72,7 +84,7 @@ public class Robot{
 
 
     public final double armInit = .830,kickInit = .005;
-    public final double armLow = .127, kickLow = .5;
+    public final double armLow = .137, kickLow = .5;
     public final double kickLeft = .05, kickRight = .85;
 
     public LinearOpMode opMode;
@@ -142,10 +154,15 @@ public class Robot{
 
         RelicMotor = new OpenRevDcMotorImplEx((DcMotorImplEx) hwMap.dcMotor.get("RM"));
 
+        revHubDS = new OpenRevHub(hwMap.get(LynxModule.class, "DS"));
+
         DSensor1 = hwMap.analogInput.get("DSe1");
         DSensor2 = hwMap.analogInput.get("DSe2");
         PSensor1 = hwMap.analogInput.get("PSe1");
         PSensor2 = hwMap.analogInput.get("PSe2");
+
+        this.xWheel = new MA3Encoder(hwMap,"xWheel");
+        this.yWheel = new MA3Encoder(hwMap,"yWheel");
 
         boxLimit = hwMap.analogInput.get("box");
 
@@ -153,6 +170,10 @@ public class Robot{
         glyphDistance1 = hwMap.get(DistanceSensor.class, "glyph1");
         glyphColor2 = hwMap.get(ColorSensor.class, "glyph2");
         glyphDistance2 = hwMap.get(DistanceSensor.class, "glyph2");
+        glyphColor3 = hwMap.get(ColorSensor.class, "glyph3");
+        glyphDistance3 = hwMap.get(DistanceSensor.class, "glyph3");
+        glyphColor4 = hwMap.get(ColorSensor.class, "glyph4");
+        glyphDistance4 = hwMap.get(DistanceSensor.class, "glyph4");
 
         opMode.telemetry.addData("Motors","Init Done");
         opMode.telemetry.update();
@@ -175,16 +196,6 @@ public class Robot{
         DServo2.setPower(0); //Set Driver Servo Back(2) to 0 power
         PServo1.setPower(0); //Set Pass Servo Front(1) to 0 power
         PServo2.setPower(0); //Set Pass Servo Back(2) to 0 power
-
-        if (isTeleop) {
-            JewelArm.setPwmDisable();
-            JewelKick.setPwmDisable();
-        } else {
-            JewelArm.setPwmEnable();
-            JewelKick.setPwmEnable();
-            JewelArm.setPosition(armInit);
-            JewelKick.setPosition(kickInit);
-        }
 
         PPinch.setDirection(Servo.Direction.REVERSE);
 
@@ -216,11 +227,10 @@ public class Robot{
 
         ArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Intake intake = new Intake(IntakeMotor,DSIntakeServo,PSIntakeServo);
+        Intake intake = new Intake(IntakeMotor);
         this.intake = intake;
 
-        intake.store();
-
+        this.positionTracking = new PositionTracking(xWheel,yWheel,imu,PSIntakeServo,DSIntakeServo);
 
         GlyphMech glyphMech = new GlyphMech(ArmMotor,PPinch,DPinch,boxLimit,opMode.isStopRequested());
         this.glyphMech = glyphMech;
@@ -230,6 +240,18 @@ public class Robot{
         RelicArm relicArm = new RelicArm(RelicMotor,RelicGrab,RelicPivot);
         this.relicArm = relicArm;
         relicArm.init();
+
+        if (isTeleop) {
+            JewelArm.setPwmDisable();
+            JewelKick.setPwmDisable();
+
+        } else {
+            JewelArm.setPwmEnable();
+            JewelKick.setPwmEnable();
+            JewelArm.setPosition(armInit);
+            JewelKick.setPosition(kickInit);
+            intake.store();
+        }
 
         if (Vuforia) {
             this.VuMark1 = new CybotVuMark(hwMap,VuforiaLocalizer.CameraDirection.BACK,true);
@@ -383,6 +405,21 @@ public class Robot{
         } else {
             setLedColor(Robot.ledColor.green);
         }
+    }
+
+    public void startEncoderTracking() {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                while(!opMode.isStopRequested()) {
+                    xPosition = xWheel.getIncremental();
+                    yPosition = yWheel.getIncremental();
+
+                }
+            }
+        }).start();
     }
 
 /*    public void logging() {

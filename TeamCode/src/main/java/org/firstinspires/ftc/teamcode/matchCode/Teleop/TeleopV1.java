@@ -37,6 +37,12 @@ public class TeleopV1 extends  LinearOpMode {
 
     Robot robot = new Robot(this);
 
+    boolean pressed = false;
+
+    private ElapsedTime glyphResetTime = new ElapsedTime();
+
+    private ElapsedTime glyphGrabTime = new ElapsedTime();
+
     @Override
     public void runOpMode() {
         robot.Vuforia = false;
@@ -58,15 +64,17 @@ public class TeleopV1 extends  LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        robot.positionTracking.wheelsUp();
+
         //run until the end (operator presses STOP)
         while (opModeIsActive()&&!isStopRequested()) {
             gamepad1.setJoystickDeadzone(.01F); //Set joystick deadzone to a lower number
 
-            double leftY = -gamepad1.left_stick_y;
-            double leftX = -gamepad1.left_stick_x;
-            double rightX = gamepad1.right_stick_x;
+            double leftY = Math.signum(-gamepad1.left_stick_y) * Math.pow(-gamepad1.left_stick_y, 2);
+            double leftX = Math.signum(-gamepad1.left_stick_x) * Math.pow(-gamepad1.left_stick_x, 2);
+            double rightX = Math.signum(gamepad1.right_stick_x) * Math.pow(gamepad1.right_stick_x, 2);
 
-            if (gamepad1.right_bumper) {
+            if (gamepad1.right_bumper||!height.equals(STORE)) {
                 leftX = leftX/2;
                 rightX = rightX/2.5;
             }
@@ -84,12 +92,12 @@ public class TeleopV1 extends  LinearOpMode {
             } else {
             }*/
 
-           if (gamepad2.y&&!initRelic) {
+           if (gamepad2.dpad_up&&!initRelic) {
                robot.initRelicVision();
                initRelic = true;
            }
 
-           if (gamepad2.b&&initRelic&&robot.relicDetector.getFound()) {
+           if (gamepad2.dpad_down&&initRelic&&robot.relicDetector.getFound()) {
                robot.drive.turnPID.setVariables(.08,0,.1);
                robot.drive.turnDrivePID(leftY,leftX, (int) robot.relicDetector.getPosX(),260,.05);
            } else {
@@ -124,24 +132,56 @@ public class TeleopV1 extends  LinearOpMode {
     private void glyph(){
         //robot.intake.open();
 
-        if (gamepad1.right_bumper) {
+        if (gamepad1.a||gamepad2.y) {
+            height = HIGH;
+            robot.glyphMech.setDumpSpeed(1);
+            glyphGrabTime.reset();
+            glyphOff = false;
+
+        } else if (gamepad1.y||gamepad2.x) {
+            height = MID;
+            robot.glyphMech.setDumpSpeed(1);
+            glyphGrabTime.reset();
+            glyphOff = false;
+
+        } else if (gamepad1.x||gamepad2.a) {
+            height = LOW;
+            robot.glyphMech.setDumpSpeed(1);
+            glyphGrabTime.reset();
+            glyphOff = false;
+
+        } else if (gamepad1.b||gamepad2.b) {
+            height = STORE;
+            robot.glyphMech.setDumpSpeed(0);
+            glyphGrabTime.reset();
+            glyphOff = true;
+
+        } else if (gamepad2.left_stick_button) {
+            robot.ArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            if (robot.boxLimit.getVoltage()<.5) {
+                robot.ArmMotor.setPower(.3);
+            } else {
+                robot.ArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.ArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+        }
+
+        if (gamepad1.right_bumper||!height.equals(STORE)) {
             robot.glyphMech.grab();
         } else {
             robot.glyphMech.drop();
         }
 
-        if (gamepad1.a) {
-            height = HIGH;
-            glyphOff = false;
-        } else if (gamepad1.y) {
-            height = MID;
-            glyphOff = false;
-        } else if (gamepad1.x) {
-            height = LOW;
-            glyphOff = false;
-        } else if (gamepad1.b) {
-            height = STORE;
-            glyphOff = true;
+        if (height==STORE  &&  !pressed  &&  robot.boxLimit.getVoltage()>1) {
+            robot.glyphMech.reset();
+            glyphResetTime.reset();
+            pressed = true;
+        }
+
+        telemetry.addData("Time since reset",glyphResetTime.seconds());
+
+        if (robot.boxLimit.getVoltage()<1) {
+            pressed = false;
         }
 
         boolean inPosition = Math.abs(Math.abs(robot.ArmMotor.getCurrentPosition())-Math.abs(robot.ArmMotor.getTargetPosition())) < 25;
@@ -150,15 +190,24 @@ public class TeleopV1 extends  LinearOpMode {
             robot.glyphMech.setDumpSpeed(0);
             telemetry.addData("Dump","off - Position:"+inPosition);
         } else {
-            robot.glyphMech.setDumpSpeed(1);
+            //robot.glyphMech.setDumpSpeed(1);
             telemetry.addData("Dump","on - Position:"+inPosition);
         }
 
-        if (gamepad2.left_stick_button&&!robot.glyphMech.zeroBusy) {
+        /*if (gamepad2.left_stick_button&&!robot.glyphMech.zeroBusy) {
             robot.glyphMech.zero();
-        }
+        }*/
 
-        robot.glyphMech.runProcess(height);
+        if (gamepad2.left_stick_button) {
+
+        } else {
+            if (glyphResetTime.milliseconds()>50) {
+                if (height==STORE&&!(gamepad2.b||gamepad1.b)&&robot.boxLimit.getVoltage()<.5) {
+                    robot.glyphMech.setDumpSpeed(1);
+                }
+                robot.glyphMech.runProcess(height);
+            }
+        }
 
         telemetry.addData("Limit",robot.boxLimit.getVoltage());
     }

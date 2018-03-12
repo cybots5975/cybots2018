@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.HIGH;
+import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.LOW;
+import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.MID;
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.STORE;
 
 /**
@@ -27,7 +30,7 @@ public class GlyphMech {
     public enum height {HIGH, MID, LOW, STONE, STORE}
 
     private double DGrab = 1;
-    private double DDrop = .75;
+    private double DDrop = .6;
     private double PGrab = 1; //was .832
     private double PDrop = .75;
     height savedHeight;
@@ -80,10 +83,27 @@ public class GlyphMech {
                 position = -300;
                 break;
             case STORE:
-                position = 10;
+                position = 50;
                 break;
         }
         setAngle(position,dumpSpeed);
+    }
+
+    public void setPosition(int height){
+        height height1 = STORE;
+        switch (height) {
+            case 1:
+                height1 = LOW;
+                break;
+            case 2:
+                height1 = MID;
+                break;
+            case 3:
+                height1 = HIGH;
+                break;
+        }
+
+        setPosition(height1);
     }
 
     public void runProcess(height height) {
@@ -103,12 +123,22 @@ public class GlyphMech {
         }
     }
 
+    public boolean inPosition () {
+        return (Math.abs(ArmMotor.getTargetPosition()) - Math.abs(ArmMotor.getCurrentPosition())) < 50;
+    }
+
     public void setDumpSpeed(double dumpSpeed) {
         this.dumpSpeed = dumpSpeed;
     }
 
     public void disable() {
         ArmMotor.setPower(0);
+    }
+
+    public void reset() {
+        DcMotor.RunMode mode = ArmMotor.getMode();
+        ArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        ArmMotor.setMode(mode);
     }
 
     public void zero() {
