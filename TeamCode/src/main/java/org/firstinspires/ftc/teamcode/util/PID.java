@@ -5,12 +5,17 @@ package org.firstinspires.ftc.teamcode.util;
  */
 
 public class PID {
-    private double kP;
-    private double kI;
-    private double kD;
-    private double lastTime;
-    private double integral = 0;
-    private int previousError = 0;
+    double kP;
+    double kI;
+    double kD;
+    double lastTime;
+    double integral = 0;
+    int previousError = 0;
+    double out;
+    private int angleError;
+    int error;
+    private int tolerance = 0;
+    public boolean withinTolerance = false;
 
     public PID(double kP, double kI, double kD) {
         this.kP = kP;
@@ -27,22 +32,55 @@ public class PID {
         this.kD = kD;
     }
 
+    public void setTolerance (int tolerance) {
+        this.tolerance = tolerance;
+    }
+
     public double run(int targetValue, int position) {
         double dt = (System.currentTimeMillis() - lastTime);
         lastTime = System.currentTimeMillis();
 
-        int angleError = (targetValue - position);
-        angleError -= (360*Math.floor(0.5+(((double) angleError)/360.0)));
+        if (position<0) {
+            position += 360;
+        }
 
-        int error = angleError;
+        angleError = (targetValue - position);
+        angleError -= (360*Math.floor(0.5+((angleError)/360.0)));
+
+        error = angleError;
 
         integral += kI * error * dt;
-
-        double u = (kP * error + integral + kD * (error - previousError) / dt);
 
         if(integral > targetValue * 0.25) {
             integral = targetValue * 0.25;
         }
+
+        double u = (kP * error + integral + kD * (error - previousError) / dt);
+
+        previousError = error;
+
+        withinTolerance = Math.abs(error) < tolerance;
+
+        if (Math.abs(u)<.05) {
+            u += Math.signum(u)*.05;
+        }
+
+        return u;
+    }
+
+    public double runDistance(int targetValue, int position) {
+        double dt = (System.currentTimeMillis() - lastTime);
+        lastTime = System.currentTimeMillis();
+
+        int error = (targetValue - position);
+
+        integral += kI * error * dt;
+
+        if(integral > targetValue * 0.25) {
+            integral = targetValue * 0.25;
+        }
+
+        double u = (kP * error + integral + kD * (error - previousError) / dt);
 
         previousError = error;
 
