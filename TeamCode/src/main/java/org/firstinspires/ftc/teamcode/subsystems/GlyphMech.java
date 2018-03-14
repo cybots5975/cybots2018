@@ -124,7 +124,7 @@ public class GlyphMech {
     }
 
     public boolean inPosition () {
-        return (Math.abs(ArmMotor.getTargetPosition()) - Math.abs(ArmMotor.getCurrentPosition())) < 50;
+        return (Math.abs(ArmMotor.getTargetPosition()) - Math.abs(ArmMotor.getCurrentPosition())) < 200;
     }
 
     public void setDumpSpeed(double dumpSpeed) {

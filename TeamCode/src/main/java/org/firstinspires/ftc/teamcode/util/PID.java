@@ -16,6 +16,7 @@ public class PID {
     int error;
     private int tolerance = 0;
     public boolean withinTolerance = false;
+    int targetValue;
 
     public PID(double kP, double kI, double kD) {
         this.kP = kP;
@@ -36,12 +37,14 @@ public class PID {
         this.tolerance = tolerance;
     }
 
-    public double run(int targetValue, int position) {
+    public double run(int targetValueInput, int position) {
         double dt = (System.currentTimeMillis() - lastTime);
         lastTime = System.currentTimeMillis();
 
-        if (position<0) {
-            position += 360;
+        targetValue = targetValueInput;
+
+        if (targetValueInput<0) {
+            targetValue += 360;
         }
 
         angleError = (targetValue - position);

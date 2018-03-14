@@ -82,11 +82,11 @@ public class MecanumDrive extends VectorDrive{
     @Override
     public void encoderStrafe(double power, int encoder){
         if (encoder>0) {
-            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                 robotCentric(0,-power,0);
             }
         } else {
-            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                 robotCentric(0,-power,0);
             }
         }
@@ -96,11 +96,11 @@ public class MecanumDrive extends VectorDrive{
     @Override
     public void encoderStrafe(double power, int encoder, int heading) {
         if (encoder>0) {
-            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+            while (getStrafeEncoderAverage()<encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                 gyroDrivePID(0,-power,heading);
             }
         } else {
-            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+            while (getStrafeEncoderAverage()>encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                 gyroDrivePID(0,-power,heading);
             }
         }
@@ -110,29 +110,36 @@ public class MecanumDrive extends VectorDrive{
     @Override
     public void encoderFwd(double power, int encoder) {
         if (encoder>0) {
-            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                 robotCentric(power,0,0);
             }
+            robotCentric(0,0,0);
+            return;
         } else {
-            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                 robotCentric(power,0,0);
             }
+            robotCentric(0,0,0);
+            return;
         }
-        robotCentric(0,0,0);
     }
 
     @Override
     public void encoderFwd(double power, int encoder, int heading) {
         if (encoder>0) {
-            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()) {
+            while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()&&!moveOn) {
                 gyroDrivePID(power,0,heading);
             }
+            robotCentric(0,0,0);
+            moveOn = false;
         } else {
-            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()) {
+            while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()&&!moveOn) {
                 gyroDrivePID(power,0,heading);
             }
+            robotCentric(0,0,0);
+            moveOn = false;
         }
-        robotCentric(0,0,0);
+        return;
     }
 
     @Override

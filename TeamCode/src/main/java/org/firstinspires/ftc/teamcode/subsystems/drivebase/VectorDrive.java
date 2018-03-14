@@ -22,7 +22,8 @@ public class VectorDrive {
     private DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
     private IMU imu, imu2;
     public PID turnPID = new PID();
-    public PID distancePID = new PID();
+    private PID distancePID = new PID();
+    public boolean moveOn = false;
 
     public VectorDrive(LinearOpMode opMode, IMU imu, IMU imu2,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
@@ -63,7 +64,10 @@ public class VectorDrive {
     }
 
     public void gyroTurn(double turnSpeed, int targetAngle, int allowedError) {
-        while (Math.abs(getAvgHeading()-targetAngle)>allowedError&&!opMode.isStopRequested()) {
+        if (targetAngle<0) {
+            targetAngle += 360;
+        }
+        while (Math.abs(getAvgHeading()-targetAngle)>allowedError&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
             double pidOffset = turnPID.run(targetAngle,(int)getAvgHeading());
             double power = -pidOffset * turnSpeed;
             robotCentric(0, 0, power);
@@ -182,13 +186,15 @@ public class VectorDrive {
         //overrides in MecanumDrive
     }
 
-    public void encoderPidFwdDistance(double power, int encoder, int tolerance) {
+    //encoderPidFwdDistance
+    public void encoderFwd(double power, int encoder, int heading, int tolerance) {
         distancePID.setTolerance(tolerance);
-        distancePID.setVariables(.08,0,.12);
-        while (!distancePID.withinTolerance&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
-            robotCentric(power/5*distancePID.runDistance(encoder,getFwdEncoderAverage()),0,0);
+        distancePID.setVariables(.08,0,.1);
+        while (!distancePID.withinTolerance&&!opMode.isStopRequested()&&opMode.opModeIsActive()&&!moveOn) {
+            gyroDrivePID(power/6*distancePID.runDistance(encoder,getFwdEncoderAverage()),0,heading);
         }
         robotCentric(0,0,0);
+        moveOn = false;
     }
 
     //enum for driveType, this is used when selecting Mecanum or Swerve drivebase
