@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.PID;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
+import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
 
 import java.io.IOException;
 
@@ -24,6 +25,8 @@ public class VectorDrive {
     public PID turnPID = new PID();
     private PID distancePID = new PID();
     public boolean moveOn = false;
+
+    public ArrayLogging logging = new ArrayLogging(10,10000);
 
     public VectorDrive(LinearOpMode opMode, IMU imu, IMU imu2,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,

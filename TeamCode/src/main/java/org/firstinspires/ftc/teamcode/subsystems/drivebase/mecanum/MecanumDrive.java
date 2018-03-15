@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.VectorDrive;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
+import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
 
 import java.util.Arrays;
 
@@ -17,6 +18,9 @@ import java.util.Arrays;
 public class MecanumDrive extends VectorDrive{
     private LinearOpMode opMode;
     public DcMotor FLMotor, BLMotor, FRMotor, BRMotor;
+
+    public ArrayLogging logging = new ArrayLogging(10,10000);
+    private int count = 0;
 
     public MecanumDrive(LinearOpMode opMode, IMU imu, IMU imu2,
                         DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
@@ -34,6 +38,12 @@ public class MecanumDrive extends VectorDrive{
         this.BLMotor = BLMotor;
         this.FRMotor = FRMotor;
         this.BRMotor = BRMotor;
+
+        this.logging = super.logging;
+
+        logging.storeValue(0, 0, "Count #");
+        logging.storeValue(2, 0, "Encoder Target");
+        logging.storeValue(3, 0, "Encoder Position");
     }
 
     @Override
@@ -112,14 +122,26 @@ public class MecanumDrive extends VectorDrive{
         if (encoder>0) {
             while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                 robotCentric(power,0,0);
+                log(encoder,getFwdEncoderAverage());
+                opMode.telemetry.addData("Inside drive function","");
+                opMode.telemetry.addData("Encoder Target",encoder);
+                opMode.telemetry.addData("Encoder Position",getFwdEncoderAverage());
+                opMode.telemetry.update();
             }
             robotCentric(0,0,0);
             return;
         } else {
             while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                 robotCentric(power,0,0);
+                log(encoder,getFwdEncoderAverage());
+                opMode.telemetry.addData("Inside drive function","");
+                opMode.telemetry.addData("Encoder Target",encoder);
+                opMode.telemetry.addData("Encoder Position",getFwdEncoderAverage());
+                opMode.telemetry.update();
             }
             robotCentric(0,0,0);
+            opMode.telemetry.addData("Encoder completed","");
+            opMode.telemetry.update();
             return;
         }
     }
@@ -129,17 +151,39 @@ public class MecanumDrive extends VectorDrive{
         if (encoder>0) {
             while (getFwdEncoderAverage()<encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()&&!moveOn) {
                 gyroDrivePID(power,0,heading);
+                log(encoder,getFwdEncoderAverage());
+                opMode.telemetry.addData("Inside drive function","");
+                opMode.telemetry.addData("Encoder Target",encoder);
+                opMode.telemetry.addData("Encoder Position",getFwdEncoderAverage());
+                opMode.telemetry.update();
             }
             robotCentric(0,0,0);
+            opMode.telemetry.addData("Encoder completed","");
+            opMode.telemetry.update();
             moveOn = false;
         } else {
             while (getFwdEncoderAverage()>encoder&&!opMode.isStopRequested()&&opMode.opModeIsActive()&&!moveOn) {
                 gyroDrivePID(power,0,heading);
+                log(encoder,getFwdEncoderAverage());
+                opMode.telemetry.addData("Inside drive function","");
+                opMode.telemetry.addData("Encoder Target",encoder);
+                opMode.telemetry.addData("Encoder Position",getFwdEncoderAverage());
+                opMode.telemetry.update();
             }
             robotCentric(0,0,0);
+            opMode.telemetry.addData("Encoder completed","");
+            opMode.telemetry.update();
             moveOn = false;
         }
         return;
+    }
+
+    public void log(int val1, int val2) {
+        count += 1;
+
+        logging.storeValueInt(0, count,count);
+        logging.storeValueInt(2, count,val1);
+        logging.storeValueInt(3, count,val2);
     }
 
     @Override

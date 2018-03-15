@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.test.multiGluph.SearchArray;
 import org.firstinspires.ftc.teamcode.util.AutoTransitioner;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.LOW;
@@ -50,6 +51,8 @@ public class MasterAuto extends LinearOpMode{
 
     private static SearchArray cipherTest = new SearchArray();
 
+    private boolean tryFor5 = false;
+
     @Override
     public void runOpMode() {
         robot.Vuforia = true;
@@ -82,7 +85,7 @@ public class MasterAuto extends LinearOpMode{
         waitForStart();
 
         while (opModeIsActive()&&loop&&!isStopRequested()) {
-            if (robot.VuMark1.scan().equals(RelicRecoveryVuMark.UNKNOWN)) {
+            if (VuMark.equals(RelicRecoveryVuMark.UNKNOWN)) {
                 VuMark = RelicRecoveryVuMark.CENTER;
             }
             robot.intake.setSpeed(1);
@@ -113,6 +116,13 @@ public class MasterAuto extends LinearOpMode{
             loop = false;
         }
         robot.stop();
+        try {
+            robot.drive.logging.log("autonLOGGINGGGGGGGG");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        telemetry.addData("Written","");
+        telemetry.update();
     }
 
     private void scorePosition() {
@@ -215,10 +225,9 @@ public class MasterAuto extends LinearOpMode{
         robot.pause(.1);
         robot.glyphMech.setPosition(GlyphMech.height.STONE);
 
-        robot.drive.encoderStrafe(.6,encoderCounts,0);
-        robot.pause(1);
+        robot.drive.encoderStrafe(.5,encoderCounts,0);
 
-        setColumnAngle(27,30,360-30);
+        setColumnAngle(24,27,360-25);
         robot.drive.gyroTurn(.25,turnAngle,3);
 
         placeGlyph();
@@ -227,30 +236,54 @@ public class MasterAuto extends LinearOpMode{
 
         robot.drive.gyroTurn(.25,0,3);
 
-        intakeWithCurrent(5000);
-        monitorGlyphCount();
+        robot.intake.setSpeed(1);
+
         robot.drive.zeroEncoders();
         robot.drive.encoderFwd(.7,450,0);
         robot.drive.zeroEncoders();
-        robot.drive.encoderFwd(.15,300,0); //goes 200 more than previously
-        robot.pause(1.5);
-        robot.drive.encoderFwd(-.5,-300,0);
-        if (!glyphFull()) {
-            robot.drive.encoderFwd(.2,300,0);
-            robot.pause(1.5);
-        }
-        robot.drive.encoderFwd(-.6,-275,0);
+
+        turnAngle = 0;
+        intakeSequence(19);
+        robot.glyphMech.setPosition(LOW);
+
+        robot.drive.encoderFwd(-.6,-475,0);
         robot.glyphMech.grab();
         robot.pause(.25);
-        robot.glyphMech.setPosition(GlyphMech.height.LOW);
+        robot.glyphMech.setPosition(LOW);
 
-        setColumnAngle(360-25,11,25);
+        setColumnAngle(360-18,15,25);
         robot.drive.gyroTurn(.25,turnAngle,3);
         placeGlyph2();
-        robot.drive.zeroEncoders();
-        robot.drive.encoderFwd(-.4,-500);
-        robot.drive.zeroEncoders();
-        robot.drive.encoderFwd(.3,150);
+
+        if (runtime.seconds()<28) {
+            robot.drive.zeroEncoders();
+            robot.drive.encoderFwd(-.5, -500);
+            robot.drive.zeroEncoders();
+            robot.drive.encoderFwd(.5, 200);
+        }
+
+        if (tryFor5&&runtime.seconds()<22&&!VuMark.equals(RelicRecoveryVuMark.CENTER)) {
+            robot.drive.gyroTurn(.25,0,3);
+            robot.intake.setSpeed(1);
+            robot.drive.zeroEncoders();
+            robot.drive.encoderFwd(.7,450,0);
+            robot.drive.zeroEncoders();
+
+            turnAngle = 0;
+            intakeSequence(25);
+            robot.glyphMech.grab();
+            robot.pause(.2);
+            robot.intake.setSpeed(-.5);
+            robot.glyphMech.setPosition(LOW);
+            robot.drive.encoderFwd(-.9,-250);
+
+            if (runtime.seconds()<28) {
+                robot.drive.zeroEncoders();
+                robot.drive.encoderFwd(-.5, -400);
+                robot.drive.zeroEncoders();
+                robot.drive.encoderFwd(.5, 150);
+            }
+        }
     }
 
     private void redFar(){
@@ -261,7 +294,7 @@ public class MasterAuto extends LinearOpMode{
         robot.glyphMech.setPosition(GlyphMech.height.STONE);
         robot.drive.encoderStrafe(.4,1025,0);
 
-        robot.drive.gyroTurn(.15,90-2,2); //turn 90 degrees to the right
+        robot.drive.gyroTurn(.15,90-2,3); //turn 90 degrees to the right
 
         setVuMarkColumn(1100,800,550);
         robot.drive.zeroEncoders();
@@ -270,55 +303,35 @@ public class MasterAuto extends LinearOpMode{
         robot.pause(.25);
 
         setColumnAngle(65,60,60);
-        robot.drive.gyroTurn(.2,turnAngle,2);
+        robot.drive.gyroTurn(.2,turnAngle,3);
 
         placeGlyph();
 
         robot.intake.multiGlyph();
 
         setColumnAngle(70,55,55);
-        robot.drive.gyroTurn(.25,turnAngle,2);
+        robot.drive.gyroTurn(.25,turnAngle,3);
 
         robot.intake.setSpeed(1);
 
-        setColumnAngle(70,70,55);
+        setColumnAngle(70,63,55);
         setVuMarkColumn(800,1050,1050);
         robot.drive.encoderFwd(.9,encoderCounts,turnAngle);
-        intakeCurrentDraw = robot.IntakeMotor.getCurrentDraw();
-        intakeWithCurrent(intakeCurrentDraw+3500);
-        monitorGlyphCount();
 
-        robot.drive.zeroEncoders();
-        turnAngleSearch = turnAngle;
-        distanceSearch = 350;
-        while (!glyphFull()&&runtime.seconds()<19&&!isStopRequested()&&opModeIsActive()) {
-            robot.drive.encoderFwd(.2,distanceSearch,turnAngleSearch); //goes 200 more than previously
-            robot.pause(1);
-            robot.drive.encoderFwd(-.4,-50,turnAngleSearch);
-            turnAngleSearch -= 3;
-            distanceSearch += 100;
-        }
-        robot.glyphMech.grab();
-        glyphColors();
-        cipherTest.setHopperGlyphs(backGlyph,frontGlyph);
-        cipherTest.selectCipher3glyph(cipherTest.hopper);
-        telemetry.addData("Order (front, back): ",frontGlyph+", "+backGlyph);
-        telemetry.addData("Selected Cipher",cipherTest.selectedCipher.toString());
-        telemetry.addData("Column",cipherTest.getColumn());
-        telemetry.addData("Height",cipherTest.getHeight());
-        telemetry.update();
+       intakeSequence(21);
+
         robot.glyphMech.grab();
         setColumnAngle(40,turnAngleSearch,turnAngleSearch);
-        robot.drive.gyroTurn(.2,turnAngle,2);
+        robot.drive.gyroTurn(.2,turnAngle,3);
         robot.pause(.5);
         robot.glyphMech.setPosition(LOW);
-        setVuMarkColumn(-800,-600,-775);
+        setVuMarkColumn(-800,-750,-775);
         setColumnAngle(40,70,80);
         robot.drive.encoderFwd(-.9,encoderCounts,turnAngle);
         robot.intake.auton();
 
-        setColumnAngle(55,70,80);
-        robot.drive.gyroTurn(.2,turnAngle,1);
+        setColumnAngle(55,75,80);
+        robot.drive.gyroTurn(.2,turnAngle,3);
 
         placeGlyph2();
 
@@ -334,37 +347,61 @@ public class MasterAuto extends LinearOpMode{
         robot.glyphMech.grab();
 
         robot.drive.zeroEncoders();
-        setVuMarkColumn(-1550,-1200,-1550);
-        robot.drive.encoderStrafe(-.6,encoderCounts);
+        setVuMarkColumn(-1450,-1150,-1450);
+        robot.drive.encoderStrafe(-.35,encoderCounts);
 
-        setColumnAngle(30,330,330);
-        robot.drive.gyroTurn(.1,turnAngle,1);
+        setColumnAngle(30,340,340);
+        robot.drive.gyroTurn(.25,turnAngle,3);
 
         placeGlyph();
 
+        telemetry.addData("1st glyph","placed");
+        telemetry.update();
+
         robot.intake.multiGlyph();
 
-        robot.drive.gyroTurn(.1,0,1);
+        turnAngle = 0;
+        robot.drive.gyroTurn(.25,0,3);
 
         robot.intake.setSpeed(1);
+        telemetry.addData("Intake On","");
+        telemetry.update();
         robot.drive.zeroEncoders();
-        robot.drive.encoderFwd(.7,550);
-        robot.drive.zeroEncoders();
+        telemetry.addData("Encoders reset","");
+        telemetry.update();
+        robot.drive.encoderFwd(.7,550,0);
+        telemetry.addData("Drive forward completed","");
+        telemetry.update();
+
+        /*robot.drive.zeroEncoders();
         robot.drive.encoderFwd(.15,300); //goes 200 more than previously
         robot.pause(1.5);
         robot.drive.encoderFwd(-.5,-200);
         robot.drive.encoderFwd(.2,200);
-        robot.pause(1.5);
-        robot.drive.encoderFwd(-.6,-475);
+        robot.pause(1.5);*/
+        intakeSequence(19);
+
+        telemetry.addData("Intake sequence","completed");
+        telemetry.update();
+
+        robot.pause(.5);
+
+        robot.glyphMech.setPosition(LOW);
+
+        robot.drive.encoderFwd(-.6,-425);
 
         //robot.drive.gyroTurn(.1,20,1);
-        setColumnAngle(360-25,11,25);
-        robot.drive.gyroTurn(.1,turnAngle,1);
+        setColumnAngle(360-10,7,25);
+        robot.drive.gyroTurn(.25,turnAngle,3);
 
         placeGlyph2();
+
         robot.drive.zeroEncoders();
-        robot.drive.encoderFwd(-.3,-200);
-        robot.drive.encoderFwd(.2,100);
+        if (runtime.seconds()<28) {
+            robot.drive.encoderFwd(-.6,-600);
+            robot.drive.zeroEncoders();
+            robot.drive.encoderFwd(.5,150);
+        }
     }
 
     private void blueFar() {
@@ -466,7 +503,7 @@ public class MasterAuto extends LinearOpMode{
                     break;
                 case RED_BLUE:
                     robot.JewelKick.setPosition(robot.kickLeft);
-                    robot.pause(.75);
+                    robot.pause(.5);
                     break;
                 case UNKNOWN:
                     //nothing
@@ -626,7 +663,7 @@ public class MasterAuto extends LinearOpMode{
                     if (robot.IntakeMotor.getCurrentDraw()<maxCurrent) {
                         robot.intake.setSpeed(1);
                     } else {
-                        robot.intake.setSpeed(-1);
+                        robot.intake.setSpeed(-.65);
                     }
                 }
                 robot.intake.setSpeed(0);
@@ -635,7 +672,7 @@ public class MasterAuto extends LinearOpMode{
     }
 
     //attempted new intake sequence
-    /*private void intakeWithCurrent(double maxCurrent) {
+    /**private void intakeWithCurrent(double maxCurrent) {
         new Thread(new Runnable()
         {
             @Override
@@ -682,10 +719,13 @@ public class MasterAuto extends LinearOpMode{
                         firstFull = true;
                     }
 
-                    if (glyphFull()&&fullTime.seconds()>.25) {
-                        setIntakeOff();
+                    if (glyphFull()&&fullTime.seconds()>.5) {
+                        robot.pause(.5);
                         robot.glyphMech.grab();
-                        robot.intake.setSpeed(-.75);
+                        robot.pause(.25);
+                        setIntakeOff();
+                        robot.pause(.15);
+                        robot.intake.setSpeed(-.5);
                         glyphCountOn = false;
                     }
                 }
@@ -750,7 +790,7 @@ public class MasterAuto extends LinearOpMode{
         telemetry.update();
     }
 
-    public int getVumarkColumn () {
+    private int getVumarkColumn() {
         int out = 1;
         switch (VuMark) {
             case LEFT:
@@ -787,27 +827,31 @@ public class MasterAuto extends LinearOpMode{
         }).start();
     }
 
-    private void intakeSequence() {
+    private void intakeSequence(int timeAllowed) {
+        telemetry.addData("Intake Sequence started","");
         intakeCurrentDraw = robot.IntakeMotor.getCurrentDraw();
-        intakeWithCurrent(intakeCurrentDraw+3250);
+        intakeWithCurrent(intakeCurrentDraw+3100);
         monitorGlyphCount();
 
         robot.drive.zeroEncoders();
         turnAngleSearch = turnAngle;
         distanceSearch = 350;
-        moveOnTime(19);
-        while (!glyphFull()&&runtime.seconds()<19&&!isStopRequested()&&opModeIsActive()) {
+        moveOnTime(timeAllowed);
+        while (!glyphFull()&&runtime.seconds()<timeAllowed&&!isStopRequested()&&opModeIsActive()) {
             robot.drive.encoderFwd(.2,distanceSearch,turnAngleSearch); //goes 200 more than previously
-            robot.pause(.5);
-            robot.drive.encoderFwd(-.4,-100,turnAngleSearch);
-            turnAngleSearch -= 3;
-            distanceSearch += 100;
             telemetry.addData("Inside loop","");
+            telemetry.addData("First move done","");
             telemetry.update();
+            robot.pause(.25);
+            robot.drive.encoderFwd(-.4,-50,turnAngleSearch);
+            telemetry.addData("Inside loop","");
+            telemetry.addData("Second move done","");
+            telemetry.update();
+            turnAngleSearch -= 4;
+            distanceSearch += 100;
         }
         telemetry.addData("Exited search loop","");
         telemetry.update();
-        robot.glyphMech.grab();
         //glyphColors();
         cipherTest.setHopperGlyphs(backGlyph,frontGlyph);
         cipherTest.selectCipher3glyph(cipherTest.hopper);
@@ -816,7 +860,6 @@ public class MasterAuto extends LinearOpMode{
         telemetry.addData("Column",cipherTest.getColumn());
         telemetry.addData("Height",cipherTest.getHeight());
         telemetry.update();
-        robot.glyphMech.grab();
     }
 
 }
