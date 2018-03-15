@@ -19,6 +19,11 @@ public class TestMultiLogic extends LinearOpMode{
     private int angle = 0;
     private int distanceCounts = 350;
 
+    private String frontGlyphColor = "", backGlyphColor = "";
+    private int frontGlyph = 0, backGlyph = 0;
+    private boolean frontGlyphPresent = false, backGlyphPresent = false;
+    private int glyphCount = 0;
+
     @Override
     public void runOpMode() {
         robot.init();
@@ -30,51 +35,27 @@ public class TestMultiLogic extends LinearOpMode{
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()&&loop&&!isStopRequested()) {
-            telemetry.addData("Position:", robot.prefs.read("postion"));
-            telemetry.update();
+            //go into pit
+            robot.drive.zeroEncoders();
             robot.intake.setSpeed(1);
-            robot.intake.multiGlyph();
-            while ((!frontGlyph(2,20))
-                    &&!jammed(6000)
-                    &&!isStopRequested()) {
-                robot.drive.encoderFwd(.3, distanceCounts);
-                robot.pause(.25);
-                robot.drive.encoderFwd(-.4, 0);
-                angle += 7;
-                distanceCounts += 100;
-                robot.drive.gyroTurn(.55,angle,1);
-                telemetry.addData("Back Sensor",robot.glyphDistance2.getDistance(DistanceUnit.CM));
-                telemetry.addData("Front Sensor",robot.glyphDistance1.getDistance(DistanceUnit.CM));
-                telemetry.addData("Intake Current Draw mA",robot.IntakeMotor.getCurrentDraw());
-                telemetry.update();
-            }
-            if (jammed(6000)) {
-                robot.intake.setSpeed(-1);
-                robot.pause(.5);
-                robot.intake.setSpeed(1);
-            }
-            while ((!((backGlyph(2,20))
-                    &&(frontGlyph(2,20))))
-                    &&!jammed(6000)
-                    &&!isStopRequested()) {
-                robot.drive.encoderFwd(.3, distanceCounts);
-                robot.pause(.25);
-                robot.drive.encoderFwd(-.4, 0);
-                angle += 7;
-                distanceCounts += 100;
-                robot.drive.gyroTurn(.55,angle,1);
-                telemetry.addData("Intake Current Draw mA",robot.IntakeMotor.getCurrentDraw());
-                telemetry.update();
-            }if (jammed(6000)) {
+            while (!glyphsIn()&&!isStopRequested()&&opModeIsActive()) {
+                while (!jammed(4500)&&!isStopRequested()&&opModeIsActive()) {
+                    robot.drive.encoderFwd(.15,300,0,30);
+                    robot.pause(1);
+                    robot.drive.encoderFwd(.15,50,0,30);
+                    robot.pause(1);
+                }
+                robot.drive.robotCentric(0,0,0);
                 robot.intake.setSpeed(-1);
                 robot.pause(.5);
             }
-            //CYCLE BACK TO REPEAT THIS STEP
+            robot.drive.robotCentric(0,0,0);
+            robot.glyphMech.grab();
             robot.pause(.5);
-            robot.intake.setSpeed(0);
-            robot.drive.gyroTurn(.3,0,1);
+            robot.intake.setSpeed(-.5);
 
-            loop = false;
+            robot.drive.encoderFwd(.2,-300,0,50);
+//            loop = false;
         }
     }
 
@@ -119,7 +100,7 @@ public class TestMultiLogic extends LinearOpMode{
         //run drive code to get to pile here
 
         while (glyphCount<2 && runtime.seconds()<26) {
-            if (jammed(5000)) {
+            if (jammed(2500)) {
                 stallTime.reset();
                 //switch state to jammed state
                 //or reverse intake and such right here
@@ -162,4 +143,179 @@ public class TestMultiLogic extends LinearOpMode{
         return (robot.IntakeMotor.getCurrentDraw() > jamCurrentDraw);
     }
 
+    private boolean glyphsIn () {
+        if ((robot.glyphDistance1.getDistance(DistanceUnit.CM) >= 4
+                && robot.glyphDistance1.getDistance(DistanceUnit.CM) <= 20)&&
+
+                (robot.glyphDistance3.getDistance(DistanceUnit.CM) >= 4
+                        && robot.glyphDistance3.getDistance(DistanceUnit.CM) <= 20)) {
+
+            if (((robot.glyphColor1.alpha()+robot.glyphColor3.alpha())/2)>75) {
+                frontGlyphColor = "Grey";
+                frontGlyph = 1;
+                frontGlyphPresent = true;
+            } else {
+                frontGlyphColor = "Brown";
+                frontGlyph = 2;
+                frontGlyphPresent = true;
+            }
+        } else {
+            frontGlyphColor = "None";
+            frontGlyph = 3;
+            frontGlyphPresent = false;
+        }
+
+        if ((robot.glyphDistance2.getDistance(DistanceUnit.CM) >= 4
+                && robot.glyphDistance2.getDistance(DistanceUnit.CM) <= 40)&&
+
+                (robot.glyphDistance4.getDistance(DistanceUnit.CM) >= 4
+                        && robot.glyphDistance4.getDistance(DistanceUnit.CM) <= 40)){
+
+            if (((robot.glyphColor2.alpha()+robot.glyphColor4.alpha())/2)>47) {
+                backGlyphColor = "Grey";
+                backGlyph = 1;
+                backGlyphPresent = true;
+            } else {
+                backGlyphColor = "Brown";
+                backGlyph = 2;
+                backGlyphPresent = true;
+            }
+        } else {
+            backGlyphColor = "None";
+            backGlyph = 3;
+            backGlyphPresent = false;
+        }
+
+        telemetry.addData("Order (front, back): ",frontGlyph+", "+backGlyph);
+
+        if (frontGlyphPresent&&backGlyphPresent) {
+            glyphCount = 2;
+            robot.intake.setSpeed(0);
+        } else if (frontGlyphPresent||backGlyphPresent) {
+            glyphCount = 1;
+        } else {
+            glyphCount = 0;
+        }
+
+        telemetry.update();
+
+        if (glyphCount==2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void countGlyphs() {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                while(!isStopRequested()) {
+                    if ((robot.glyphDistance1.getDistance(DistanceUnit.CM) >= 4
+                            && robot.glyphDistance1.getDistance(DistanceUnit.CM) <= 20)||
+
+                            (robot.glyphDistance3.getDistance(DistanceUnit.CM) >= 4
+                                    && robot.glyphDistance3.getDistance(DistanceUnit.CM) <= 20)) {
+
+                        if (((robot.glyphColor1.alpha()+robot.glyphColor3.alpha())/2)>50) {
+                            frontGlyphColor = "Grey";
+                            frontGlyph = 1;
+                            frontGlyphPresent = true;
+                        } else {
+                            frontGlyphColor = "Brown";
+                            frontGlyph = 2;
+                            frontGlyphPresent = true;
+                        }
+                    } else {
+                        frontGlyphColor = "None";
+                        frontGlyph = 3;
+                        frontGlyphPresent = false;
+                    }
+
+                    if ((robot.glyphDistance2.getDistance(DistanceUnit.CM) >= 4
+                            && robot.glyphDistance2.getDistance(DistanceUnit.CM) <= 40)||
+
+                            (robot.glyphDistance4.getDistance(DistanceUnit.CM) >= 4
+                                    && robot.glyphDistance4.getDistance(DistanceUnit.CM) <= 40)){
+
+                        if (((robot.glyphColor2.alpha()+robot.glyphColor4.alpha())/2)>40) {
+                            backGlyphColor = "Grey";
+                            backGlyph = 1;
+                            backGlyphPresent = true;
+                        } else {
+                            backGlyphColor = "Brown";
+                            backGlyph = 2;
+                            backGlyphPresent = true;
+                        }
+                    } else {
+                        backGlyphColor = "None";
+                        backGlyph = 3;
+                        backGlyphPresent = false;
+                    }
+
+                    telemetry.addData("Order (front, back): ",frontGlyph+", "+backGlyph);
+
+                    if (frontGlyphPresent&&backGlyphPresent) {
+                        glyphCount = 2;
+                        robot.intake.setSpeed(0);
+                    } else if (frontGlyphPresent||backGlyphPresent) {
+                        glyphCount = 1;
+                    } else {
+                        glyphCount = 0;
+                    }
+
+                    telemetry.update();
+
+                }
+            }
+        }).start();
+    }
+
 }
+
+
+/*
+
+telemetry.addData("Position:", robot.prefs.read("postion"));
+
+            telemetry.update();
+            robot.intake.setSpeed(1);
+            robot.intake.multiGlyph();
+            while ((!frontGlyph(2,20))
+                    &&!jammed(3000)
+                    &&!isStopRequested()) {
+                robot.drive.encoderFwd(.3, distanceCounts);
+                robot.pause(.25);
+                robot.drive.encoderFwd(-.4, 0);
+                angle += 7;
+                distanceCounts += 100;
+                robot.drive.gyroTurn(.55,angle,1);
+                telemetry.addData("Back Sensor",robot.glyphDistance2.getDistance(DistanceUnit.CM));
+                telemetry.addData("Front Sensor",robot.glyphDistance1.getDistance(DistanceUnit.CM));
+                telemetry.addData("Intake Current Draw mA",robot.IntakeMotor.getCurrentDraw());
+                telemetry.update();
+            }
+            if (jammed(3000)) {
+                robot.intake.setSpeed(-1);
+                robot.pause(.5);
+                robot.intake.setSpeed(1);
+            }
+            while (glyphCount!=2
+                    &&!jammed(2500)
+                    &&!isStopRequested()) {
+                    robot.drive.encoderFwd(.3, distanceCounts);
+                    robot.pause(.75);
+                    robot.drive.zeroEncoders();
+                    robot.drive.encoderFwd(-.4, -200);
+                    //angle += 7;
+                    distanceCounts += 100;
+                    //robot.drive.gyroTurn(.55,angle,1);
+                    telemetry.addData("Intake Current Draw mA",robot.IntakeMotor.getCurrentDraw());
+                    telemetry.update();
+                    }
+                    //CYCLE BACK TO REPEAT THIS STEP
+                    robot.pause(.5);
+                    robot.intake.setSpeed(0);
+                    robot.drive.gyroTurn(.3,0,1);*/
