@@ -309,7 +309,7 @@ public class Robot{
 
     public void pause(double seconds){
         runtime.reset();
-        while (runtime.seconds()<seconds&&!opMode.isStopRequested()) {
+        while (runtime.seconds()<seconds&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
             //opMode.telemetry.addData("Waiting",seconds-runtime.seconds());
             //opMode.telemetry.update();
             //waiting
@@ -318,7 +318,7 @@ public class Robot{
 
     public void pause(double seconds, boolean log){
         runtime.reset();
-        while (runtime.seconds()<seconds&&!opMode.isStopRequested()) {
+        while (runtime.seconds()<seconds&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
             opMode.telemetry.addData("Waiting",seconds-runtime.seconds());
             opMode.telemetry.update();
             //waiting
@@ -380,7 +380,7 @@ public class Robot{
             public void run()
             {
                 boolean loop = true;
-                while(loop&&!opMode.isStopRequested()) {
+                while(loop&&!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                     relicDetector = new GenericDetector();
                     relicDetector.init(opMode.hardwareMap.appContext, CameraViewDisplay.getInstance());
                     relicDetector.enable();
@@ -413,7 +413,7 @@ public class Robot{
             @Override
             public void run()
             {
-                while(!opMode.isStopRequested()) {
+                while(!opMode.isStopRequested()&&opMode.opModeIsActive()) {
                     xPosition = xWheel.getIncremental();
                     yPosition = yWheel.getIncremental();
 
