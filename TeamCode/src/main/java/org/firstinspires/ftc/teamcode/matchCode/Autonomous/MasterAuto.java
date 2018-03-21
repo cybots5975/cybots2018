@@ -51,7 +51,7 @@ public class MasterAuto extends LinearOpMode{
 
     private static SearchArray cipherTest = new SearchArray();
 
-    private boolean tryFor5 = false;
+    private boolean tryFor5 = true;
 
     @Override
     public void runOpMode() {
@@ -227,7 +227,7 @@ public class MasterAuto extends LinearOpMode{
 
         robot.drive.encoderStrafe(.5,encoderCounts,0);
 
-        setColumnAngle(24,27,360-25);
+        setColumnAngle(24,32,360-25);
         robot.drive.gyroTurn(.25,turnAngle,3);
 
         placeGlyph();
@@ -246,12 +246,12 @@ public class MasterAuto extends LinearOpMode{
         intakeSequence(19);
         robot.glyphMech.setPosition(LOW);
 
-        robot.drive.encoderFwd(-.6,-475,0);
+        robot.drive.encoderFwd(-.4,-400,0);
         robot.glyphMech.grab();
         robot.pause(.25);
         robot.glyphMech.setPosition(LOW);
 
-        setColumnAngle(360-18,15,25);
+        setColumnAngle(360-18,18,25);
         robot.drive.gyroTurn(.25,turnAngle,3);
         placeGlyph2();
 
@@ -325,9 +325,9 @@ public class MasterAuto extends LinearOpMode{
         robot.drive.gyroTurn(.2,turnAngle,3);
         robot.pause(.5);
         robot.glyphMech.setPosition(LOW);
-        setVuMarkColumn(-800,-750,-775);
+        setVuMarkColumn(-875,-750,-775);
         setColumnAngle(40,70,80);
-        robot.drive.encoderFwd(-.9,encoderCounts,turnAngle);
+        robot.drive.encoderFwd(-.6,encoderCounts,turnAngle);
         robot.intake.auton();
 
         setColumnAngle(55,75,80);
@@ -373,12 +373,6 @@ public class MasterAuto extends LinearOpMode{
         telemetry.addData("Drive forward completed","");
         telemetry.update();
 
-        /*robot.drive.zeroEncoders();
-        robot.drive.encoderFwd(.15,300); //goes 200 more than previously
-        robot.pause(1.5);
-        robot.drive.encoderFwd(-.5,-200);
-        robot.drive.encoderFwd(.2,200);
-        robot.pause(1.5);*/
         intakeSequence(19);
 
         telemetry.addData("Intake sequence","completed");
@@ -398,9 +392,32 @@ public class MasterAuto extends LinearOpMode{
 
         robot.drive.zeroEncoders();
         if (runtime.seconds()<28) {
-            robot.drive.encoderFwd(-.6,-600);
+            robot.drive.encoderFwd(-.7,-600);
             robot.drive.zeroEncoders();
-            robot.drive.encoderFwd(.5,150);
+            robot.drive.encoderFwd(.6,150);
+        }
+
+        if (tryFor5&&runtime.seconds()<22&&!VuMark.equals(RelicRecoveryVuMark.CENTER)) {
+            robot.drive.gyroTurn(.25,0,3);
+            robot.intake.setSpeed(1);
+            robot.drive.zeroEncoders();
+            robot.drive.encoderFwd(.7,450,0);
+            robot.drive.zeroEncoders();
+
+            turnAngle = 0;
+            intakeSequence(25);
+            robot.glyphMech.grab();
+            robot.pause(.2);
+            robot.intake.setSpeed(-.5);
+            robot.glyphMech.setPosition(LOW);
+            robot.drive.encoderFwd(-.9,-250);
+
+            if (runtime.seconds()<28) {
+                robot.drive.zeroEncoders();
+                robot.drive.encoderFwd(-.6, -400);
+                robot.drive.zeroEncoders();
+                robot.drive.encoderFwd(.6, 150);
+            }
         }
     }
 
@@ -790,22 +807,6 @@ public class MasterAuto extends LinearOpMode{
         telemetry.update();
     }
 
-    private int getVumarkColumn() {
-        int out = 1;
-        switch (VuMark) {
-            case LEFT:
-                out = 0;
-                break;
-            case CENTER:
-                out = 1;
-                break;
-            case RIGHT:
-                out = 2;
-                break;
-        }
-        return out;
-    }
-
     private void moveOnTime(int timeLimit) {
         new Thread(new Runnable()
         {
@@ -860,6 +861,22 @@ public class MasterAuto extends LinearOpMode{
         telemetry.addData("Column",cipherTest.getColumn());
         telemetry.addData("Height",cipherTest.getHeight());
         telemetry.update();
+    }
+
+    private int getVumarkColumn() {
+        int out = 1;
+        switch (VuMark) {
+            case LEFT:
+                out = 0;
+                break;
+            case CENTER:
+                out = 1;
+                break;
+            case RIGHT:
+                out = 2;
+                break;
+        }
+        return out;
     }
 
 }

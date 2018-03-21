@@ -159,7 +159,7 @@ public class TeleopV1 extends  LinearOpMode {
         } else if (gamepad2.left_stick_button) {
             robot.ArmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             if (robot.boxLimit.getVoltage()<.5) {
-                robot.ArmMotor.setPower(.3);
+                robot.ArmMotor.setPower(.5);
             } else {
                 robot.ArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.ArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -267,7 +267,7 @@ public class TeleopV1 extends  LinearOpMode {
             robot.relicArm.pivotDown();
         }
 
-        if (gamepad2.right_bumper) {
+        if (!gamepad2.right_bumper) {
             robot.relicArm.grab();
             relicClaw = true;
         } /*else if (gamepad2.left_bumper) {

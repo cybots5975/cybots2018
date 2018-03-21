@@ -122,8 +122,6 @@ public class VectorDrive {
         FRMotor.setMode(FRMode);
         BLMotor.setMode(BLMode);
         BRMotor.setMode(BRMode);
-
-
     }
 
     public void setEncoderMode(DcMotor.RunMode mode){
