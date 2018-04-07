@@ -9,8 +9,6 @@ import org.firstinspires.ftc.teamcode.subsystems.GlyphMech;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
 
-import java.io.IOException;
-
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.HIGH;
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.LOW;
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.MID;
@@ -119,11 +117,7 @@ public class TeleopV1 extends  LinearOpMode {
             telemetry.update();
 
             if (gamepad1.start) {
-                try {
-                    log.save("teleopV1");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                log.log("teleopV1");
             }
         }
         robot.disableRelicVision();

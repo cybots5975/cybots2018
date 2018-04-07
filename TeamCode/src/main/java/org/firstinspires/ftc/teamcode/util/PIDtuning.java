@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
 
-import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -138,11 +137,7 @@ public class PIDtuning extends LinearOpMode
                     log.storeValueInt(10,count, robot.imu.getHeading());
 
                     if (runtime.seconds()>20) {
-                        try {
-                            log.log("pidTesting");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        log.log("pidTesting");
                         telemetry.addData("Written","");
                     }
                     telemetry.update();

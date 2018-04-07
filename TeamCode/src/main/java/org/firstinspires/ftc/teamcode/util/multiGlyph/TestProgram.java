@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.test.multiGluph;
+package org.firstinspires.ftc.teamcode.util.multiGlyph;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
+import org.firstinspires.ftc.teamcode.util.multiGlyph.cipher.CipherMatch;
 
 /**
  * Created by kskrueger for Cybots Robotics on 3/10/18.
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
 @Autonomous(name="Test Cipher Auton", group="Test")
 public class TestProgram extends LinearOpMode{
     private RelicRecoveryVuMark VuMark;
-    private static SearchArray cipherTest = new SearchArray();
+    private static CipherMatch cipherTest = new CipherMatch();
 
     private Robot robot = new Robot(this);
 

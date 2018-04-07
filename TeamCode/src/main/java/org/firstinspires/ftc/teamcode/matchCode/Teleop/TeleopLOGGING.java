@@ -10,8 +10,6 @@ import org.firstinspires.ftc.teamcode.subsystems.GlyphMech;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
 
-import java.io.IOException;
-
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.HIGH;
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.LOW;
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.MID;
@@ -94,11 +92,7 @@ public class TeleopLOGGING extends  LinearOpMode {
             telemetry.addData("Running","");
 
             if (gamepad1.start) {
-                try {
-                    log.save("hungryHippo");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                log.log("hungryHippo");
                 telemetry.addData("File Written","");
             }
 

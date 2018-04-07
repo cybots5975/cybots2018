@@ -10,10 +10,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.teamcode.subsystems.GlyphMech;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
-import org.firstinspires.ftc.teamcode.test.multiGluph.SearchArray;
 import org.firstinspires.ftc.teamcode.util.AutoTransitioner;
+import org.firstinspires.ftc.teamcode.util.multiGlyph.cipher.CipherMatch;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import static org.firstinspires.ftc.teamcode.subsystems.GlyphMech.height.LOW;
@@ -37,6 +36,7 @@ public class MasterAuto extends LinearOpMode{
 
     private ElapsedTime fullTime  = new ElapsedTime();
     private boolean firstFull = false;
+    private boolean glyphCountOn = false;
 
     //multi glyph vars
 
@@ -47,9 +47,8 @@ public class MasterAuto extends LinearOpMode{
     private boolean first = false;
     private double intakeCurrentDraw = 0;
     private boolean intakeOn = false;
-    private boolean glyphCountOn = false;
 
-    private static SearchArray cipherTest = new SearchArray();
+    private static CipherMatch cipherTest = new CipherMatch();
 
     private boolean tryFor5 = true;
 
@@ -116,11 +115,7 @@ public class MasterAuto extends LinearOpMode{
             loop = false;
         }
         robot.stop();
-        try {
-            robot.drive.logging.log("autonLOGGINGGGGGGGG");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        robot.drive.logging.log("autonLOGGINGGGGGGGG");
         telemetry.addData("Written","");
         telemetry.update();
     }
@@ -190,9 +185,9 @@ public class MasterAuto extends LinearOpMode{
         robot.pause(.25);
         glyphColors();
         cipherTest.setHopperGlyphs(backGlyph,frontGlyph);
-        cipherTest.selectCipher3glyph(cipherTest.hopper);
+        cipherTest.search(cipherTest.hopper);
         telemetry.addData("Order (front, back): ",frontGlyph+", "+backGlyph);
-        telemetry.addData("Selected Cipher",cipherTest.selectedCipher.toString());
+        telemetry.addData("Selected Cipher",cipherTest.cipherNumber(cipherTest.cipherChosen));
         telemetry.addData("Column",cipherTest.getColumn());
         telemetry.addData("Height",cipherTest.getHeight());
         telemetry.update();
@@ -476,9 +471,9 @@ public class MasterAuto extends LinearOpMode{
         robot.glyphMech.grab();
         //glyphColors();
         cipherTest.setHopperGlyphs(backGlyph,frontGlyph);
-        cipherTest.selectCipher3glyph(cipherTest.hopper);
+        cipherTest.search(cipherTest.hopper);
         telemetry.addData("Order (front, back): ",frontGlyph+", "+backGlyph);
-        telemetry.addData("Selected Cipher",cipherTest.selectedCipher.toString());
+        telemetry.addData("Selected Cipher",cipherTest.cipherNumber(cipherTest.cipherChosen));
         telemetry.addData("Column",cipherTest.getColumn());
         telemetry.addData("Height",cipherTest.getHeight());
         telemetry.update();
@@ -840,24 +835,18 @@ public class MasterAuto extends LinearOpMode{
         moveOnTime(timeAllowed);
         while (!glyphFull()&&runtime.seconds()<timeAllowed&&!isStopRequested()&&opModeIsActive()) {
             robot.drive.encoderFwd(.2,distanceSearch,turnAngleSearch); //goes 200 more than previously
-            telemetry.addData("Inside loop","");
-            telemetry.addData("First move done","");
             telemetry.update();
             robot.pause(.25);
             robot.drive.encoderFwd(-.4,-50,turnAngleSearch);
-            telemetry.addData("Inside loop","");
-            telemetry.addData("Second move done","");
             telemetry.update();
             turnAngleSearch -= 4;
             distanceSearch += 100;
         }
-        telemetry.addData("Exited search loop","");
-        telemetry.update();
         //glyphColors();
         cipherTest.setHopperGlyphs(backGlyph,frontGlyph);
-        cipherTest.selectCipher3glyph(cipherTest.hopper);
+        cipherTest.search(cipherTest.hopper);
         telemetry.addData("Order (front, back): ",frontGlyph+", "+backGlyph);
-        telemetry.addData("Selected Cipher",cipherTest.selectedCipher.toString());
+        telemetry.addData("Selected Cipher",cipherTest.cipherNumber(cipherTest.cipherChosen));
         telemetry.addData("Column",cipherTest.getColumn());
         telemetry.addData("Height",cipherTest.getHeight());
         telemetry.update();

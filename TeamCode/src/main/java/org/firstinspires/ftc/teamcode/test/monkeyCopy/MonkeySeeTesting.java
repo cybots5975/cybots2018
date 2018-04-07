@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
 
-import java.io.IOException;
-
 @TeleOp(name="Record Times", group="Test")
 public class MonkeySeeTesting extends LinearOpMode {
     private ArrayLogging log = new ArrayLogging(16,10000);
@@ -56,11 +54,7 @@ public class MonkeySeeTesting extends LinearOpMode {
             S6.setPosition(gamepad1.right_trigger);
 
             if (runtime.seconds()>10) {
-                try {
-                    log.log("times");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                log.log("times");
                 telemetry.addData("Written","");
             }
 

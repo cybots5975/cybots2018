@@ -30,7 +30,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode.test.multiGluph;
+package org.firstinspires.ftc.teamcode.util.multiGlyph.odemetry;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -39,8 +39,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
-
-import java.io.IOException;
 
 @TeleOp(name="Encoder Telemetry Test", group="Test")
 //@Disabled
@@ -99,11 +97,7 @@ public class EncoderTelemetry extends LinearOpMode {
             log();
 
             if (gamepad1.b) {
-                try {
-                    log.log("encoderLog");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                log.log("encoderLog");
                 telemetry.addData("Written","");
             }
 

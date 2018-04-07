@@ -8,8 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
 
-import java.io.IOException;
-
 @TeleOp(name="Record Robot Drive Test", group="Monkey Copy")
 //@Disabled
 public class MonkeySee extends LinearOpMode {
@@ -61,11 +59,7 @@ public class MonkeySee extends LinearOpMode {
             previousMilli = runtime.milliseconds();
 
             if (gamepad1.b) {
-                try {
-                    log.log("monkeySeeRobot");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                log.log("monkeySeeRobot");
                 telemetry.addData("Written","");
             }
 

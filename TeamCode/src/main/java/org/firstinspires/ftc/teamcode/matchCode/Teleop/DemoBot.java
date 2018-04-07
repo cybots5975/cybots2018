@@ -30,87 +30,34 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.teamcode.test.multiGluph;
+package org.firstinspires.ftc.teamcode.matchCode.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.subsystems.Robot;
-import org.firstinspires.ftc.teamcode.util.PID;
-import org.firstinspires.ftc.teamcode.util.logging.ArrayLogging;
-
-import java.io.IOException;
-
-@TeleOp(name="ABS Encoder Drive Test", group="Test")
+@TeleOp(name="Template", group="Template")
 //@Disabled
-public class TestAbsEncoderMove extends LinearOpMode {
-    Robot robot = new Robot(this);
-
-    private String frontGlyph = "", backGlyph = "";
-
-    private double fwd;
-
-    private ArrayLogging log = new ArrayLogging(5,10000);
-    public ElapsedTime runtime = new ElapsedTime();
-    private int count = 0;
+public class DemoBot extends LinearOpMode {
+    DcMotor left;
+    DcMotor right;
 
     @Override
     public void runOpMode() {
-        robot.init();
+        left = hardwareMap.dcMotor.get("left");
+        right = hardwareMap.dcMotor.get("right");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        robot.startEncoderTracking();
-
-        log.storeValue(0, 0, "Count #");
-        log.storeValue(1, 0, "Time");
-        log.storeValue(2, 0, "X Pos");
-        log.storeValue(3, 0, "Y Pos");
-        log.storeValue(4, 0, "PID FWD Power");
-
-        PID distancePID = new PID(.08,0,.12);
-
-        robot.positionTracking.wheelsDown();
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            left.setPower(gamepad1.left_stick_y);
+            right.setPower(-gamepad1.right_stick_y);
 
-
-            telemetry.addLine("---Position Tracking---");
-
-            telemetry.addData("Y pos",robot.yWheel.getIncremental());
-            //telemetry.addData("X pos",robot.xPosition);
-
-            log();
-
-            fwd = distancePID.runDistance(800, (int) robot.drive.getFwdEncoderAverage());
-
-            robot.drive.robotCentric(fwd/100,0,0);
-
-            double alpha = robot.glyphColor1.alpha();
-
-            if (gamepad1.b) {
-                try {
-                    log.log("targetLogNew");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                telemetry.addData("Written","");
-            }
-
+            telemetry.addData("Left",gamepad1.left_stick_y);
+            telemetry.addData("Right",-gamepad1.right_stick_y);
             telemetry.update();
         }
-    }
-
-    public void log() {
-        count += 1;
-
-        log.storeValueInt(0, count, count);
-        log.storeValueInt(1, count, runtime.milliseconds());
-//        log.storeValueInt(2, count, robot.);
-        log.storeValueInt(3, count, robot.yWheel.getIncremental());
-        log.storeValueInt(4, count, fwd);
     }
 }
