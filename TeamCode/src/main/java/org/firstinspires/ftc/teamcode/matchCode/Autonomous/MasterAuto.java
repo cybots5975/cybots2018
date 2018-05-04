@@ -59,7 +59,7 @@ public class MasterAuto extends LinearOpMode{
         robot.init();
         robot.drive.setEncoderMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.drive.zeroEncoders();
-        robot.positionTracking.wheelsUp();
+        robot.oldTracking.wheelsUp();
 
 
         robot.VuMark1.activate();
@@ -866,6 +866,13 @@ public class MasterAuto extends LinearOpMode{
                 break;
         }
         return out;
+    }
+
+
+
+    void smooth () {
+        robot.drive.encoderFwd(.5,200,0);
+        robot.drive.encoderFwd(.5,500,90);
     }
 
 }

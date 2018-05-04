@@ -60,14 +60,14 @@ public class EncoderTelemetry extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        robot.positionTracking.startTracking();
+        robot.oldTracking.startTracking();
 
         log.storeValue(0, 0, "Count #");
         log.storeValue(1, 0, "Time");
         log.storeValue(2, 0, "Y");
         log.storeValue(3, 0, "X");
 
-        robot.positionTracking.wheelsDown();
+        robot.oldTracking.wheelsDown();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -78,10 +78,10 @@ public class EncoderTelemetry extends LinearOpMode {
 
             telemetry.addLine("---Position Tracking---");
 
-            telemetry.addData("Y pos",robot.positionTracking.yPosition());
-            telemetry.addData("X pos",robot.positionTracking.xPosition());
-            telemetry.addData("X inch",robot.positionTracking.xPosition(DistanceUnit.INCH));
-            telemetry.addData("Y inch",robot.positionTracking.yPosition(DistanceUnit.INCH));
+            telemetry.addData("Y pos",robot.oldTracking.yPosition());
+            telemetry.addData("X pos",robot.oldTracking.xPosition());
+            telemetry.addData("X inch",robot.oldTracking.xPosition(DistanceUnit.INCH));
+            telemetry.addData("Y inch",robot.oldTracking.yPosition(DistanceUnit.INCH));
             telemetry.addData("Aux power",robot.revHubDS.read5vMonitor()/1000);
 
 
@@ -91,8 +91,8 @@ public class EncoderTelemetry extends LinearOpMode {
 
             robot.drive.robotCentric(leftY,leftX,rightX);
 
-            xPosition = robot.positionTracking.xPosition();
-            yPosition = robot.positionTracking.yPosition();
+            xPosition = robot.oldTracking.xPosition();
+            yPosition = robot.oldTracking.yPosition();
 
             log();
 
@@ -104,7 +104,7 @@ public class EncoderTelemetry extends LinearOpMode {
             telemetry.update();
         }
 
-        robot.positionTracking.stopTracking();
+        robot.oldTracking.stopTracking();
     }
 
     public void log() {

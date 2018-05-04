@@ -70,7 +70,7 @@ public class TestAbsEncoderMove extends LinearOpMode {
 
         PID distancePID = new PID(.08,0,.12);
 
-        robot.positionTracking.wheelsDown();
+        robot.oldTracking.wheelsDown();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {

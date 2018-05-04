@@ -60,8 +60,8 @@ public class SensorTelemetry extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        //robot.positionTracking.startTracking();
-        robot.positionTracking.wheelsUp();
+        robot.oldTracking.startTracking();
+        robot.oldTracking.wheelsUp();
 
         log.storeValue(0, 0, "Count #");
         log.storeValue(1, 0, "Time");
@@ -83,10 +83,10 @@ public class SensorTelemetry extends LinearOpMode {
 
             telemetry.addLine("---Position Tracking---");
 
-            telemetry.addData("Y pos",robot.positionTracking.yPosition());
-            telemetry.addData("X pos",robot.positionTracking.xPosition());
-            telemetry.addData("X inch",robot.positionTracking.xPosition(DistanceUnit.INCH));
-            telemetry.addData("Y inch",robot.positionTracking.yPosition(DistanceUnit.INCH));
+            telemetry.addData("Y pos",robot.oldTracking.yPosition());
+            telemetry.addData("X pos",robot.oldTracking.xPosition());
+            telemetry.addData("X inch",robot.oldTracking.xPosition(DistanceUnit.INCH));
+            telemetry.addData("Y inch",robot.oldTracking.yPosition(DistanceUnit.INCH));
 
             telemetry.addLine();
 
@@ -132,6 +132,21 @@ public class SensorTelemetry extends LinearOpMode {
             telemetry.addData("Front 2 Alpha",robot.glyphColor3.alpha());
             telemetry.addData("Back 1 Alpha",robot.glyphColor2.alpha());
             telemetry.addData("Back 2 Alpha",robot.glyphColor4.alpha());
+
+            telemetry.addLine();
+                                                                             //Grey;            Brown
+                                                                            //Alpha 83-81-99    49-66-68
+            telemetry.addData("Front 1 Red",robot.glyphColor1.red()); //30-29-34        19-24-24
+            telemetry.addData("Front 1 Blue",robot.glyphColor1.blue()); //26-26-30      15-21-21
+            telemetry.addData("Front 1 Green",robot.glyphColor1.blue()); //26-26-30     15-21-21
+            telemetry.addData("Front 1 argb",robot.glyphColor1.green()); //30-29-34     18-24-24
+
+            telemetry.addLine();
+
+            telemetry.addData("Back 2 Red",robot.glyphColor4.red());
+            telemetry.addData("Back 2 Blue",robot.glyphColor4.blue());
+            telemetry.addData("Back 2 Green",robot.glyphColor4.blue());
+            telemetry.addData("Back 2 argb",robot.glyphColor4.green());
 
             telemetry.addLine();
 

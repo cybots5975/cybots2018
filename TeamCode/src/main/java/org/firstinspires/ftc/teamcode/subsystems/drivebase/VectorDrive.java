@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.util.PID;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
@@ -27,6 +28,7 @@ public class VectorDrive {
     public boolean moveOn = false;
 
     public ArrayLogging logging = new ArrayLogging(10,10000);
+    public ElapsedTime timer = new ElapsedTime();
 
     public VectorDrive(LinearOpMode opMode, IMU imu, IMU imu2,
                        DcMotor FLMotor, CRServo FLServo, AnalogInput FLSensor,
@@ -196,6 +198,14 @@ public class VectorDrive {
         }
         robotCentric(0,0,0);
         moveOn = false;
+    }
+
+    public void timeDrive(double yPower, double xPower, double turnPower, double time) {
+        timer.reset();
+        while (timer.seconds()<time && !opMode.isStopRequested() && opMode.opModeIsActive()) {
+            robotCentric(yPower,xPower,turnPower);
+        }
+        robotCentric(0,0,0);
     }
 
     //enum for driveType, this is used when selecting Mecanum or Swerve drivebase

@@ -9,9 +9,15 @@ import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.util.ClosableVuforiaLocalizer;
 import org.opencv.android.Utils;
@@ -31,6 +37,15 @@ public class CybotVuMark {
 
     VuforiaTrackables relicTrackables;
     VuforiaTrackable relicTemplate;
+
+    public double tX;
+    public double tY;
+    public double tZ;
+
+    // Extract the rotational components of the target relative to the robot
+    public double rX;
+    public double rY;
+    public double rZ;
 
     public CybotVuMark(HardwareMap hardwareMap, VuforiaLocalizer.CameraDirection direction, boolean showCamera) {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -68,6 +83,27 @@ public class CybotVuMark {
     public RelicRecoveryVuMark scan() {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         return vuMark;
+    }
+
+    public void calculatePosition () {
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
+            if (pose != null) {
+                VectorF trans = pose.getTranslation();
+                Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+
+                // Extract the X, Y, and Z components of the offset of the target relative to the robot
+                tX = trans.get(0);
+                tY = trans.get(1);
+                tZ = trans.get(2);
+
+                // Extract the rotational components of the target relative to the robot
+                rX = rot.firstAngle;
+                rY = rot.secondAngle;
+                rZ = rot.thirdAngle;
+            }
+        }
     }
 
     public Mat capture() {

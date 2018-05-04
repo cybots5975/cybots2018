@@ -62,7 +62,7 @@ public class TeleopV1 extends  LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.positionTracking.wheelsUp();
+        robot.oldTracking.wheelsUp();
 
         //run until the end (operator presses STOP)
         while (opModeIsActive()&&!isStopRequested()) {
@@ -80,15 +80,6 @@ public class TeleopV1 extends  LinearOpMode {
             if (gamepad1.left_bumper) {
                 leftY = leftY/2;
             }
-
-            //robot.drive.setEfficiency(true); //used for swerve
-            //robot.drive.zeroReset(gamepad1.a); //used for swerve
-
-           /*if (gamepad2.a) {
-                rightX /= 2;
-                robot.drive.robotCentric(leftY,leftX,rightX);
-            } else {
-            }*/
 
            if (gamepad2.dpad_up&&!initRelic) {
                robot.initRelicVision();

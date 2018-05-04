@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Created by kskrueger for Cybots Robotics on 3/5/18.
  */
 
-public class PositionTracking {
+public class Tracking {
     private double wheelDiameter = 2.445;
     private double degreesPerInch = 360 / (wheelDiameter * Math.PI);
     private boolean trackingThread = false;
@@ -28,7 +28,7 @@ public class PositionTracking {
     private double xOffset = 0;
     private double yOffset = 0;
 
-    public PositionTracking (MA3Encoder xWheel, MA3Encoder yWheel, IMU gyro, Servo xServo, Servo yServo) {
+    public Tracking (MA3Encoder xWheel, MA3Encoder yWheel, IMU gyro, Servo xServo, Servo yServo) {
         this.xWheel = xWheel;
         this.yWheel = yWheel;
         this.gyro = gyro;
@@ -88,6 +88,7 @@ public class PositionTracking {
             @Override
             public void run()
             {
+                Thread.currentThread().setPriority(9);
                 while(trackingThread) {
                     xPosition = xWheel.getIncremental();
                     yPosition = yWheel.getIncremental();

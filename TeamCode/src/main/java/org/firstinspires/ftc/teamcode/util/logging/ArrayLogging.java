@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Created by kskrueger for Cybots Robotics on 11/12/17.
+ * Created by kskrueger on 11/12/17.
  */
 
 public class ArrayLogging {
@@ -46,13 +46,21 @@ public class ArrayLogging {
     //the saved CSV will be located in the /sdCard folder on the phone
     public void log (String name) {
         try {
-            save(name);
+            saveFile(name);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void save(String fileName) throws IOException {
+    public void save (String name) {
+        try {
+            saveFile(name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveFile(String fileName) throws IOException {
         String csv = Environment.getExternalStorageDirectory().getPath()+"/"+fileName+".csv";
         CSVWriter writer = new CSVWriter(new FileWriter(csv));
         writer.writeAll(Arrays.asList(array));

@@ -52,7 +52,7 @@ public class ServoCal extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        robot.positionTracking.startTracking();
+        robot.oldTracking.startTracking();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -69,25 +69,25 @@ public class ServoCal extends LinearOpMode {
                 leftPosition -= .001;
             }
 
-            robot.positionTracking.xWheelDown = leftPosition;
-            robot.positionTracking.yWheelDown = rightPosition;
+            robot.oldTracking.xWheelDown = leftPosition;
+            robot.oldTracking.yWheelDown = rightPosition;
 
-            robot.positionTracking.xWheelUp = leftPosition;
-            robot.positionTracking.yWheelUp = rightPosition;
+            robot.oldTracking.xWheelUp = leftPosition;
+            robot.oldTracking.yWheelUp = rightPosition;
 
             if (gamepad1.a) {
-                robot.positionTracking.wheelsUp();
+                robot.oldTracking.wheelsUp();
             } else {
-                robot.positionTracking.wheelsDown();
+                robot.oldTracking.wheelsDown();
             }
 
             telemetry.addData("X Position",leftPosition);
             telemetry.addData("Y Position",rightPosition);
-            telemetry.addData("abs Y pos",robot.positionTracking.yPosition());
-            telemetry.addData("abs X pos",robot.positionTracking.xPosition());
+            telemetry.addData("abs Y pos",robot.oldTracking.yPosition());
+            telemetry.addData("abs X pos",robot.oldTracking.xPosition());
 
-            telemetry.addData("x inch",robot.positionTracking.xPosition(DistanceUnit.INCH));
-            telemetry.addData("y inch",robot.positionTracking.yPosition(DistanceUnit.INCH));
+            telemetry.addData("x inch",robot.oldTracking.xPosition(DistanceUnit.INCH));
+            telemetry.addData("y inch",robot.oldTracking.yPosition(DistanceUnit.INCH));
 
             telemetry.update();
         }

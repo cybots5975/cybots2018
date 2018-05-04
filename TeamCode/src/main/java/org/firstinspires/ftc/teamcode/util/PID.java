@@ -40,6 +40,9 @@ public class PID {
     public double run(int targetValueInput, int position) {
         double dt = (System.currentTimeMillis() - lastTime);
         lastTime = System.currentTimeMillis();
+        if (dt < 1) {
+            return 0;
+        }
 
         targetValue = targetValueInput;
 

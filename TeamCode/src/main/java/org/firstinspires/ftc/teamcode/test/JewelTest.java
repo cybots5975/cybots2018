@@ -33,16 +33,16 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode.test;
 
 import com.disnodeteam.dogecv.detectors.JewelDetector;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
 
 import java.util.Objects;
 
 @TeleOp(name="Jewel Test", group="Test")
-@Disabled
+//@Disabled
 public class JewelTest extends LinearOpMode {
     Robot robot = new Robot(this);
 
@@ -51,7 +51,10 @@ public class JewelTest extends LinearOpMode {
     double armLow = .122, kickLow = .639;
     double kickLeft = .05, kickRight = .99;
 
+    boolean loop = true;
+
     JewelDetector.JewelOrder jewelOrder = JewelDetector.JewelOrder.UNKNOWN;
+    public ElapsedTime runtime  = new ElapsedTime();
 
     @Override
     public void runOpMode() {
@@ -72,46 +75,53 @@ public class JewelTest extends LinearOpMode {
             telemetry.addData("Color",jewelOrder.toString());
             telemetry.update();
         }
+        robot.JewelArm.setPosition(armInit);
+        robot.JewelKick.setPosition(kickInit);
+        robot.drive.zeroEncoders();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        while (opModeIsActive()&&loop) {
 
             flipBallColor(jewelOrder);
 
-            robot.JewelArm.setPosition(armInit);
-            robot.JewelKick.setPosition(kickInit);
-            robot.pause(.5);
-            robot.JewelArm.setPosition(armMid);
-            robot.JewelKick.setPosition(kickMid);
-            robot.pause(1);
             robot.JewelKick.setPosition(kickLow);
-            robot.pause(.5);
             robot.JewelArm.setPosition(armLow);
             robot.pause(.5);
             switch (jewelOrder) {
                 case BLUE_RED:
                     robot.JewelKick.setPosition(kickRight);
-                    robot.pause(.5);
-                    robot.JewelArm.setPosition(armMid);
-                    robot.pause(.5);
-                    robot.JewelKick.setPosition(kickMid);
-                    robot.pause(.25);
+                    robot.speak("RIGHT BALL OFF!");
+                    robot.pause(.3);
                     break;
                 case RED_BLUE:
                     robot.JewelKick.setPosition(kickLeft);
-                    robot.pause(1);
+                    robot.speak("LEFT BALL OFF!");
+                    robot.pause(.2);
                     break;
                 case UNKNOWN:
                     //nothing
                     //better safe than sorry
                     break;
             }
+            telemetry.addData("Time",runtime.seconds());
+            telemetry.update();
             robot.JewelArm.setPosition(armInit);
-            robot.pause(1.5);
+            robot.intake.setSpeed(1);
+            robot.drive.encoderFwd(.8,500,0);
+
+            robot.positionTracking.xPositionAbs = 0;
+            robot.positionTracking.yPositionAbs = 0;
+
+            robot.drive.timeDrive(.8,0,-.2,.5);
+
+            loop = false;
         }
+
+        robot.stop();
     }
 
     private void flipBallColor (JewelDetector.JewelOrder jewelOrder) {
@@ -119,11 +129,9 @@ public class JewelTest extends LinearOpMode {
             switch (jewelOrder) {
                 case RED_BLUE:
                     robot.jewelOrder = JewelDetector.JewelOrder.BLUE_RED;
-                    robot.speak("LEFT BALL OFF!");
                     break;
                 case BLUE_RED:
                     robot.jewelOrder = JewelDetector.JewelOrder.RED_BLUE;
-                    robot.speak("RIGHT BALL OFF!");
                     break;
             }
         }

@@ -30,10 +30,11 @@ import org.firstinspires.ftc.teamcode.subsystems.drivebase.mecanum.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.drivebase.swerve.SwerveDrive;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.IMU;
 import org.firstinspires.ftc.teamcode.subsystems.sensors.MA3Encoder;
-import org.firstinspires.ftc.teamcode.subsystems.sensors.PositionTracking;
+import org.firstinspires.ftc.teamcode.subsystems.sensors.Tracking;
 import org.firstinspires.ftc.teamcode.util.CybotsVisionConfig;
 import org.firstinspires.ftc.teamcode.util.DotStar;
 import org.firstinspires.ftc.teamcode.util.ReadPrefs;
+import org.firstinspires.ftc.teamcode.util.multiGlyph.odemetry.PositionTracking;
 import org.firstinspires.ftc.teamcode.util.open.OpenRevDcMotorImplEx;
 import org.firstinspires.ftc.teamcode.util.open.OpenRevHub;
 import org.firstinspires.ftc.teamcode.util.vuforia.CybotVuMark;
@@ -63,6 +64,7 @@ public class Robot{
     public DistanceSensor glyphDistance1, glyphDistance2, glyphDistance3, glyphDistance4;
     public Intake intake;
     public PositionTracking positionTracking;
+    public Tracking oldTracking;
 
     public MA3Encoder xWheel;
     public MA3Encoder yWheel;
@@ -97,6 +99,7 @@ public class Robot{
     public boolean BoxVision = false;
     public boolean isTeleop = false;
     public JewelDetector.JewelOrder jewelOrder;
+    private boolean vumarkThread = false;
 
     public TextToSpeech tts;
 
@@ -230,7 +233,8 @@ public class Robot{
         Intake intake = new Intake(IntakeMotor);
         this.intake = intake;
 
-        this.positionTracking = new PositionTracking(xWheel,yWheel,imu,PSIntakeServo,DSIntakeServo);
+        this.positionTracking = new PositionTracking(opMode,imu,RelicMotor,IntakeMotor,drive);
+        this.oldTracking = new Tracking(xWheel,yWheel,imu,PSIntakeServo,DSIntakeServo);
 
         GlyphMech glyphMech = new GlyphMech(ArmMotor,PPinch,DPinch,boxLimit,opMode.isStopRequested());
         this.glyphMech = glyphMech;
@@ -420,6 +424,23 @@ public class Robot{
                 }
             }
         }).start();
+    }
+
+    public void startVumarkPositionThread() {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                vumarkThread = true;
+                while(!opMode.isStopRequested()&&opMode.opModeIsActive()&&vumarkThread) {
+                    VuMark1.calculatePosition();
+                }
+            }
+        }).start();
+    }
+    public void stopVumarkPositionThread() {
+        vumarkThread = false;
     }
 
 /*    public void logging() {
