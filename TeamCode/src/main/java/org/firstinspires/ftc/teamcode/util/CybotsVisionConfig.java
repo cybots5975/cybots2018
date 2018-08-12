@@ -5,6 +5,9 @@ import com.disnodeteam.dogecv.detectors.JewelDetector;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 /**
  * Created by kskrueger for Cybots Robotics on 12/26/17.
@@ -31,7 +34,14 @@ public class CybotsVisionConfig {
         jewelDetector.maxDiffrence     = 100; // Since most of the time the area diffrence is a decimal place
     }
 
+    int startX = 200;
+    int startY = 0;
+    int endX = 600;
+    int endY = 600;
     public void vumarkFrames (Mat frame) {
+
+
+
         //Core.flip(frame,frame,+1);
         jewelDetector.processFrame(frame,frame);
     }

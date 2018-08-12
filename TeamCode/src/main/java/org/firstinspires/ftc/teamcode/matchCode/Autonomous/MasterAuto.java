@@ -325,7 +325,7 @@ public class MasterAuto extends LinearOpMode{
         robot.drive.encoderFwd(-.6,encoderCounts,turnAngle);
         robot.intake.auton();
 
-        setColumnAngle(55,75,80);
+        setColumnAngle(57,75,80);
         robot.drive.gyroTurn(.2,turnAngle,3);
 
         placeGlyph2();

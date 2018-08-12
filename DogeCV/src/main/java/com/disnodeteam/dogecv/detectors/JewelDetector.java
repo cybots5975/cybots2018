@@ -79,6 +79,14 @@ public class JewelDetector extends OpenCVPipeline {
             tempBefore.release();
         }
 
+        Imgproc.rectangle (
+                workingMat,                    //Matrix obj of the image
+                new Point(0, 0),        //p1
+                new Point(workingMat.cols()*.3, workingMat.rows()),       //p2
+                new Scalar(0, 0, 0),     //Scalar object for color
+                -1                          //Thickness of the line
+        );
+
         Mat redConvert = workingMat.clone();
         Mat blueConvert = workingMat.clone();
 

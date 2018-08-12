@@ -23,7 +23,7 @@ public class JewelOpMode extends OpMode
         jewelDetector = new JewelDetector();
         jewelDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
 
-        //Jewel Detector Settings
+        /*//Jewel Detector Settings
         jewelDetector.areaWeight       = 0.02;
         jewelDetector.detectionMode    = JewelDetector.JewelDetectionMode.MAX_AREA; // PERFECT_AREA
         jewelDetector.perfectRatio     = 2;
@@ -31,7 +31,7 @@ public class JewelOpMode extends OpMode
         jewelDetector.areaWeight       = 0.05; // Since we're dealing with 100's of pixels
         jewelDetector.minArea          = 1100;
         jewelDetector.ratioWeight      = 30; // Since most of the time the area diffrence is a decimal place
-        jewelDetector.maxDiffrence     = 100; // Since most of the time the area diffrence is a decimal place
+        jewelDetector.maxDiffrence     = 100; // Since most of the time the area diffrence is a decimal place*/
 
         jewelDetector.enable();
     }
